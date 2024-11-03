@@ -1,0 +1,60 @@
+
+@media (max-width: 768px) {
+  
+    /* Thêm khoảng cách giữa các cột */
+    .text-center {
+      margin-bottom: 20px; /* Tạo khoảng cách giữa các cột khi xuống dòng */
+    }
+  
+  }
+body {
+    background-color: #66C5FF;
+    margin-top: 70px;
+    width: 100%;
+    height: 100%;
+  }
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+  .row {
+    background-color: #ffffff;
+    align-items: center;
+    border-radius: 15px;
+    padding: 20px;
+  }
+  .container .logo {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 100px;
+    margin-left: 100px;
+    border-radius: 60%;
+    background-color: #DBECF7;
+  }
+  .logo img{
+   height: 400px;
+   padding: 30px;
+   margin-left: 25px;
+    
+  }
+  .btn_Sign_in{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+  .btn-primary {
+    background-color: #4ab8f7;
+    border: none;
+  }
+
+  .login-box {
+    border: 2px solid #e0dfdf; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    padding: 20px; 
+    border-radius: 15px; 
+  }

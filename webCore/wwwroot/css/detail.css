@@ -1,0 +1,44 @@
+.rounded-box {
+    border: 2px black; 
+    border-radius: 15px; 
+    padding: 20px; 
+    background-color: #ffffff; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+}
+.book {
+    width: 325px;
+    height: 450px;
+}
+.value{
+    width: 114px;
+    height: 29px;
+}
+.add_button{
+    font-size: 13px ; 
+    width: 160px;
+    height: 45px;
+    border-radius: 15px;
+    color: #66C5FF;
+    border: 3px solid #66C5FF; 
+    background-color: #ffffff;
+}
+.buy_button {
+    font-size: 18px; 
+    width: 160px; 
+    height: 45px; 
+    border-radius: 15px; 
+    color: #ffffff;
+    border: 3px solid #66C5FF;
+    background-color: #66C5FF;
+}
+.rounded-input {
+    border-radius: 5px;
+    border: 1px solid #ced4da; 
+    padding: 5px; 
+    width: 140px; 
+}
+.section-custom {
+    max-width: 100%; 
+    margin: 0 auto;
+}
+
