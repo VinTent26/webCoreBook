@@ -28,10 +28,20 @@ namespace webCore.Models
         [BsonIgnore]
         public string ConfirmPassword { get; set; }
 
-        public string TokenUser { get; set; }
+        public string Token { get; set; } = GenerateRandomString(20);
+
 
         public int Status { get; set; }
 
         public bool Deleted { get; set; }
+
+        private static string GenerateRandomString(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
     }
 }

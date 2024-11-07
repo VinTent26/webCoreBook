@@ -45,9 +45,6 @@ namespace webCore.Controllers
                     return View(account);
                 }
 
-                // Tạo TokenUser ngẫu nhiên và gán vào account
-                account.TokenUser = TokenGenerator.GenerateToken();
-
                 // Lưu tài khoản vào MongoDB
                 await _mongoDBService.SaveAccountAsync(account);
 
@@ -84,7 +81,7 @@ namespace webCore.Controllers
                 if (loginAccount.Password == account.Password)
                 {
                     // Đăng nhập thành công
-                    HttpContext.Session.SetString("UserToken", account.TokenUser);
+                    HttpContext.Session.SetString("UserToken", account.Token);
 
                     // Chuyển đến trang Index của controller Home
                     return RedirectToAction("Index", "User");
@@ -101,18 +98,5 @@ namespace webCore.Controllers
             return View(loginAccount);
         }
 
-        // Lớp hỗ trợ tạo TokenUser ngẫu nhiên
-        public static class TokenGenerator
-        {
-            public static string GenerateToken(int length = 32)
-            {
-                using (var rng = new RNGCryptoServiceProvider())
-                {
-                    var byteArray = new byte[length];
-                    rng.GetBytes(byteArray);
-                    return Convert.ToBase64String(byteArray);  // Convert to Base64 string để làm token
-                }
-            }
-        }
     }
 }
