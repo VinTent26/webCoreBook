@@ -1,4 +1,4 @@
-﻿@model webCore.Models.Account
+﻿@model webCore.Models.User
 
 @{
     Layout = null;
@@ -44,7 +44,7 @@
                         }
                     </div>
                 }
-                <form asp-action="Sign_in" asp-controller="Account" method="post">
+                <form asp-action="Sign_in" asp-controller="User" method="post">
                     <div class="form-group">
                         <label for="email">Tài khoản:</label>
                         <input type="email" class="form-control" id="email" name="Email" placeholder="Email hoặc số điện thoại" required />
@@ -57,7 +57,7 @@
                     <div class="text-center mt-3">
                         <a href="#" class="text-secondary">Quên mật khẩu?</a>
                     </div>
-                    <button type="button" class="btn btn-warning btn-block mt-3" onclick="window.location.href='@Url.Action("Sign_up", "Account")'">Tạo tài khoản mới</button>
+                    <button type="button" class="btn btn-warning btn-block mt-3" onclick="window.location.href='@Url.Action("Sign_up", "User")'">Tạo tài khoản mới</button>
                 </form>
             </div>
         </div>

@@ -1,4 +1,4 @@
-﻿@model webCore.Models.Account
+﻿@model webCore.Models.User
 
 @{
     Layout = null;
@@ -32,7 +32,7 @@
             <!-- Login Form Section -->
             <div class="col-md-6 login-box">
                 <h2 class="text-center mb-4">Đăng ký</h2>
-                <form asp-action="Sign_up" asp-controller="Account" method="post">
+                <form asp-action="Sign_up" asp-controller="User" method="post">
                     <div class="form-group">
                         <label for="email">Tài khoản:</label>
                         <input type="email" class="form-control" id="email" name="Email" required placeholder="Nhập email" />
@@ -46,9 +46,9 @@
                         <input type="password" class="form-control" id="confirmPassword" name="ConfirmPassword" required placeholder="Nhập lại mật khẩu" />
                         @if (ViewData.ModelState["ConfirmPassword"]?.Errors.Count > 0)
                         {
-                        <div class="text-danger">
-                            @ViewData.ModelState["ConfirmPassword"]?.Errors[0]?.ErrorMessage
-                        </div>
+                            <div class="text-danger">
+                                @ViewData.ModelState["ConfirmPassword"]?.Errors[0]?.ErrorMessage
+                            </div>
                         }
                     </div>
                     <div class="btn_Sign_up">
@@ -56,7 +56,7 @@
 
                     </div>
                     <div class="text-center mt-3">
-                        <p>Đã có tài khoản? <a href="@Url.Action("Sign_in", "Account")">Đăng nhập ngay</a></p>
+                        <p>Đã có tài khoản? <a href="@Url.Action("Sign_in", "User")">Đăng nhập ngay</a></p>
                     </div>
                 </form>
             </div>

@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using webCore.Models;
 
 namespace webCore.Controllers
@@ -18,16 +15,21 @@ namespace webCore.Controllers
             _logger = logger;
         }
 
+        // Thực hiện hiển thị trang chủ (Index)
+        [HttpGet]
         public IActionResult Index()
         {
-            return RedirectToAction("Index", "User");
+            // Trả về view của trang chủ
+            return View();
         }
 
+        // Thực hiện trả về view Privacy
         public IActionResult Privacy()
         {
             return View();
         }
 
+        // Xử lý lỗi khi có sự cố xảy ra
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

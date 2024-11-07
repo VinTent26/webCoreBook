@@ -8,35 +8,91 @@ namespace webCore.Controllers
 {
     public class UserController : Controller
     {
-        private readonly CloudinaryService _cloudinaryService;
         private readonly MongoDBService _mongoDBService;
 
-        public UserController(CloudinaryService cloudinaryService, MongoDBService mongoDBService)
+        public UserController(MongoDBService mongoDBService)
         {
-            _cloudinaryService = cloudinaryService;
             _mongoDBService = mongoDBService;
         }
 
-        public IActionResult Index()
+        // Action để hiển thị form đăng ký
+        [HttpGet]
+        public IActionResult Sign_up()
         {
             return View();
         }
 
+        // Action xử lý đăng ký
         [HttpPost]
-        public async Task<IActionResult> UpdateProfile(User user, IFormFile profileImage)
+        public async Task<IActionResult> Sign_up(User user)
         {
-            // Check if the user has uploaded a new profile image
-            if (profileImage != null && profileImage.Length > 0)
+            if (ModelState.IsValid)
             {
-                // Upload the image to Cloudinary and get the URL
-                user.ProfileImage = await _cloudinaryService.UploadImageAsync(profileImage);
+                // Kiểm tra nếu mật khẩu và mật khẩu xác nhận không khớp nhau
+                if (user.Password != user.ConfirmPassword)
+                {
+                    ModelState.AddModelError("ConfirmPassword", "Mật khẩu và mật khẩu xác nhận không khớp.");
+                    return View(user);
+                }
+
+                // Kiểm tra nếu account.Password là null hoặc chuỗi trống
+                if (string.IsNullOrEmpty(user.Password))
+                {
+                    ModelState.AddModelError("Password", "Mật khẩu không được để trống.");
+                    return View(user);
+                }
+
+                // Lưu tài khoản vào MongoDB
+                await _mongoDBService.SaveUserAsync(user);
+
+                return RedirectToAction("Sign_in");
+            }
+            return View(user);
+        }
+
+        // Action để hiển thị form đăng nhập
+        [HttpGet]
+        public IActionResult Sign_in()
+        {
+            return View();  // Hiển thị trang đăng nhập
+        }
+
+        // Action xử lý đăng nhập
+        [HttpPost]
+        public async Task<IActionResult> Sign_in(User loginUser)
+        {
+            if (ModelState.IsValid)
+            {
+
+                // Lấy tài khoản từ MongoDB dựa vào email
+                var user = await _mongoDBService.GetAccountByEmailAsync(loginUser.Email);
+
+                if (user == null)
+                {
+                    // Nếu tài khoản không tồn tại
+                    ModelState.AddModelError("", "Tài khoản không tồn tại.");
+                    return View(loginUser);
+                }
+
+                // So sánh mật khẩu nhập vào với mật khẩu trong MongoDB (không mã hóa)
+                if (loginUser.Password == user.Password)
+                {
+                    // Đăng nhập thành công
+                    HttpContext.Session.SetString("UserToken", user.Token);
+
+                    // Chuyển đến trang Index của controller Home
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    // Nếu mật khẩu không khớp
+                    ModelState.AddModelError("", "Mật khẩu không đúng.");
+                    return View(loginUser);
+                }
             }
 
-            // Save or update the user in MongoDB
-            await _mongoDBService.SaveUserAsync(user);
-
-            // Redirect back to the Index view or display a success message
-            return RedirectToAction("Index");
+            // Trả lại view nếu ModelState không hợp lệ (ví dụ thiếu email hoặc mật khẩu)
+            return View(loginUser);
         }
     }
 }
