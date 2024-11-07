@@ -3,7 +3,6 @@ using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,9 +10,10 @@ namespace webCore.Models
 {
     public class Account
     {
+        // Sử dụng Guid thay vì ObjectId
         [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
+        [BsonRepresentation(BsonType.String)]  // Đảm bảo kiểu dữ liệu là String (UUID)
+        public Guid Id { get; set; } = Guid.NewGuid();  // Khởi tạo giá trị UUID mới cho Id
 
         public string FullName { get; set; }
 
@@ -30,7 +30,6 @@ namespace webCore.Models
 
         public string Token { get; set; } = GenerateRandomString(20);
 
-
         public int Status { get; set; }
 
         public bool Deleted { get; set; }
@@ -42,6 +41,5 @@ namespace webCore.Models
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
-
     }
 }
