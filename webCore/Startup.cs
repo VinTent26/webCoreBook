@@ -29,11 +29,20 @@ namespace webCore
             services.AddSingleton<CloudinaryService>();
             services.AddSingleton<MongoDBService>();
 
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                // Nếu không chỉ định, tên cookie mặc định sẽ là .AspNetCore.Session
+                options.Cookie.Name = ".AspBookCore.Session";
+                options.IdleTimeout = TimeSpan.FromMinutes(30);  // Thời gian hết hạn session
+                options.Cookie.IsEssential = true;  // Cookie bắt buộc
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseSession();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -46,7 +55,7 @@ namespace webCore
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            
             app.UseRouting();
 
             app.UseAuthorization();

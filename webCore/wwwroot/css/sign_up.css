@@ -1,51 +1,71 @@
-body {
-  background-color: #66C5FF;
-  margin-top: 70px;
-  width: 100%;
-  height: 100%;
-}
-.container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-}
-.row {
-  background-color: #ffffff;
-  align-items: center;
-  border-radius: 15px;
-  padding: 20px;
-}
-.logo {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 50px;
-  margin-left: 10px;
-}
-.logo img {
-    background-color: #DBECF7;
-    border-radius: 60%;
-    width: 100%;
-    height: 350px;
-    max-width: 600px; 
+
+@media (max-width: 768px) {
+
+    /* Thêm khoảng cách giữa các cột */
+    .text-center {
+        margin-bottom: 20px; /* Tạo khoảng cách giữa các cột khi xuống dòng */
+    }
 }
 
+body {
+    background-color: #66C5FF;
+    margin-top: 70px;
+    width: 100%;
+    height: 100%;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.row {
+    background-color: #ffffff;
+    align-items: center;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.logo {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 90px;
+    margin-left: 70px;
+}
+
+    .logo img {
+        border-radius: 75%;
+        background-color: #DBECF7;
+        width: 340px;
+        height: 400px;
+        max-width: 600px;
+    }
+
 button {
-  font-weight: bold;
+    font-weight: bold;
+
+}
+div.btn_Sign_up {
+    text-align: center;
+    margin-top: 20px;
 }
 .btn-primary {
-  background-color: #4ab8f7;
-  border: none;
+    background-color: #4ab8f7;
+    border: none;
 }
+
 .btn-warning {
-  background-color: #fcd34d;
-  border: none;
+    background-color: #fcd34d;
+    border: none;
 }
+
 .login-box {
-  border: 2px solid #e0dfdf; 
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-  padding: 20px; 
-  border-radius: 15px; 
+    border: 2px solid #e0dfdf;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 15px;
 }
