@@ -1,0 +1,87 @@
+﻿@model List<webCore.Models.Account_admin> // Specify the model type
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "Admin";
+}
+<link rel="stylesheet" href="/css/Account_admin.css" />
+<div class="container">
+    <h1>Danh sách tài khoản</h1>
+    <div class="button-container">
+        <a href="@Url.Action("Create", "Account")" class="add-btn">
+            <i class="fas fa-user-plus icon"></i> Thêm
+        </a>
+    </div>
+
+    <table class="account-table">
+        <thead>
+            <tr>
+                <th>Tên</th>
+                <th>Ảnh</th>
+                <th>Email</th>
+                <th>Quyền</th>
+                <th>Trạng thái</th>
+                <th class="actions-header">Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var account in Model)
+            {
+                <tr>
+                    <td>@account.FullName</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(account.Avatar))
+                        {
+                            <img src="@account.Avatar" alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%;" />
+                        }
+                        else
+                        {
+                            <span>No Image</span>
+                        }
+                    </td>
+                    <td>@account.Email</td>
+                    <td>@account.RoleId</td>
+                    <td class="status-@account.Status.ToLower()">
+                        <!-- Display the status name based on the value -->
+                        @if (account.Status.Equals("Hoạt động", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <span class="status-active">Hoạt động</span> }
+                        else 
+                         {
+                            <span class="status-inactive">Dừng hoạt động</span> }     
+                    </td>
+                    <td class="actions-cell">
+                        <button class="icon-btn edit-btn" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="icon-btn delete-btn" title="Delete">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">Trước</a>
+            </li>
+            <li class="page-item active" aria-current="page">
+                <a class="page-link" href="#">1</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#">2</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#">3</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#">Tiếp theo</a>
+            </li>
+        </ul>
+    </nav>
+</div>

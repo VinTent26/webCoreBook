@@ -1,15 +1,11 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using webCore.Controllers;
 using webCore.Services;
+using webCore.MongoHelper;
+using System;
 
 namespace webCore
 {
@@ -26,9 +22,18 @@ namespace webCore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            // Đăng ký các service
             services.AddSingleton<CloudinaryService>();
             services.AddSingleton<MongoDBService>();
 
+            // Cấu hình Session với các tùy chọn
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30); // Thời gian hết hạn của session
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true; // Cần thiết để Session hoạt động
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,13 +46,16 @@ namespace webCore
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            // Sử dụng Session trước khi Authorization
+            app.UseSession();
 
             app.UseAuthorization();
 

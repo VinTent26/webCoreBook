@@ -2,6 +2,8 @@
 using webCore.Models;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
 
 namespace webCore.Services
 {
@@ -9,6 +11,7 @@ namespace webCore.Services
     {
         private readonly IMongoCollection<Product> _productCollection;
         private readonly IMongoCollection<User> _userCollection;
+        private readonly IMongoCollection<Account_admin> _AccountCollection;
 
         public MongoDBService(IConfiguration configuration)
         {
@@ -16,8 +19,12 @@ namespace webCore.Services
             var mongoDatabase = mongoClient.GetDatabase(configuration["MongoDB:DatabaseName"]);
             _productCollection = mongoDatabase.GetCollection<Product>("products");
             _userCollection = mongoDatabase.GetCollection<User>("Users");
+            _AccountCollection = mongoDatabase.GetCollection<Account_admin>("Accounts");
         }
-
+        public async Task<List<Account_admin>> GetAccounts() 
+        {
+            return await _AccountCollection.Find(_ => true).ToListAsync();
+        }
         public async Task SaveProductAsync(Product product)
         {
             await _productCollection.InsertOneAsync(product);
@@ -26,6 +33,11 @@ namespace webCore.Services
         public async Task SaveUserAsync(User user)
         {
             await _userCollection.InsertOneAsync(user);
+        }
+
+        internal async Task SaveAccountAsync(Account_admin account)
+        {
+            await _AccountCollection.InsertOneAsync(account);
         }
     }
 }

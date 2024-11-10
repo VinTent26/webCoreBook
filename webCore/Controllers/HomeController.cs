@@ -20,7 +20,7 @@ namespace webCore.Controllers
 
         public IActionResult Index()
         {
-            return RedirectToAction("Index", "User");
+            return RedirectToAction("Index", "Account");
         }
 
         public IActionResult Privacy()
