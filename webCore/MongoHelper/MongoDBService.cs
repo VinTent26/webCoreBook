@@ -12,6 +12,8 @@ namespace webCore.Services
         private readonly IMongoCollection<Product> _productCollection;
         private readonly IMongoCollection<User> _userCollection;
         private readonly IMongoCollection<Account_admin> _AccountCollection;
+        private readonly IMongoCollection<Category_admin> _CategoryCollection;
+        private readonly IMongoCollection<Book_admin> _BookCollection;
 
         public MongoDBService(IConfiguration configuration)
         {
@@ -20,6 +22,8 @@ namespace webCore.Services
             _productCollection = mongoDatabase.GetCollection<Product>("products");
             _userCollection = mongoDatabase.GetCollection<User>("Users");
             _AccountCollection = mongoDatabase.GetCollection<Account_admin>("Accounts");
+            _CategoryCollection = mongoDatabase.GetCollection<Category_admin>("Category");
+            _BookCollection = mongoDatabase.GetCollection<Book_admin>("Book");
         }
         public async Task<List<Account_admin>> GetAccounts() 
         {
@@ -38,6 +42,38 @@ namespace webCore.Services
         internal async Task SaveAccountAsync(Account_admin account)
         {
             await _AccountCollection.InsertOneAsync(account);
+        }
+        //Category
+        public async Task<List<Category_admin>> GetCategory()
+        {
+            return await _CategoryCollection.Find(_ => true).ToListAsync();
+        }
+        internal async Task SaveCatelogyAsync(Category_admin category)
+        {
+            await _CategoryCollection.InsertOneAsync(category);
+        }
+        public async Task<Category_admin> GetCategoryByIdAsync(string id)
+        {
+            return await _CategoryCollection.Find(c => c.Id == id).FirstOrDefaultAsync();
+        }
+        public async Task UpdateCategoryAsync(Category_admin category)
+        {
+            var filter = Builders<Category_admin>.Filter.Eq(c => c.Id, category.Id);
+            await _CategoryCollection.ReplaceOneAsync(filter, category);
+        }
+        public async Task DeleteCategoryAsync(string id)
+        {
+            var filter = Builders<Category_admin>.Filter.Eq(c => c.Id, id);
+            await _CategoryCollection.DeleteOneAsync(filter);
+        }
+        //Book
+        public async Task<List<Book_admin>> GetBook()
+        {
+            return await _BookCollection.Find(_ => true).ToListAsync();
+        }
+        internal async Task SaveBookAsync(Book_admin book)
+        {
+            await _BookCollection.InsertOneAsync(book);
         }
     }
 }
