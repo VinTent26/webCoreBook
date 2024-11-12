@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
@@ -32,7 +33,9 @@ namespace webCore.Models
         // ID của danh mục cha
         [MaxLength(100)]
         public string ParentId { get; set; } // Đổi tên từ Parent_id thành ParentId
-                                            // Thuộc tính mới để lưu tên danh mục cha
+                                             // Thuộc tính mới để lưu tên danh mục cha
+        
+        public string ParentTitle { get; set; }
 
         [MaxLength(50)]
         public string Status { get; set; }

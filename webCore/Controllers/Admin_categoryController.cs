@@ -83,7 +83,18 @@ namespace webCore.Controllers
 
                 try
                 {
+                    // Lưu danh mục vào cơ sở dữ liệu
                     await _mongoDBService.SaveCatelogyAsync(category);
+
+                    // Cập nhật ParentTitle
+                    if (!string.IsNullOrEmpty(parentId))
+                    {
+                        var parentCategory = categories.FirstOrDefault(c => c.Id == parentId);
+                        category.ParentTitle = parentCategory?.Title;
+
+                        // Cập nhật lại danh mục đã lưu với ParentTitle
+                        await _mongoDBService.UpdateCategoryAsync(category); 
+                    }
                 }
                 catch (Exception ex)
                 {
