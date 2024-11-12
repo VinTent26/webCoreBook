@@ -33,8 +33,6 @@ namespace webCore.Models
         [MaxLength(100)]
         public string ParentId { get; set; } // Đổi tên từ Parent_id thành ParentId
                                             // Thuộc tính mới để lưu tên danh mục cha
-        [NotMapped] // Không lưu trong database
-        public string ParentTitle { get; set; }
 
         [MaxLength(50)]
         public string Status { get; set; }
