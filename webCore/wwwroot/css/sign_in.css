@@ -9,7 +9,6 @@
 
 body {
     background-color: #66C5FF;
-    margin-top: 70px;
     width: 100%;
     height: 100%;
 }
@@ -19,6 +18,7 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
+
 }
 
 .row {
@@ -26,6 +26,7 @@ body {
     align-items: center;
     border-radius: 15px;
     padding: 20px;
+    max-width: 800px;
 }
 
 .logo {
@@ -45,10 +46,13 @@ body {
         max-width: 600px;
     }
 
-.btn_Sign_in {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+button {
+    font-weight: bold;
+    width: 100%;
+}
+
+div.btn_Sign_up {
+    text-align: center;
     margin-top: 20px;
 }
 
@@ -57,9 +61,35 @@ body {
     border: none;
 }
 
+.btn-warning {
+    background-color: #fcd34d;
+    border: none;
+}
+
 .login-box {
     border: 2px solid #e0dfdf;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
     border-radius: 15px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    width: 100%; /* Đảm bảo các input có cùng chiều rộng */
+}
+
+.form-control {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 100%; /* Đảm bảo input chiếm hết chiều rộng của form */
+    box-sizing: border-box;
+}
+.login-box, .row {
+    width: 100%;
+    margin: 0;
+}
+
+form {
+    height: 360px;
 }

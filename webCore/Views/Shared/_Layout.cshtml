@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@using Microsoft.AspNetCore.Http
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -49,13 +51,25 @@
                                 <i class="fa-solid fa-cart-shopping"></i>
                             </a>
                         </div>
-                        <div class="inner-user">
-                            <a href="#">
-                                <i class="fa-regular fa-user"></i>
-                            </a>
+                        <div class="user-container" style="display: flex; align-items: center;">
+                            <div class="inner-user">
+                                <a href="#">
+                                    <i class="fa-regular fa-user"></i>
+                                </a>
+                            </div>
+                            <div class="user-name">
+                                @{ var userName = HttpContextAccessor.HttpContext.Session.GetString("UserName");
+                                                if (!string.IsNullOrEmpty(userName))
+                                                {
+                                    <span>@userName</span> <!-- Hiển thị tên người dùng --> }
+                                                else
+                                                {
+                                    <a href="@Url.Action("SignIn", "User")">Đăng nhập</a> } }
+                            </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </header>

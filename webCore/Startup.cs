@@ -28,6 +28,7 @@ namespace webCore
             services.AddControllersWithViews();
             services.AddSingleton<CloudinaryService>();
             services.AddSingleton<MongoDBService>();
+            services.AddHttpContextAccessor();
 
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
