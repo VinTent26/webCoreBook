@@ -13,7 +13,7 @@ namespace webCore.Models
         [BsonRepresentation(BsonType.String)]  // Đảm bảo kiểu dữ liệu là String (UUID)
         public Guid Id { get; set; } = Guid.NewGuid();  // Khởi tạo giá trị UUID mới cho Id
 
-        public string Name { get; set; }
+        public string Name { get; set; }= GenerateRandomString(10);
 
         [Required(ErrorMessage = "Email là bắt buộc")]
         [EmailAddress(ErrorMessage = "Email không hợp lệ")]

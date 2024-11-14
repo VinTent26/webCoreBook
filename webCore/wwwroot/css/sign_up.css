@@ -9,7 +9,6 @@
 
 body {
     background-color: #66C5FF;
-    margin-top: 70px;
     width: 100%;
     height: 100%;
 }
@@ -26,6 +25,7 @@ body {
     align-items: center;
     border-radius: 15px;
     padding: 20px;
+    max-width: 800px;
 }
 
 .logo {
@@ -47,12 +47,14 @@ body {
 
 button {
     font-weight: bold;
-
+    width: 100%;
 }
+
 div.btn_Sign_up {
     text-align: center;
     margin-top: 20px;
 }
+
 .btn-primary {
     background-color: #4ab8f7;
     border: none;
@@ -68,4 +70,23 @@ div.btn_Sign_up {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
     border-radius: 15px;
+
+}
+
+.form-group {
+    margin-bottom: 20px;
+    width: 100%; /* Đảm bảo các input có cùng chiều rộng */
+}
+
+.form-control {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 100%; /* Đảm bảo input chiếm hết chiều rộng của form */
+    box-sizing: border-box;
+}
+
+.login-box, .row {
+    width: 100%;
+    margin: 0;
 }

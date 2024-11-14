@@ -60,7 +60,14 @@ header {
     .inner-search button {
         height: 40px;
     }
+.inner-user {
+    display: flex;
+    align-items: center;
+}
 
+    .inner-user i {
+        margin-right: 5px; /* Khoảng cách giữa icon và tên người dùng */
+    }
 /* Icon Container Styles */
 .items-icon {
     display: flex;

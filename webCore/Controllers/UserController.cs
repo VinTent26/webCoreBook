@@ -28,6 +28,14 @@ namespace webCore.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Kiểm tra xem email đã tồn tại chưa
+                var existingUser = await _mongoDBService.GetAccountByEmailAsync(user.Email);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError("Email", "Tài khoản đã tồn tại.");
+                    return View(user);
+                }
+
                 // Kiểm tra nếu mật khẩu và mật khẩu xác nhận không khớp nhau
                 if (user.Password != user.ConfirmPassword)
                 {
@@ -45,7 +53,10 @@ namespace webCore.Controllers
                 // Lưu tài khoản vào MongoDB
                 await _mongoDBService.SaveUserAsync(user);
 
-                return RedirectToAction("Sign_in");
+                // Thiết lập session cho tên người dùng
+                HttpContext.Session.SetString("UserName", user.Name);
+
+                return RedirectToAction("Index", "Home");
             }
             return View(user);
         }
@@ -79,6 +90,7 @@ namespace webCore.Controllers
                 {
                     // Đăng nhập thành công
                     HttpContext.Session.SetString("UserToken", user.Token);
+                    HttpContext.Session.SetString("UserName", user.Name);
 
                     // Chuyển đến trang Index của controller Home
                     return RedirectToAction("Index", "Home");
