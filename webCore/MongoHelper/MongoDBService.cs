@@ -19,17 +19,19 @@ namespace webCore.Services
             _userCollection = mongoDatabase.GetCollection<User>("Users");
         }
 
+        // Save Product
         public async Task SaveProductAsync(Product product)
         {
             await _productCollection.InsertOneAsync(product);
         }
 
+        // Save User
         public async Task SaveUserAsync(User user)
         {
             await _userCollection.InsertOneAsync(user);
         }
 
-        // Thêm phương thức lấy Account bằng Email (cho đăng nhập)
+        // Get Account by Email (for login)
         public async Task<User> GetAccountByEmailAsync(string email)
         {
             return await _userCollection.Find(a => a.Email == email).FirstOrDefaultAsync();
