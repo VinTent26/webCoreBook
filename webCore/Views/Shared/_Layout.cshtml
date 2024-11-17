@@ -15,7 +15,8 @@
           href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
           integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
           crossorigin="anonymous" />
-    <link rel="stylesheet" href="/css/home.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="/css/home.css" asp-append-version="true" />
+    <script src="/js/user_icon.js"></script>
 </head>
 <body>
     <!-- header -->
@@ -53,23 +54,34 @@
                             </a>
                         </div>
                         <!-- Icon User -->
-                        <div class="inner-user">
-                            <a href="#">
+                        <div class="inner-user" id="userIcon">
+                            <a href="#" class="user-dropdown-toggle">
                                 <i class="fa-regular fa-user"></i>
                             </a>
                         </div>
                     </div>
-                    <!-- Username (hiển thị dưới cả hai icon) -->
+
+                    <!-- Dropdown menu -->
+                    <div id="userDropdownMenu" class="user-dropdown hidden">
+                        <a href="/profile">Thông tin cá nhân</a>
+                        <a href="/logout">Đăng xuất</a>
+                    </div>
+                    <!-- Username -->
                     <div class="user-name">
-                        @{ var userName = HttpContextAccessor.HttpContext.Session.GetString("UserName");
-                                        if (!string.IsNullOrEmpty(userName))
-                                        {
-                            <span>@userName</span> <!-- Hiển thị tên người dùng --> }
-                                        else
-                                        {
-                            <a href="@Url.Action("SignIn", "User")">Đăng nhập</a> } }
+                        @{
+                            var userName = HttpContextAccessor.HttpContext.Session.GetString("UserName");
+                            if (!string.IsNullOrEmpty(userName))
+                            {
+                                <span>@userName</span> <!-- Hiển thị tên người dùng -->
+                            }
+                            else
+                            {
+                                <p>Đăng nhập</p>
+                            }
+                        }
                     </div>
                 </div>
+
 
             </div>
         </div>
