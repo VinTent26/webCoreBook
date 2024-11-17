@@ -1,150 +1,96 @@
 ﻿@model webCore.Models.User
 
 @{
-    Layout = null;
+    Layout = "_Layout"; // Sử dụng layout để kế thừa header
 }
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>user</title>
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-          integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-          crossorigin="anonymous"
-          referrerpolicy="no-referrer" />
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
-          integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
-          crossorigin="anonymous" />
+    <title>Thông tin cá nhân</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/user.css" />
-    <!-- Tham chiếu đến file CSS -->
 </head>
 <body>
-    <!-- header -->
-    <header>
-        <div class="container">
-            <div class="row">
-                <div class="col-3">
-                    <div class="inner-logo">
-                        <a href="#">
-                            <div class="inner-img">
-                                <img src="/image/logo2.png" alt="Logo" />
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="inner-search">
-                        <form class="d-flex" role="search">
-                            <input class="form-control"
-                                   type="search"
-                                   placeholder="Search"
-                                   aria-label="Search" />
-                            <button class="btn btn-outline-success" type="submit">
-                                Search
-                            </button>
-                        </form>
-                    </div>
-                </div>
-                <div class="col-3 d-flex justify-content-end">
-                    <div class="inner-cart">
-                        <a href="#">
-                            <i class="fa-solid fa-cart-shopping"></i>
-                        </a>
-                    </div>
-                    <div class="inner-user ml-3">
-                        <a href="/html/user.html">
-                            <i class="fa-regular fa-user"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-    <!-- end header -->
     <!-- Section One -->
-    <div class="section-one">
+    <div id="section-one" class="py-5">
         <div class="container">
             <div class="personal-info-section w-100">
                 <div class="inner-info">
                     <h5 class="mb-3">Thông tin cá nhân</h5>
                 </div>
+
+                <!-- Hiển thị thông báo thành công nếu có -->
+                @if (TempData["Message"] != null)
+                {
+                    <div class="alert alert-success">
+                        @TempData["Message"]
+                    </div>
+                }
+
                 <div class="row">
                     <div class="inner-img text-center col-md-3">
-                        <img src="@(Model?.ProfileImage ?? "https://via.placeholder.com/120")"
-                             alt="Profile"
-                             class="profile-img mb-2" />
+                        <!-- Hiển thị ảnh đại diện người dùng, sử dụng ảnh mặc định nếu không có -->
+                        <img src="@(Model?.ProfileImage ?? "https://via.placeholder.com/120")" alt="Profile" class="profile-img mb-2" />
                         <div>
                             <button class="btn btn-link">Chọn ảnh</button>
                         </div>
                     </div>
 
                     <div class="inner-input col-md-9">
+                        <!-- Form cập nhật thông tin người dùng -->
                         <form method="post" action="@Url.Action("UpdateProfile", "DetailUser")">
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label class="lb" for="fullName">Họ và tên</label>
-                                    <input type="text"
-                                           class="form-control"
-                                           id="fullName"
-                                           name="Name"
-                                           value="@(Model?.Name ?? "")"
-                                           placeholder="Nhập họ và tên" />
+                                    <label for="fullName">Họ và tên</label>
+                                    <input type="text" class="form-control" id="fullName" name="Name" value="@(Model?.Name ?? "")" placeholder="Nhập họ và tên" />
+                                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label class="lb" for="password">Mật khẩu</label>
-                                    <input type="password"
-                                           class="form-control"
-                                           id="password"
-                                           name="Password"
-                                           value="@(Model?.Password ?? "")"
-                                           placeholder="Nhập mật khẩu" />
+                                    <label for="password">Mật khẩu</label>
+                                    <input type="password" class="form-control" id="password" name="Password" value="@(Model?.Password ?? "")" placeholder="Nhập mật khẩu" />
+                                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label class="lb" for="email">Email</label>
-                                    <input type="email"
-                                           class="form-control"
-                                           id="email"
-                                           name="Email"
-                                           value="@(Model?.Email ?? "")"
-                                           placeholder="Nhập email" disabled />
+                                    <label for="email">Email</label>
+                                    <input type="email" class="form-control" id="email" name="Email" value="@(Model?.Email ?? "")" disabled />
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label class="lb" for="birthday">Ngày sinh</label>
+                                    <label for="birthday">Ngày sinh</label>
                                     <input type="date" class="form-control" id="birthday" name="Birthday" value="@(Model?.Birthday != null ? Model.Birthday.ToString("yyyy-MM-dd") : "")" />
+                                    @Html.ValidationMessageFor(model => model.Birthday, "", new { @class = "text-danger" })
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label class="lb" for="phone">Số điện thoại</label>
-                                    <input type="tel"
-                                           class="form-control"
-                                           id="phone"
-                                           name="Phone"
-                                           value="@(Model?.Phone ?? "")"
-                                           placeholder="Nhập số điện thoại" />
+                                    <label for="phone">Số điện thoại</label>
+                                    <input type="tel" class="form-control" id="phone" name="Phone" value="@(Model?.Phone ?? "")" placeholder="Nhập số điện thoại" />
+                                    @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label class="lb" for="gender">Giới tính</label>
+                                    <label for="gender">Giới tính</label>
                                     <div>
                                         <input type="radio" id="male" name="Gender" value="male" @(Model?.Gender == "male" ? "checked" : "") />
                                         <label for="male">Nam</label>
                                         <input type="radio" id="female" name="Gender" value="female" class="ml-3" @(Model?.Gender == "female" ? "checked" : "") />
                                         <label for="female">Nữ</label>
                                     </div>
+                                    @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="lb" for="address">Địa chỉ</label>
+                                <label for="address">Địa chỉ</label>
                                 <textarea class="form-control" id="address" name="Address" placeholder="Nhập địa chỉ" rows="3">@Model?.Address</textarea>
+                                @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
                             </div>
+
                             <button class="btn btn-primary btn-lg" type="submit">Cập nhật</button>
                         </form>
                     </div>
@@ -152,65 +98,8 @@
             </div>
         </div>
     </div>
-    <!-- End Section One -->
-    <!-- Footer -->
-    <footer class="text-white py-4">
-        <div class="container">
-            <div class="row">
-                <!-- Logo -->
-                <div class="col-md-3 mb-3">
-                    <div class="footer-logo">
-                        <a href="#" class="text-white text-decoration-none">TYB</a>
-                        <span class="title-second"> BOOK</span>
-                    </div>
-                </div>
 
-                <!-- Contact Information -->
-                <div class="col-md-2 mb-3 text-md-end text-center">
-                    <div class="contact-info">
-                        <p class="mb-0">Dịch vụ</p>
-                        <p class="mb-0">Điều khoản sử dụng</p>
-                        <p class="mb-0">Chính sách bảo mật</p>
-                    </div>
-                </div>
-                <div class="col-md-2 mb-3 text-md-end text-center">
-                    <div class="contact-info">
-                        <p class="mb-0">Hỗ trợ</p>
-                        <p class="mb-0">Chính sách hoàn trả tiền</p>
-                        <p class="mb-0">Chính sách vận chuyển</p>
-                    </div>
-                </div>
-                <div class="col-md-3 mb-3 text-md-end text-center">
-                    <div class="contact-info">
-                        <p class="mb-0">Liên hệ</p>
-                        <p class="mb-0">
-                            <i class="fa-solid fa-phone"></i>
-                            Hotline:0905-773-799
-                        </p>
-                        <p class="mb-0">
-                            <i class="fa-solid fa-envelope"></i>
-                            Email:tybbook@gmail.com
-                        </p>
-                    </div>
-                </div>
-                <div class="col-md-2 mb-3 text-center">
-                    <div class="social-icons">
-                        <a href="#" class="text-white me-3">
-                            <i class="fa-brands fa-facebook-f"></i>
-                        </a>
-                        <a href="#" class="text-white me-3">
-                            <i class="fa-brands fa-twitter"></i>
-                        </a>
-                        <a href="#" class="text-white me-3">
-                            <i class="fa-brands fa-instagram"></i>
-                        </a>
-                        <a href="#" class="text-white">
-                            <i class="fa-brands fa-linkedin-in"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

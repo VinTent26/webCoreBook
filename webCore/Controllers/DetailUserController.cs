@@ -2,6 +2,7 @@
 using webCore.Services;
 using webCore.Models;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace webCore.Controllers
 {
@@ -14,24 +15,41 @@ namespace webCore.Controllers
             _mongoDBService = mongoDBService;
         }
 
-        // Index action
-        public IActionResult Index()
+        // Action hiển thị thông tin người dùng
+        public async Task<IActionResult> Index()
         {
-            return View();  // Ensure this view exists (DetailUser/Index.cshtml)
-        }
+            // Lấy tên người dùng từ session
+            var userName = HttpContext.Session.GetString("UserName");
 
-        // Login or get user by email
-        public async Task<IActionResult> Login(string email, string password)
-        {
-            var user = await _mongoDBService.GetAccountByEmailAsync(email);
-
-            if (user != null && user.Password == password)
+            if (string.IsNullOrEmpty(userName))
             {
-                // Successfully authenticated user, pass user data to the view
-                return View("Index", user);  // Pass user data to the Index view
+                // Nếu không có tên người dùng trong session, chuyển hướng đến trang đăng nhập
+                return RedirectToAction("SignIn", "User");
             }
 
-            return View("LoginFailed");  // If authentication fails
+            // Lấy thông tin người dùng từ MongoDB theo tên
+            var user = await _mongoDBService.GetUserByNameAsync(userName);
+
+            if (user == null)
+            {
+                // Nếu không tìm thấy người dùng, hiển thị thông báo lỗi
+                TempData["Message"] = "Không tìm thấy thông tin người dùng.";
+                return View();
+            }
+
+            // Trả về view với thông tin người dùng
+            return View(user);
+        }
+
+        // Action cập nhật thông tin người dùng
+        [HttpPost]
+        public async Task<IActionResult> UpdateProfile(User user)
+        {
+            // Cập nhật thông tin người dùng trong MongoDB
+            await _mongoDBService.UpdateUserAsync(user);
+
+            // Sau khi cập nhật thành công, quay lại trang chi tiết
+            return RedirectToAction("Index", "DetailUser");
         }
     }
 }

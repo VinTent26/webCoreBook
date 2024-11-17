@@ -15,7 +15,7 @@
           href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
           integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
           crossorigin="anonymous" />
-    <link rel="stylesheet" href="/css/home.css" />
+    <link rel="stylesheet" href="/css/home.css" asp-append-version="true" />
 </head>
 <body>
     <!-- header -->
@@ -45,28 +45,34 @@
                     </div>
                 </div>
                 <div class="col-3">
-                    <div class="items-icon d-flex">
+                    <div class="items-icon" style="display: flex; align-items: center;">
+                        <!-- Icon Cart -->
                         <div class="inner-cart">
                             <a href="#">
                                 <i class="fa-solid fa-cart-shopping"></i>
                             </a>
                         </div>
-                        <div class="user-container" style="display: flex; align-items: center;">
+                        <!-- User Section -->
+                        <div class="user-container" style="display: flex; align-items: center; margin-left: 10px;">
                             <div class="inner-user">
                                 <a href="#">
                                     <i class="fa-regular fa-user"></i>
                                 </a>
                             </div>
-                            <div class="user-name">
+                            <div class="user-name" style="margin-left: 10px;">
                                 @{
                                     var userName = HttpContextAccessor.HttpContext.Session.GetString("UserName");
                                     if (!string.IsNullOrEmpty(userName))
                                     {
-                                                <a href="@Url.Action("Index", "DetailUser")"><span>@userName</span></a> <!-- Link to Detail User page -->
+                                        <a href="@Url.Action("Index", "DetailUser")">
+                                            <span>@userName</span>
+                                        </a> <!-- Link đến trang chi tiết người dùng -->
                                     }
                                     else
                                     {
-                                                <a href="@Url.Action("SignIn", "User")">Đăng nhập</a>
+                                        <a href="@Url.Action("SignIn", "User")">
+                                            Đăng nhập
+                                        </a> <!-- Link đến trang đăng nhập -->
                                     }
                                 }
                             </div>
@@ -77,13 +83,11 @@
         </div>
     </header>
     <!-- end header -->
-
     <!-- Section One -->
     <div id="section-one" class="py-5">
         @RenderBody()
     </div>
     <!-- end Section One -->
-
     <!-- Footer -->
     <footer class="text-white py-4">
         <div class="container">
@@ -115,11 +119,11 @@
                         <p class="mb-0">Liên hệ</p>
                         <p class="mb-0">
                             <i class="fa-solid fa-phone"></i>
-                            Hotline:0905-773-799
+                            Hotline: 0905-773-799
                         </p>
                         <p class="mb-0">
                             <i class="fa-solid fa-envelope"></i>
-                            Email:tybbook@gmail.com
+                            Email: tybbook@gmail.com
                         </p>
                     </div>
                 </div>

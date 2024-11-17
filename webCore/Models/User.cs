@@ -13,7 +13,7 @@ namespace webCore.Models
         [BsonRepresentation(BsonType.String)]  // Đảm bảo kiểu dữ liệu là String (UUID)
         public Guid Id { get; set; } = Guid.NewGuid();  // Khởi tạo giá trị UUID mới cho Id
 
-        public string Name { get; set; }= GenerateRandomString(10);
+        public string Name { get; set; } = GenerateRandomString(10);
 
         [Required(ErrorMessage = "Email là bắt buộc")]
         [EmailAddress(ErrorMessage = "Email không hợp lệ")]
@@ -36,6 +36,7 @@ namespace webCore.Models
         public string Gender { get; set; }
         public string Address { get; set; }
         public string ProfileImage { get; set; } = "default-image-url"; // Cung cấp giá trị mặc định cho ảnh đại diện.
+
         private static string GenerateRandomString(int length)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

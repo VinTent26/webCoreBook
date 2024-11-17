@@ -68,20 +68,24 @@ header .container .row {
     .inner-search button {
         height: 40px;
     }
-.inner-user {
-    display: flex;
-    align-items: center;
+
+/* Định dạng cho icon cart */
+.inner-cart i {
+    font-size: 1.5rem;
+    color: #000;
 }
 
-    .inner-user i {
-        margin-right: 5px; /* Khoảng cách giữa icon và tên người dùng */
-    }
+/* Định dạng cho icon user */
+.inner-user i {
+    font-size: 1.5rem;
+    color: #000;
+}
 /* Icon Container Styles */
 .items-icon {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100%;
 }
 
 .inner-cart,
@@ -99,20 +103,22 @@ header .container .row {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.inner-cart a,
-.inner-user a {
-  font-size: 1.5em;
-  color: #333;
-  transform: rotate(-45deg); 
-}
-.inner-cart:hover,
-.inner-user:hover {
-  background-color: #c5c6c6;
-}
-.inner-cart a:hover,
-.inner-user a:hover{
-  color: #28a745;
-} 
+    .inner-cart a,
+    .inner-user a {
+        font-size: 1.5em;
+        color: #333;
+        transform: rotate(-45deg);
+    }
+
+    .inner-cart:hover,
+    .inner-user:hover {
+        background-color: #c5c6c6;
+    }
+
+    .inner-cart a:hover,
+    .inner-user a:hover {
+        color: #28a745;
+    }
 /* ===== SECTION STYLES ===== */
 #section-one {
   padding: 40px 0;
@@ -239,28 +245,4 @@ header .container .row {
 footer p {
   font-size: 14px;
   color: #333;
-}
-/* CSS cho nhãn giảm giá */
-.discount-badge {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background-color: orange; /* Đổi màu thành màu cam */
-  color: white;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 0.8rem;
-  border-radius: 50%; /* Tạo hình tròn */
-  z-index: 1; /* Đảm bảo nhãn nằm trên cùng */
-}
-.card {
-  position: relative; /* Cần thiết để định vị nhãn giảm giá */
-}
-.card-img-top {
-  height: 200px;
-  object-fit: contain;
 }
