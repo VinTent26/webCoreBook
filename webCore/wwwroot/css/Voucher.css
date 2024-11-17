@@ -1,0 +1,134 @@
+﻿/* General Styles */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Title */
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Button Container */
+.button-container {
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+.add-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+    .add-btn:hover {
+        background-color: #218838;
+    }
+
+/* Table Styles */
+.voucher-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+    .voucher-table th, .voucher-table td {
+        border: 1px solid #dee2e6;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .voucher-table th {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .voucher-table tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .voucher-table tr:hover {
+        background-color: #e9ecef;
+    }
+
+/* Status Styles */
+.status-active {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.status-inactive {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+/* Actions Cell */
+.actions-cell {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #007bff;
+    font-size: 1.2em;
+    transition: color 0.3s;
+}
+
+    .icon-btn:hover {
+        color: #0056b3;
+    }
+
+/* Delete Button */
+.delete-btn {
+    color: #dc3545;
+}
+
+    .delete-btn:hover {
+        color: #c82333;
+    }
+
+/* Pagination Styles */
+.pagination {
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.page-item {
+    margin: 0 5px;
+}
+
+.page-link {
+    color: #007bff;
+    padding: 10px 15px;
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+    .page-link:hover {
+        background-color: #007bff;
+        color: white;
+    }
+
+.page-item.disabled .page-link {
+    color: #6c757d;
+    background-color: transparent;
+    border-color: #dee2e6;
+}
+
+.page-item.active .page-link {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}

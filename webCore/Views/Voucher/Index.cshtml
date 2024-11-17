@@ -1,0 +1,77 @@
+﻿@model List<webCore.Models.Voucher>
+@{
+    ViewData["Title"] = "Danh sách Voucher";
+    Layout = "Admin";
+}
+<link rel="stylesheet" href="/css/Voucher.css" />
+
+<div class="container">
+    <h1>Danh sách Voucher</h1>
+    <div class="button-container">
+        <a href="@Url.Action("Create", "Voucher")" class="add-btn">
+            <i class="fas fa-plus icon"></i> Thêm Voucher
+        </a>
+    </div>
+
+    <table class="voucher-table">
+        <thead>
+            <tr>
+                <th>Mã Voucher</th>
+                <th>Loại Giảm Giá</th>
+                <th>Giá Trị Giảm Giá</th>
+                <th>Ngày Bắt Đầu</th>
+                <th>Ngày Kết Thúc</th>
+                <th>Giới Hạn Sử Dụng</th>
+                <th>Đã Sử Dụng</th>
+                <th>Trạng Thái</th>
+                <th>Hành Động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var voucher in Model)
+            {
+                <tr>
+                    <td>@voucher.Code</td>
+                    <td>@(voucher.DiscountType == "Percentage" ? "Giảm theo %" : "Giảm cố định")</td>
+                    <td>@(voucher.DiscountType == "Percentage" ? $"{voucher.DiscountValue}%" : $"{voucher.DiscountValue} VND")</td>
+                    <td>@voucher.StartDate.ToString("dd/MM/yyyy")</td>
+                    <td>@voucher.EndDate.ToString("dd/MM/yyyy")</td>
+                    <td>@voucher.UsageLimit</td>
+                    <td>@voucher.UsageCount</td>
+                    <td class="@(voucher.IsActive ? "status-active" : "status-inactive")">@((voucher.IsActive && voucher.EndDate >= DateTime.Now) ? "Hoạt động" : "Hết hạn")</td>
+                    <td class="actions-cell">
+                        <a href="@Url.Action("Edit", "Voucher", new { id = voucher.Id })" class="icon-btn edit-btn" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form asp-action="Delete" method="post" style="display:inline;" asp-route-id="@voucher.Id">
+                            <button type="submit" class="icon-btn delete-btn" title="Delete" onclick="return confirm('Bạn có chắc chắn muốn xóa voucher này?');">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">Trước</a>
+            </li>
+            <li class="page-item active" aria-current="page">
+                <a class="page-link" href="#">1</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#">2</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#">3</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#">Tiếp theo</a>
+            </li>
+        </ul>
+    </nav>
+</div>

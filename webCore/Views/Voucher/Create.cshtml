@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewData["Title"] = "Create";
+    Layout = "Admin";
+}
+<link rel="stylesheet" href="/css/CreateVoucher.css" />
+@{
+    ViewData["Title"] = "Tạo Voucher";
+    Layout = "Admin";
+}
+<link rel="stylesheet" href="/css/create_account.css" />
+
+<div class="form-container">
+    <h2>Tạo Voucher Mới</h2>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            <ul>
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            </ul>
+        </div>
+    }
+
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <label for="code">Mã Voucher *</label>
+        <input type="text" id="code" name="Code" required />
+
+        <label for="discountType">Loại Giảm Giá *</label>
+        <select id="discountType" name="DiscountType" required>
+            <option value="Percentage">Giảm theo %</option>
+            <option value="FixedAmount">Giảm cố định</option>
+        </select>
+
+        <label for="discountValue">Giá Trị Giảm Giá *</label>
+        <input type="number" id="discountValue" name="DiscountValue" required />
+
+        <label for="startDate">Ngày Bắt Đầu *</label>
+        <input type="date" id="startDate" name="StartDate" required />
+
+        <label for="endDate">Ngày Kết Thúc *</label>
+        <input type="date" id="endDate" name="EndDate" required />
+
+        <label for="usageLimit">Giới Hạn Sử Dụng *</label>
+        <input type="number" id="usageLimit" name="UsageLimit" required />
+
+        <div class="status">
+            <label>Trạng Thái *</label>
+            <input type="radio" id="active" name="IsActive" value="true" checked />
+            <label for="active" class="active">Hoạt động</label>
+            <input type="radio" id="inactive" name="IsActive" value="false" />
+            <label for="inactive" class="inactive">Dừng hoạt động</label>
+        </div>
+
+        <button type="submit">Tạo Voucher</button>
+    </form>
+</div>
+
+
+
