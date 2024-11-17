@@ -46,7 +46,7 @@
                     </div>
                 </div>
                 <div class="col-3">
-                    <div class="items-icon" style="display: flex; align-items: center;">
+                    <div class="items-icon">
                         <!-- Icon Cart -->
                         <div class="inner-cart">
                             <a href="#">
@@ -63,8 +63,8 @@
 
                     <!-- Dropdown menu -->
                     <div id="userDropdownMenu" class="user-dropdown hidden">
-                        <a href="/profile">Thông tin cá nhân</a>
-                        <a href="/logout">Đăng xuất</a>
+                        <a href="@Url.Action("Index", "DetailUser")">Thông tin cá nhân</a>
+                        <a href="@Url.Action("Sign_in", "User")">Đăng xuất</a>
                     </div>
                     <!-- Username -->
                     <div class="user-name">
