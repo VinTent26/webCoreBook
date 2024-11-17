@@ -1,32 +1,41 @@
+.custom-bg {
+    background-color: #64A3C4;
+}
 /* Header */
+/* ===== HEADER STYLES ===== */
 header {
     background-color: #66C5FF;
+    padding: 15px 0;
 }
 
-header .row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+    header .container .row {
+        display: flex;
+        align-items: center;
+    }
 
+/* Logo Styles */
 .inner-logo a {
     display: flex;
     align-items: center;
-    justify-content: center;
+    text-decoration: none;
 }
 
 .inner-img img {
-    max-width: 100%;
+    width: 150px; /* Kích thước logo 150px */
     height: auto;
 }
 
 .inner-title {
-    display: flex;
-    margin-left: -65px;
+    margin-left: 10px;
 }
 
 .title-first, .title-second {
     font-size: 24px;
+    line-height: 1;
+}
+
+.title-first {
+    color: #fff;
 }
 
 .title-second {
@@ -34,31 +43,40 @@ header .row {
     color: #333;
 }
 
-.inner-search form {
+/* Search Form Styles */
+.inner-search {
     display: flex;
-    justify-content: center;
     align-items: center;
+    height: 100%;
 }
 
-.inner-search input {
-    width: 100%;
-    max-width: 500px;
-    height: 50px;
-}
+    .inner-search form {
+        display: flex;
+        width: 100%;
+    }
 
-.btn-outline-success {
-    border-color: #28a745;
-    padding: 12px 20px;
-    font-size: 16px;
-}
+    .inner-search input {
+        flex-grow: 1;
+        margin-right: 10px;
+        height: 40px;
+    }
 
+    .inner-search button {
+        height: 40px;
+    }
+
+/* Icon Container Styles */
 .items-icon {
-    margin-left: 130px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100%;
 }
 
-.inner-cart, .inner-user {
+.inner-cart,
+.inner-user {
     margin-right: 20px;
-    background-color: #F9F1F5;
+    background-color: #f9f1f5;
     width: 45px;
     height: 45px;
     display: flex;
@@ -70,177 +88,198 @@ header .row {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.inner-cart a, .inner-user a {
-    font-size: 1.5rem; /* Kích thước icon */
-    color: #333;
-    transform: rotate(-45deg); /* Màu mặc định */
-}
+    .inner-cart a,
+    .inner-user a {
+        font-size: 1.5em;
+        color: #333;
+        transform: rotate(-45deg);
+    }
 
-.inner-cart a:hover, .inner-user a:hover {
-    color: #28a745; /* Màu khi hover */
-}
+    .inner-cart:hover,
+    .inner-user:hover {
+        background-color: #c5c6c6;
+    }
+
+    .inner-cart a:hover,
+    .inner-user a:hover {
+        color: #28a745;
+    }
 /* CTA Button */
 .btn-primary {
     background-color: #28a745;
     border-color: #28a745;
     padding: 10px 20px;
     font-size: 16px;
-  }
-  
-  .btn-primary:hover {
-    background-color: #218838;
-    border-color: #1e7e34;
-  }
-  
-  /* Footer background */
-  footer  {
+}
+
+    .btn-primary:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+
+.btn1 {
+    margin-left: 20px;
+    border: 2px solid #000000;
+    border-radius: 5px;
+    padding: 10px 20px;
+    background-color: #fff;
+    color: #000000;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+    .btn1:hover {
+        background-color: #64A3C4;
+        color: #fff;
+    }
+
+.cbbox {
+    border: 2px solid #000000;
+    border-radius: 5px;
+}
+
+/* ===== FOOTER STYLES ===== */
+/* Footer background */
+footer {
     background-color: #66C5FF; /* Màu nền đen */
-  }
-  
-  /* Logo trong footer */
-  .footer-logo a {
+    margin-bottom: -90px;
+}
+
+/* Logo trong footer */
+.footer-logo a {
     font-size: 44px;
     font-weight: bold;
     color: #fff;
     text-decoration: none;
-  }
-  .footer-logo .title-second{
-    font-size: 44px;
-  }
-  /* Icon Mạng xã hội */
-  .social-icons a {
-    font-size: 35px;
-   
-  }
-  
-  .social-icons a:hover {
-    color: #28a745; /* Màu khi hover */
-  }
-  .contact-info p:nth-child(1){
-    font-weight: bold;
-    font-size: 20px;
-  }
-  /* Liên hệ */
-  .contact-info p {
-    margin: 0;
-    font-size: 14px;
-  }
-  
-  /* Dòng chữ bản quyền */
-  footer p {
-    font-size: 14px;
-    color: #333;
-  }
-  .list {
-    margin-top: 20px;
-    background-color: white;
-    padding: 3px;
-    margin-left: -140px;
-  }
-  .main{
-    margin-left: 45px;
-  }
-  .img1 .image1{
-    width: 181px;
-    height: 181px;
-    margin-left: auto;
-    margin-right: auto;
-    display: flex;
-  }
-  .img2 .image2{
-    width: 181px;
-    height: 181px;
-    margin-left: auto;
-    margin-right: auto;
-    display: flex;
-  }
-  .img3 .image3{
-    width: 184px;
-    height: 184px;
-    margin-left: auto;
-    margin-right: auto;
-    display: flex;
-  }
-  .img4 .image4{
-    width: 181px;
-    height: 181px;
-    margin-left: auto;
-    margin-right: auto;
-    display: flex;
-  }
-  .img5 .image5{
-    width: 181px;
-    height: 181px;
-    margin-left: auto;
-    margin-right: auto;
-    display: flex;
-  }
-  .img6 .image6{
-    width: 181px;
-    height: 181px;
-    margin-left: auto;
-    margin-right: auto;
-    display: flex;
-  }
-  .img7 .image7{
-    width: 181px;
-    height: 205px;
-    margin-left: auto;
-    margin-right: auto;
-    display: flex;
-  }
-  .img8 .image8{
-    width: 181px;
-    height: 181px;
-    margin-left: auto;
-    margin-right: auto;
-    display: flex;
-  }
-  .img9 .image9{
-    width: 181px;
-    height: 226px;
-    margin-left: auto;
-    margin-right: auto;
-    display: flex;
-  }
-  .custom-bg {
-    background-color: #64A3C4; 
-}
-.list-group-item {
-  position: relative;
-  padding-right: 20px;
-  cursor: pointer;
-}
-.arrow {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%) rotate(-90deg);
-  width: 0; 
-  height: 0; 
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 6px solid black; 
-  transition: transform 0.3s ease; 
 }
 
-.list-group-item.open .arrow {
-  transform: translateY(-50%) rotate(0.9deg); 
+.footer-logo .title-second {
+    font-size: 44px;
 }
-.btn1{
-  margin-left: 20px;
-  border: 2px solid #000000; 
-  border-radius: 5px; 
-  padding: 10px 20px; 
-  background-color: #fff; 
-  color: #000000; 
-  transition: background-color 0.3s, color 0.3s; 
+/* Icon Mạng xã hội */
+.social-icons a {
+    font-size: 35px;
 }
-.btn1:hover{
-    background-color: #64A3C4; 
-    color: #fff;
+
+    .social-icons a:hover {
+        color: #28a745; /* Màu khi hover */
+    }
+
+.contact-info p:nth-child(1) {
+    font-weight: bold;
+    font-size: 20px;
 }
-.cbbox{
-  border: 2px solid #000000;
-  border-radius: 5px; 
+/* Liên hệ */
+.contact-info p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* Dòng chữ bản quyền */
+footer p {
+    font-size: 14px;
+    color: #333;
+}
+
+/* Image*/
+.img {
+    width: 220px;
+    height: 220px;
+    object-fit: cover;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+}
+
+.image {
+    width: 200px;
+    height: 220px;
+    align-items: center;
+}
+
+/* Card Styles */
+.card {
+    margin-bottom: 20px;
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-title {
+    font-size: 14px;
+    height: 40px;
+    overflow: hidden;
+}
+
+.card-text {
+    font-weight: bold;
+    color: #28a745;
+}
+
+.old-price {
+    color: gray;
+    text-decoration: line-through;
+    margin-right: 10px;
+}
+
+.new-price {
+    color: #28a745;
+    font-weight: bold;
+}
+/*====*/
+/* List Styles */
+.list-group-item {
+    cursor: pointer;
+}
+
+.inner-title.list-group-item {
+    background-color: #64A3C4;
+    color: white;
+    font-weight: bold;
+    border: none;
+    margin: 0; /* Loại bỏ margin nếu có */
+    border-radius: 0;
+}
+
+.list-group-item a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.arrow::after {
+    content: '\25BC';
+    font-size: 12px;
+    transition: transform 0.3s ease;
+}
+
+.list-group-item.open .arrow::after {
+    transform: rotate(180deg);
+}
+/* CSS cho nhãn giảm giá */
+.discount-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: orange; /* Đổi màu thành màu cam */
+    color: white;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+    border-radius: 50%; /* Tạo hình tròn */
+    z-index: 1; /* Đảm bảo nhãn nằm trên cùng */
+}
+
+.card {
+    position: relative; /* Cần thiết để định vị nhãn giảm giá */
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: contain;
 }
