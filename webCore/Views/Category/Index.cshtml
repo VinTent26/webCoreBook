@@ -1,5 +1,5 @@
 ﻿@{
-    Layout = null;
+    Layout = "_Layout";
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -112,7 +112,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label class="lb" for="birthday">Ngày sinh</label>
-                                    <input type="text" class="form-control" id="birthday" value="@Model.Birthday.ToString("dd/MM/yyyy")" readonly />
+                                    <input type="text" class="form-control" id="birthday" value="@Model.Birthday.ToString("dd/MM/yyyy") ?? " N /A"" readonly />
                                 </div>
                             </div>
 
@@ -145,67 +145,65 @@
         </div>
     </div>
 
-        <!-- Footer -->
-        <footer class="text-white py-4">
-            <div class="container">
-                <div class="row">
-                    <!-- Logo -->
-                    <div class="col-md-3 mb-3">
-                        <div class="footer-logo">
-                            <a href="#" class="text-white text-decoration-none">TYB</a>
-                            <span class="title-second"> BOOK</span>
-                        </div>
+    <!-- Footer -->
+    <footer class="text-white py-4">
+        <div class="container">
+            <div class="row">
+                <!-- Logo -->
+                <div class="col-md-3 mb-3">
+                    <div class="footer-logo">
+                        <a href="#" class="text-white text-decoration-none">TYB</a>
+                        <span class="title-second"> BOOK</span>
                     </div>
-                    <!-- heloo -->
-                    <!-- Contact Information -->
-                    <div class="col-md-2 mb-3 text-md-end text-center">
-                        <div class="contact-info">
-                            <p class="mb-0">Dịch vụ</p>
-                            <p class="mb-0">Điều khoản sử dụng</p>
-                            <p class="mb-0">Chính sách bảo mật</p>
-                        </div>
+                </div>
+                <!-- Contact Information -->
+                <div class="col-md-2 mb-3 text-md-end text-center">
+                    <div class="contact-info">
+                        <p class="mb-0">Dịch vụ</p>
+                        <p class="mb-0">Điều khoản sử dụng</p>
+                        <p class="mb-0">Chính sách bảo mật</p>
                     </div>
-                    <div class="col-md-2 mb-3 text-md-end text-center">
-                        <div class="contact-info">
-                            <p class="mb-0">Hỗ trợ</p>
-                            <p class="mb-0">Chính sách hoàn trả tiền</p>
-                            <p class="mb-0">Chính sách vận chuyển</p>
-                        </div>
+                </div>
+                <div class="col-md-2 mb-3 text-md-end text-center">
+                    <div class="contact-info">
+                        <p class="mb-0">Hỗ trợ</p>
+                        <p class="mb-0">Chính sách hoàn trả tiền</p>
+                        <p class="mb-0">Chính sách vận chuyển</p>
                     </div>
-                    <div class="col-md-3 mb-3 text-md-end text-center">
-                        <div class="contact-info">
-                            <p class="mb-0">Liên hệ</p>
-                            <p class="mb-0">
-                                <i class="fa-solid fa-phone"></i>
-                                Hotline:0905-773-799
-                            </p>
-                            <p class="mb-0">
-                                <i class="fa-solid fa-envelope"></i>
-                                Email:tybbook@gmail.com
-                            </p>
-                        </div>
+                </div>
+                <div class="col-md-3 mb-3 text-md-end text-center">
+                    <div class="contact-info">
+                        <p class="mb-0">Liên hệ</p>
+                        <p class="mb-0">
+                            <i class="fa-solid fa-phone"></i>
+                            Hotline:0905-773-799
+                        </p>
+                        <p class="mb-0">
+                            <i class="fa-solid fa-envelope"></i>
+                            Email:tybbook@gmail.com
+                        </p>
                     </div>
-                    <div class="col-md-2 mb-3 text-center">
-                        <div class="social-icons">
-                            <a href="#" class="text-white me-3">
-                                <i class="fa-brands fa-facebook-f"></i>
-                            </a>
-                            <a href="#" class="text-white me-3">
-                                <i class="fa-brands fa-twitter"></i>
-                            </a>
-                            <a href="#" class="text-white me-3">
-                                <i class="fa-brands fa-instagram"></i>
-                            </a>
-                            <a href="#" class="text-white">
-                                <i class="fa-brands fa-linkedin-in"></i>
-                            </a>
-                        </div>
+                </div>
+                <div class="col-md-2 mb-3 text-center">
+                    <div class="social-icons">
+                        <a href="#" class="text-white me-3">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-white me-3">
+                            <i class="fa-brands fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-white me-3">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-white">
+                            <i class="fa-brands fa-linkedin-in"></i>
+                        </a>
                     </div>
                 </div>
             </div>
-        </footer>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-

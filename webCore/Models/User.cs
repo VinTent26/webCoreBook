@@ -35,7 +35,7 @@ namespace webCore.Models
         public string Phone { get; set; }
         public string Gender { get; set; }
         public string Address { get; set; }
-        public string ProfileImage { get; set; }
+        public string ProfileImage { get; set; } = "default-image-url"; // Cung cấp giá trị mặc định cho ảnh đại diện.
         private static string GenerateRandomString(int length)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

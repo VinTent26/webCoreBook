@@ -26,7 +26,7 @@
                     <div class="inner-logo">
                         <a href="#">
                             <div class="inner-img">
-                                <img src="/image/logo2.png" alt="" />
+                                <img src="/image/logo2.png" alt="Logo" />
                             </div>
                         </a>
                     </div>
@@ -58,27 +58,32 @@
                                 </a>
                             </div>
                             <div class="user-name">
-                                @{ var userName = HttpContextAccessor.HttpContext.Session.GetString("UserName");
-                                                if (!string.IsNullOrEmpty(userName))
-                                                {
-                                    <span>@userName</span> <!-- Hiển thị tên người dùng --> }
-                                                else
-                                                {
-                                    <a href="@Url.Action("SignIn", "User")">Đăng nhập</a> } }
+                                @{
+                                    var userName = HttpContextAccessor.HttpContext.Session.GetString("UserName");
+                                    if (!string.IsNullOrEmpty(userName))
+                                    {
+                                                <a href="@Url.Action("Index", "DetailUser")"><span>@userName</span></a> <!-- Link to Detail User page -->
+                                    }
+                                    else
+                                    {
+                                                <a href="@Url.Action("SignIn", "User")">Đăng nhập</a>
+                                    }
+                                }
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </header>
     <!-- end header -->
+
     <!-- Section One -->
     <div id="section-one" class="py-5">
-       @RenderBody()
+        @RenderBody()
     </div>
     <!-- end Section One -->
+
     <!-- Footer -->
     <footer class="text-white py-4">
         <div class="container">
@@ -90,7 +95,6 @@
                         <span class="title-second"> BOOK</span>
                     </div>
                 </div>
-                <!-- heloo -->
                 <!-- Contact Information -->
                 <div class="col-md-2 mb-3 text-md-end text-center">
                     <div class="contact-info">
