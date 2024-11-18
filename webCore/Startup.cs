@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using webCore.Controllers;
+using webCore.MongoHelper;
 using webCore.Services;
 
 namespace webCore
@@ -28,6 +29,7 @@ namespace webCore
             services.AddControllersWithViews();
             services.AddSingleton<CloudinaryService>();
             services.AddSingleton<MongoDBService>();
+            services.AddSingleton<ForgotPasswordService>();
             services.AddHttpContextAccessor();
 
             services.AddDistributedMemoryCache();

@@ -10,6 +10,8 @@ namespace webCore.Services
         private readonly IMongoCollection<Product> _productCollection;
         private readonly IMongoCollection<User> _userCollection;
 
+        public IMongoCollection<ForgotPassword> ForgotPasswords { get; internal set; }
+
         public MongoDBService(IConfiguration configuration)
         {
             var mongoClient = new MongoClient(configuration["MongoDB:ConnectionString"]);
@@ -17,6 +19,7 @@ namespace webCore.Services
 
             _productCollection = mongoDatabase.GetCollection<Product>("products");
             _userCollection = mongoDatabase.GetCollection<User>("Users");
+            ForgotPasswords = mongoDatabase.GetCollection<ForgotPassword>("ForgotPasswords");
         }
 
         public async Task SaveProductAsync(Product product)
