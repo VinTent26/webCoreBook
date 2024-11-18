@@ -31,11 +31,21 @@ namespace webCore.Services
         {
             await _userCollection.InsertOneAsync(user);
         }
+        // Save user
+        public async Task<bool> UpdatePasswordAsync(string email, string newPassword)
+        {
+            var filter = Builders<User>.Filter.Eq(u => u.Email, email);
+            var update = Builders<User>.Update.Set(u => u.Password, newPassword);
 
-        // Thêm phương thức lấy Account bằng Email (cho đăng nhập)
+            var result = await _userCollection.UpdateOneAsync(filter, update);
+
+            return result.ModifiedCount > 0;
+        }
+
+        // Get user by email
         public async Task<User> GetAccountByEmailAsync(string email)
         {
-            return await _userCollection.Find(a => a.Email == email).FirstOrDefaultAsync();
+            return await _userCollection.Find(u => u.Email == email).FirstOrDefaultAsync();
         }
     }
 }

@@ -1,68 +1,91 @@
 ﻿using MongoDB.Driver;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using webCore.Models;
+using MimeKit;
+using MailKit.Net.Smtp;
+using Microsoft.Extensions.Configuration;
 using webCore.Services;
 
 namespace webCore.MongoHelper
 {
-
     public class ForgotPasswordService
     {
         private readonly IMongoCollection<ForgotPassword> _forgotPasswords;
-        public ForgotPasswordService(MongoDBService mongoDBService)
+        private readonly IConfiguration _configuration;
+
+        public ForgotPasswordService(MongoDBService mongoDBService, IConfiguration configuration)
         {
             _forgotPasswords = mongoDBService.ForgotPasswords;
+            _configuration = configuration;
         }
+
+        // Tạo và gửi OTP
         public async Task<string> GenerateAndSendOTP(string email)
         {
-            // Tạo mã OTP ngẫu nhiên
             var otp = new Random().Next(100000, 999999).ToString();
-            var otpExpiry = DateTime.UtcNow.AddMinutes(5); // OTP hết hạn sau 5 phút
+            var otpExpiry = DateTime.UtcNow.AddMinutes(5);
+            var hashedOtp = BCrypt.Net.BCrypt.HashPassword(otp);
 
-            // Tạo hoặc cập nhật thông tin OTP trong DB
-            var forgotPassword = new ForgotPassword
-            {
-                Email = email,
-                OTP = otp,
-                OTPExpiry = otpExpiry
-            };
+            var updateDefinition = Builders<ForgotPassword>.Update
+                .Set(f => f.OTP, hashedOtp)
+                .Set(f => f.OTPExpiry, otpExpiry);
 
-            await _forgotPasswords.ReplaceOneAsync(
+            await _forgotPasswords.UpdateOneAsync(
                 f => f.Email == email,
-                forgotPassword,
-                new ReplaceOptions { IsUpsert = true } // Upsert nếu không tìm thấy email
+                updateDefinition,
+                new UpdateOptions { IsUpsert = true }
             );
 
-            // Gửi email chứa OTP
-            SendEmail(email, "OTP Code", $"Your OTP code is: {otp}");
-
-            return "OTP đã được gửi.";
+            try
+            {
+                SendEmail(email, "Mã OTP của bạn", $"Mã OTP của bạn là: {otp}");
+                return "OTP đã được gửi đến email của bạn.";
+            }
+            catch (Exception)
+            {
+                throw new Exception("Không thể gửi email. Vui lòng thử lại.");
+            }
         }
 
         // Xác minh OTP
         public async Task<bool> VerifyOTP(string email, string otp)
         {
             var forgotPassword = await _forgotPasswords
-                .Find(f => f.Email == email && f.OTP == otp)
+                .Find(f => f.Email == email)
                 .FirstOrDefaultAsync();
 
-            // Kiểm tra OTP có hợp lệ và chưa hết hạn
             if (forgotPassword == null || forgotPassword.OTPExpiry < DateTime.UtcNow)
                 return false;
 
-            // Xóa OTP sau khi xác minh thành công
-            await _forgotPasswords.DeleteOneAsync(f => f.Email == email);
+            if (!BCrypt.Net.BCrypt.Verify(otp, forgotPassword.OTP))
+                return false;
 
+            await _forgotPasswords.DeleteOneAsync(f => f.Email == email);
             return true;
         }
 
         private void SendEmail(string to, string subject, string body)
         {
-            // Tích hợp logic gửi email (SMTP hoặc thư viện như SendGrid)
-            Console.WriteLine($"Email sent to {to}: {subject} - {body}");
+            var emailSettings = _configuration.GetSection("EmailSettings");
+            var smtpServer = emailSettings["SMTPServer"];
+            var port = int.Parse(emailSettings["Port"]);
+            var senderEmail = emailSettings["SenderEmail"];
+            var senderPassword = emailSettings["SenderPassword"];
+
+            var emailMessage = new MimeMessage();
+            emailMessage.From.Add(new MailboxAddress("Your App", senderEmail));
+            emailMessage.To.Add(new MailboxAddress(to, to));
+            emailMessage.Subject = subject;
+            emailMessage.Body = new TextPart("plain") { Text = body };
+
+            using (var client = new SmtpClient())
+            {
+                client.Connect(smtpServer, port, MailKit.Security.SecureSocketOptions.StartTls);
+                client.Authenticate(senderEmail, senderPassword);
+                client.Send(emailMessage);
+                client.Disconnect(true);
+            }
         }
     }
 }

@@ -15,10 +15,7 @@
 }
 
 <form method="post" action="/api/forgotpassword/verify-otp">
-    <div>
-        <label>Email:</label>
-        <input type="email" name="email" required />
-    </div>
+    <input type="hidden" name="email" value="@ViewBag.Email" />
     <div>
         <label>OTP:</label>
         <input type="text" name="otp" required />

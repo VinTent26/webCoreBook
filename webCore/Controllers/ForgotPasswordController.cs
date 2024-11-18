@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using webCore.MongoHelper;
-using webCore.Models;
+using webCore.Services;
 
 namespace webCore.Controllers
 {
@@ -11,13 +11,15 @@ namespace webCore.Controllers
     public class ForgotPasswordController : Controller
     {
         private readonly ForgotPasswordService _forgotPasswordService;
+        private readonly MongoDBService _mongoDBService;
 
-        public ForgotPasswordController(ForgotPasswordService forgotPasswordService)
+        public ForgotPasswordController(ForgotPasswordService forgotPasswordService, MongoDBService mongoDBService)
         {
             _forgotPasswordService = forgotPasswordService;
+            _mongoDBService = mongoDBService;
         }
 
-        // Giao diện nhập email để gửi OTP
+        // Giao diện gửi OTP
         [HttpGet("send-otp-view")]
         public IActionResult SendOtpView()
         {
@@ -36,9 +38,17 @@ namespace webCore.Controllers
 
             try
             {
+                var user = await _mongoDBService.GetAccountByEmailAsync(email);
+                if (user == null)
+                {
+                    ViewBag.Error = "Email không tồn tại trong hệ thống.";
+                    return View("SendOtp");
+                }
+
+                // Gửi OTP tới email
                 await _forgotPasswordService.GenerateAndSendOTP(email);
                 ViewBag.Message = "OTP đã được gửi tới email của bạn.";
-                return View("VerifyOtp");
+                return RedirectToAction("VerifyOtpView", new { email = email });
             }
             catch (Exception ex)
             {
@@ -49,8 +59,15 @@ namespace webCore.Controllers
 
         // Giao diện xác minh OTP
         [HttpGet("verify-otp-view")]
-        public IActionResult VerifyOtpView()
+        public IActionResult VerifyOtpView([FromQuery] string email)
         {
+            if (string.IsNullOrEmpty(email))
+            {
+                ViewBag.Error = "Email không hợp lệ.";
+                return View("SendOtp");
+            }
+
+            ViewBag.Email = email; // Truyền email vào View
             return View("VerifyOtp");
         }
 
@@ -61,41 +78,84 @@ namespace webCore.Controllers
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(otp))
             {
                 ViewBag.Error = "Email và OTP không được để trống.";
+                ViewBag.Email = email; // Đảm bảo email được giữ lại
                 return View("VerifyOtp");
             }
 
-            var isVerified = await _forgotPasswordService.VerifyOTP(email, otp);
-            if (!isVerified)
+            try
             {
-                ViewBag.Error = "OTP không hợp lệ hoặc đã hết hạn.";
+                var isVerified = await _forgotPasswordService.VerifyOTP(email, otp);
+
+                if (!isVerified)
+                {
+                    ViewBag.Error = "OTP không hợp lệ hoặc đã hết hạn.";
+                    ViewBag.Email = email;
+                    return View("VerifyOtp");
+                }
+
+                TempData["Email"] = email; // Lưu email tạm thời
+                return RedirectToAction("ResetPasswordView");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = $"Có lỗi xảy ra: {ex.Message}";
+                ViewBag.Email = email;
                 return View("VerifyOtp");
             }
-
-            ViewBag.Message = "OTP xác thực thành công. Bạn có thể đặt lại mật khẩu.";
-            return View("ResetPassword");
         }
 
         // Giao diện đặt lại mật khẩu
         [HttpGet("reset-password-view")]
         public IActionResult ResetPasswordView()
         {
-            return View("ResetPassword");
+            if (TempData["Email"] != null)
+            {
+                ViewBag.Email = TempData["Email"].ToString();
+                return View("ResetPassword");
+            }
+
+            ViewBag.Error = "Không tìm thấy email hợp lệ.";
+            return RedirectToAction("SendOtpView");
         }
 
         // API đặt lại mật khẩu
         [HttpPost("reset-password")]
-        public IActionResult ResetPassword([FromForm] string email, [FromForm] string newPassword)
+        public async Task<IActionResult> ResetPassword([FromForm] string email, [FromForm] string newPassword, [FromForm] string confirmPassword)
         {
-            // Ở đây bạn cần tích hợp logic cập nhật mật khẩu vào cơ sở dữ liệu
-            // Tạm thời chỉ trả về thông báo thành công
-            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(newPassword))
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(newPassword) || newPassword != confirmPassword)
             {
-                ViewBag.Error = "Email và mật khẩu không được để trống.";
+                ViewBag.Error = "Email, mật khẩu và xác nhận mật khẩu không được để trống và mật khẩu phải khớp.";
+                ViewBag.Email = email; // Đảm bảo email được giữ lại
                 return View("ResetPassword");
             }
 
-            ViewBag.Message = "Mật khẩu của bạn đã được đặt lại thành công!";
-            return View("Success");
+            try
+            {
+                var user = await _mongoDBService.GetAccountByEmailAsync(email);
+                if (user == null)
+                {
+                    ViewBag.Error = "Không tìm thấy tài khoản với email này.";
+                    ViewBag.Email = email;
+                    return View("ResetPassword");
+                }
+
+                var isUpdated = await _mongoDBService.UpdatePasswordAsync(email, newPassword);
+                if (!isUpdated)
+                {
+                    ViewBag.Error = "Không thể cập nhật mật khẩu. Vui lòng thử lại.";
+                    ViewBag.Email = email;
+                    return View("ResetPassword");
+                }
+
+                ViewBag.Message = "Mật khẩu của bạn đã được đặt lại thành công!";
+                return View("Success");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = $"Lỗi: {ex.Message}";
+                ViewBag.Email = email;
+                return View("ResetPassword");
+            }
         }
     }
 }
