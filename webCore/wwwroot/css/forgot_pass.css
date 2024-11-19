@@ -1,0 +1,93 @@
+
+@media (max-width: 768px) {
+
+    /* Thêm kho?ng cách gi?a các c?t */
+    .text-center {
+        margin-bottom: 20px; /* T?o kho?ng cách gi?a các c?t khi xu?ng dòng */
+    }
+}
+
+body {
+    background-color: #66C5FF;
+    margin-top: 70px;
+    width: 100%;
+    height: 100%;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.row {
+    background-color: #ffffff;
+    align-items: center;
+    border-radius: 15px;
+    padding: 20px;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.logo {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 90px;
+    margin-left: 70px;
+}
+
+    .logo img {
+        border-radius: 75%;
+        background-color: #DBECF7;
+        width: 340px;
+        height: 400px;
+        max-width: 600px;
+    }
+
+button {
+    font-weight: bold;
+}
+
+div.btn_submit {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn-primary {
+    background-color: #4ab8f7;
+    border: none;
+}
+
+.btn-warning {
+    background-color: #fcd34d;
+    border: none;
+}
+
+.login-box {
+    border: 2px solid #e0dfdf;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 15px;
+    min-height: 400px;
+}
+
+
+
+.form-group {
+    margin-bottom: 20px; /* T?o kho?ng cách gi?a các nhóm form */
+}
+
+    .form-group label {
+        display: block;
+        margin-bottom: 10px; /* T?o kho?ng cách gi?a label và input */
+        font-weight: bold; /* ??m ch? c?a nhãn */
+    }
+
+.form-control {
+    padding: 10px; /* T?ng không gian bên trong ô nh?p */
+    border-radius: 5px; /* Bo tròn góc ô nh?p */
+}

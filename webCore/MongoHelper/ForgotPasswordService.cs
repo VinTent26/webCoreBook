@@ -74,7 +74,7 @@ namespace webCore.MongoHelper
             var senderPassword = emailSettings["SenderPassword"];
 
             var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("Your App", senderEmail));
+            emailMessage.From.Add(new MailboxAddress("TYB Book", senderEmail));
             emailMessage.To.Add(new MailboxAddress(to, to));
             emailMessage.Subject = subject;
             emailMessage.Body = new TextPart("plain") { Text = body };

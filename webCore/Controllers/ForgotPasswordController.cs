@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using webCore.Models;
 using webCore.MongoHelper;
 using webCore.Services;
 
@@ -148,7 +149,7 @@ namespace webCore.Controllers
                 }
 
                 ViewBag.Message = "Mật khẩu của bạn đã được đặt lại thành công!";
-                return View("Success");
+                return View("~/Views/Home/Index.cshtml");
             }
             catch (Exception ex)
             {
