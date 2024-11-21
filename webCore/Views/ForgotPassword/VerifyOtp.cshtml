@@ -30,6 +30,7 @@
             <div class="col-md-6 login-box">
                 <h2 class="text-center mb-4">Quên mật khẩu</h2>
                 <form method="post" action="/api/forgotpassword/verify-otp">
+                    <input type="hidden" id="email" name="email" value="@ViewBag.Email" />
                     <div class="form-group">
                         <label for="otpcode">Nhập mã OTP:</label>
                         <input type="text" class="form-control" id="otp" name="otp" required placeholder="Nhập mã OTP" />
