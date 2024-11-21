@@ -30,7 +30,7 @@ namespace webCore
             services.AddControllersWithViews();
             services.AddSingleton<CloudinaryService>();
             services.AddSingleton<MongoDBService>();
-            services.AddSingleton<ForgotPasswordService>();
+            services.AddScoped<ForgotPasswordService>();
             services.AddHttpContextAccessor();
 
             // Cấu hình session
