@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "Create";
     Layout = "Admin";
 }
@@ -21,18 +22,40 @@
     <form asp-action="Create" method="post" enctype="multipart/form-data">
         <label for="Title">Tên sản phẩm *</label>
         <input type="text" id="Title" name="Title" required />
+        <label for="Image">Ảnh</label>
+        <input type="file" id="Image" name="Image" accept="image/*" onchange="previewImage(event)" />
+        <div class="image-preview-container">
+            <img id="imagePreview" alt="Ảnh xem trước" />
+        </div>
 
         <label for="Description">Mô tả</label>
         <input type="text" id="Description" name="Description" />
 
-        <label for="CategoryTitle">Danh mục </label>
-        <select id="CategoryTitle" name="CategoryTitle" class="form-control">
+        <div class="status">
+            <label>Đặc trưng</label>
+            <input type="radio" id="featured" name="featured" value="0" checked />
+            <label for="featured" class="featured">Nổi bật</label>
+
+            <input type="radio" id="new" name="featured" value="1" />
+            <label for="new" class="new">Mới</label>
+
+            <input type="radio" id="suggest" name="featured" value="2" />
+            <label for="suggest" class="suggest">Gợi ý</label>
+
+            <input type="radio" id="no" name="featured" value="3" />
+            <label for="no" class="no">Không nổi bật</label>
+        </div>
+
+        <label for="CategoryId">Danh mục</label>
+        <select id="CategoryId" name="categoryId" class="form-control" required>
             <option value="">Không có</option> <!-- Tùy chọn không có danh mục cha -->
-            @foreach (var category in ViewBag.Categories as List<webCore.Models.Category_admin>)
+            @if (ViewBag.Categories != null)
             {
-                <option value="@category.Title">@category.Title</option>
+                foreach (var category in ViewBag.Categories as List<webCore.Models.Category_admin>)
+                {
+                    <option value="@category.Id">@category.Title</option>
+                }
             }
-                
         </select>
         <label for="Price">Giá</label>
         <input type="text" id="Price" name="Price" />
@@ -40,8 +63,9 @@
         <input type="text" id="DiscountPercentage" name="DiscountPercentage" />
         <label for="Stock">Số lượng</label>
         <input type="text" id="Stock" name="Stock" />
-        <label for="Image">Hình ảnh</label>
-        <input type="text" id="Image" name="Image" />
+        
+
+        
         <div class="status">
             <label>Trạng thái</label>
             <input type="radio" id="active" name="Status" value="Hoạt động" checked />

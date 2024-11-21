@@ -25,6 +25,8 @@ namespace webCore.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var adminName = HttpContext.Session.GetString("AdminName");
+            ViewBag.AdminName = adminName;
             var categoryName = HttpContext.Session.GetString("CategoryName");
             ViewBag.CategoryName = categoryName;
 
@@ -53,15 +55,19 @@ namespace webCore.Controllers
 
         public IActionResult Create()
         {
+            var adminName = HttpContext.Session.GetString("AdminName");
+            ViewBag.AdminName = adminName;
             var categoryName = HttpContext.Session.GetString("CategoryName");
             ViewBag.CategoryName = categoryName;
             ViewBag.Categories = _mongoDBService.GetCategory().Result;
+            var hierarchicalCategories = GetHierarchicalCategories(ViewBag.Categories);
+            ViewBag.Categories = hierarchicalCategories;
             return View();
         }
-
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Category_admin category, IFormFile Avatar, string parentId)
+        public async Task<IActionResult> Create(Category_admin category, string parentId)
         {
             if (ModelState.IsValid)
             {
@@ -112,6 +118,8 @@ namespace webCore.Controllers
 
         public async Task<IActionResult> Update(string id)
         {
+            var adminName = HttpContext.Session.GetString("AdminName");
+            ViewBag.AdminName = adminName;
             var category = await _mongoDBService.GetCategoryByIdAsync(id);
             if (category == null)
             {
@@ -121,6 +129,8 @@ namespace webCore.Controllers
             var categoryName = HttpContext.Session.GetString("CategoryName");
             ViewBag.CategoryName = categoryName;
             ViewBag.Categories = await _mongoDBService.GetCategory();
+            var hierarchicalCategories = GetHierarchicalCategories(ViewBag.Categories);
+            ViewBag.Categories = hierarchicalCategories;
             return View(category);
         }
 
@@ -205,5 +215,21 @@ namespace webCore.Controllers
             return RedirectToAction(nameof(Index)); // Redirect to the category list after processing
         }
 
+        //phân cấp bậc
+        private List<Category_admin> GetHierarchicalCategories(List<Category_admin> categories, string parentId = null, int level = 0)
+        {
+            var result = new List<Category_admin>();
+
+            foreach (var category in categories.Where(c => c.ParentId == parentId))
+            {
+                // Thêm dấu gạch ngang để thể hiện cấp bậc
+                category.Title = new string('-', level * 2) + " " + category.Title;
+                result.Add(category);
+                // Đệ quy để lấy danh mục con
+                result.AddRange(GetHierarchicalCategories(categories, category.Id, level + 1));
+            }
+
+            return result;
+        }
     }
 }

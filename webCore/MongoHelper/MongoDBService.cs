@@ -13,7 +13,7 @@ namespace webCore.Services
         private readonly IMongoCollection<User> _userCollection;
         private readonly IMongoCollection<Account_admin> _AccountCollection;
         private readonly IMongoCollection<Category_admin> _CategoryCollection;
-        private readonly IMongoCollection<Book_admin> _BookCollection;
+        private readonly IMongoCollection<Product_admin> _ProductCollection;
 
         public MongoDBService(IConfiguration configuration)
         {
@@ -23,7 +23,7 @@ namespace webCore.Services
             _userCollection = mongoDatabase.GetCollection<User>("Users");
             _AccountCollection = mongoDatabase.GetCollection<Account_admin>("Accounts");
             _CategoryCollection = mongoDatabase.GetCollection<Category_admin>("Category");
-            _BookCollection = mongoDatabase.GetCollection<Book_admin>("Book");
+            _ProductCollection = mongoDatabase.GetCollection<Product_admin>("Product");
         }
         public async Task<List<Account_admin>> GetAccounts() 
         {
@@ -66,14 +66,28 @@ namespace webCore.Services
             var filter = Builders<Category_admin>.Filter.Eq(c => c.Id, id);
             await _CategoryCollection.DeleteOneAsync(filter);
         }
-        //Book
-        public async Task<List<Book_admin>> GetBook()
+        //Product
+        public async Task<List<Product_admin>> GetProduct()
         {
-            return await _BookCollection.Find(_ => true).ToListAsync();
+            return await _ProductCollection.Find(_ => true).ToListAsync();
         }
-        internal async Task SaveBookAsync(Book_admin book)
+        internal async Task SaveProductAsync(Product_admin book)
         {
-            await _BookCollection.InsertOneAsync(book);
+            await _ProductCollection.InsertOneAsync(book);
+        }
+        public async Task<Product_admin> GetProductByIdAsync(string id)
+        {
+            return await _ProductCollection.Find(c => c.Id == id).FirstOrDefaultAsync();
+        }
+        public async Task UpdateProductAsync(Product_admin product)
+        {
+            var filter = Builders<Product_admin>.Filter.Eq(c => c.Id, product.Id);
+            await _ProductCollection.ReplaceOneAsync(filter, product);
+        }
+        public async Task DeleteProductAsync(string id)
+        {
+            var filter = Builders<Product_admin>.Filter.Eq(c => c.Id, id);
+            await _ProductCollection.DeleteOneAsync(filter);
         }
     }
 }
