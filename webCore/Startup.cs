@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using webCore.Controllers;
 using webCore.MongoHelper;
 using webCore.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace webCore
 {
@@ -32,6 +33,7 @@ namespace webCore
             services.AddSingleton<ForgotPasswordService>();
             services.AddHttpContextAccessor();
 
+            // Cấu hình session
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
@@ -40,6 +42,9 @@ namespace webCore
                 options.IdleTimeout = TimeSpan.FromMinutes(30);  // Thời gian hết hạn session
                 options.Cookie.IsEssential = true;  // Cookie bắt buộc
             });
+
+            // Cấu hình các dịch vụ liên quan đến tài khoản người dùng và dữ liệu của ứng dụng
+            services.AddScoped<MongoDBService>();  // Thêm MongoDB service cho dự án
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,22 +58,29 @@ namespace webCore
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            
+
             app.UseRouting();
 
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
+                // Route mặc định
                 endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                 name: "default",
+                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                // Route riêng cho DetailController
+                endpoints.MapControllerRoute(
+                    name: "detailUser", // Tên route tùy chỉnh
+                    pattern: "DetailUser/{action=Index}/{id?}"); // Truy cập DetailController qua /DetailUser
             });
         }
     }
 }
+

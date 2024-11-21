@@ -1,61 +1,69 @@
 /* ===== HEADER STYLES ===== */
 header {
-    background-color: #66C5FF;
-    padding: 15px 0;
+  background-color: #66C5FF;
+  padding: 15px 0;
 }
 
-    header .container .row {
-        display: flex;
-        align-items: center;
-    }
+header .container .row {
+  display: flex;
+  align-items: center;
+}
 
 /* Logo Styles */
 .inner-logo a {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
 }
 
 .inner-img img {
-    width: 150px; /* Kích thước logo 150px */
-    height: auto;
+  width: 150px; /* Kích thước logo 150px */
+  height: auto;
 }
 
 .inner-title {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 
 .title-first, .title-second {
-    font-size: 24px;
-    line-height: 1;
+  font-size: 24px;
+  line-height: 1;
 }
 
 .title-first {
-    color: #fff;
+  color: #fff;
 }
 
 .title-second {
-    font-weight: bold;
-    color: #333;
+  font-weight: bold;
+  color: #333;
 }
-
+.old-price {
+  color: gray;
+  text-decoration: line-through;
+  margin-right: 10px;
+}
+.new-price {
+  color: #28a745;
+  font-weight: bold;
+}
 /* Search Form Styles */
 .inner-search {
-    display: flex;
-    align-items: center;
-    height: 100%;
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
 
-    .inner-search form {
-        display: flex;
-        width: 100%;
-    }
+.inner-search form {
+  display: flex;
+  width: 100%;
+}
 
-    .inner-search input {
-        flex-grow: 1;
-        margin-right: 10px;
-        height: 40px;
-    }
+.inner-search input {
+  flex-grow: 1;
+  margin-right: 10px;
+  height: 40px;
+}
 
     .inner-search button {
         height: 40px;
@@ -79,22 +87,22 @@ header {
     align-items: center;
     height: 100%;
     gap: 20px;
-    margin-top:30px;
+    margin-top: 30px;
 }
 
 .inner-cart,
 .inner-user {
-    margin-right: 20px;
-    background-color: #f9f1f5;
-    width: 45px;
-    height: 45px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-    transform: rotate(45deg);
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  margin-right: 20px;
+  background-color: #f9f1f5;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  transform: rotate(45deg);
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
     .inner-cart a,
@@ -122,138 +130,158 @@ header {
     color: #000;
     margin-right: 55px;
 }
+/* Dropdown Styles */
+.user-dropdown {
+    position: absolute;
+    right: 20px; /* Đặt vị trí bên phải phù hợp */
+    top: 80px; /* Đặt vị trí bên dưới icon user */
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+ 
+    z-index: 1000;
+    min-width: 150px;
+}
+
+    .user-dropdown a {
+        display: block;
+        padding: 10px 20px;
+        text-decoration: none;
+        color: #333;
+    }
+
+        .user-dropdown a:hover {
+            background-color: #f0f0f0;
+        }
+
+.hidden {
+    display: none !important;
+}
 /* ===== SECTION STYLES ===== */
 #section-one {
-    padding: 40px 0;
+  padding: 40px 0;
 }
 
 /* List Styles */
 .list-group-item {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .inner-title.list-group-item {
-    background-color: #64A3C4;
-    color: white;
-    font-weight: bold;
-    border: none;
-    margin: 0; /* Loại bỏ margin nếu có */
-    border-radius: 0;
+  background-color: #64A3C4;
+  color: white;
+  font-weight: bold;
+  border: none;
+  margin: 0;  /* Loại bỏ margin nếu có */
+  border-radius: 0;
 }
 
 .list-group-item a {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .arrow::after {
-    content: '\25BC';
-    font-size: 12px;
-    transition: transform 0.3s ease;
+  content: '\25BC';
+  font-size: 12px;
+  transition: transform 0.3s ease;
 }
 
 .list-group-item.open .arrow::after {
-    transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 
 /* Carousel Styles */
 .carousel-item img {
-    width: 100%;
-    height: auto;
+  width: 100%;
+  height: auto;
 }
 
 .carousel-caption {
-    bottom: 20px;
+  bottom: 20px;
 }
 
 .btn1, .btn2, .btn3 {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    font-weight: bold;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
 }
 
-.btn1 {
-    background-color: #64A3C4;
+.btn1 { 
+  background-color: #64A3C4; 
+  margin-left: 100px;
 }
-
-.btn2 {
-    background-color: #A0BFB9;
+.btn2 { 
+  background-color: #A0BFB9; 
+   margin-left: 100px;
 }
-
-.btn3 {
-    background-color: #AC5E68;
+.btn3 { 
+  background-color: #AC5E68; 
+  margin-left: 100px;
 }
 
 /* Card Styles */
 .card {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .card-img-top {
-    height: 200px;
-    object-fit: cover;
+  height: 200px;
+  object-fit: cover;
 }
 
 .card-title {
-    font-size: 14px;
-    height: 40px;
-    overflow: hidden;
+  font-size: 14px;
+  height: 40px;
+  overflow: hidden;
 }
 
 .card-text {
-    font-weight: bold;
-    color: #28a745;
+  font-weight: bold;
+  color: #28a745;
 }
 
 /* ===== FOOTER STYLES ===== */
-/* Footer background */
-footer {
-    background-color: #66C5FF; /* Màu nền đen */
+ /* Footer background */
+ footer  {
+  background-color: #66C5FF; /* Màu nền đen */
 }
 
 /* Logo trong footer */
 .footer-logo a {
-    font-size: 44px;
-    font-weight: bold;
-    color: #fff;
-    text-decoration: none;
+  font-size: 44px;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
 }
-
-.footer-logo .title-second {
-    font-size: 44px;
+.footer-logo .title-second{
+  font-size: 44px;
 }
 /* Icon Mạng xã hội */
 .social-icons a {
-    font-size: 35px;
+  font-size: 35px;
+ 
 }
 
-    .social-icons a:hover {
-        color: #28a745; /* Màu khi hover */
-    }
-
-.contact-info p:nth-child(1) {
-    font-weight: bold;
-    font-size: 20px;
+.social-icons a:hover {
+  color: #28a745; /* Màu khi hover */
+}
+.contact-info p:nth-child(1){
+  font-weight: bold;
+  font-size: 20px;
 }
 /* Liên hệ */
 .contact-info p {
-    margin: 0;
-    font-size: 14px;
+  margin: 0;
+  font-size: 14px;
 }
 
 /* Dòng chữ bản quyền */
 footer p {
-    font-size: 14px;
-    color: #333;
+  font-size: 14px;
+  color: #333;
 }
-
-
-
-
-
-
-
-
