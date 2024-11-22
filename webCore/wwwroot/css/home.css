@@ -285,3 +285,44 @@ footer p {
   font-size: 14px;
   color: #333;
 }
+/* CSS cho nhãn giảm giá */
+.discount-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: orange; /* Đổi màu thành màu cam */
+    color: white;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+    border-radius: 50%; /* Tạo hình tròn */
+    z-index: 1; /* Đảm bảo nhãn nằm trên cùng */
+}
+
+.card {
+    position: relative; /* Cần thiết để định vị nhãn giảm giá */
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: contain;
+}
+.arrow {
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+    .arrow.open {
+        transform: rotate(90deg);
+        transition: transform 0.3s;
+    }
+
+.subcategories {
+    margin-top: 10px;
+    list-style-type: none;
+    padding-left: 20px;
+}

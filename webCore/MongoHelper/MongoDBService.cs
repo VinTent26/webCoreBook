@@ -1,8 +1,9 @@
 ﻿using MongoDB.Driver;
 using webCore.Models;
 using Microsoft.Extensions.Configuration;
-using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace webCore.Services
 {
@@ -10,6 +11,7 @@ namespace webCore.Services
     {
         private readonly IMongoCollection<Product> _productCollection;
         private readonly IMongoCollection<User> _userCollection;
+        private readonly IMongoCollection<Category> _categoryCollection;
 
         public MongoDBService(IConfiguration configuration)
         {
@@ -18,12 +20,19 @@ namespace webCore.Services
 
             _productCollection = mongoDatabase.GetCollection<Product>("products");
             _userCollection = mongoDatabase.GetCollection<User>("Users");
+            _categoryCollection = mongoDatabase.GetCollection<Category>("Category");
         }
 
         // Lưu sản phẩm
         public async Task SaveProductAsync(Product product)
         {
             await _productCollection.InsertOneAsync(product);
+        }
+
+        // Lấy danh sách sản phẩm
+        public async Task<List<Product>> GetProductsAsync()
+        {
+            return await _productCollection.Find(product => true).ToListAsync();
         }
 
         // Lưu người dùng
@@ -35,21 +44,18 @@ namespace webCore.Services
         // Lấy thông tin người dùng theo email (Bất đồng bộ)
         public async Task<User> GetAccountByEmailAsync(string email)
         {
-            // Tạo filter tìm kiếm theo email
             var filter = Builders<User>.Filter.Eq(user => user.Email, email);
-
-            // Tìm người dùng theo email
             var user = await _userCollection.Find(filter).FirstOrDefaultAsync();
-
-            return user; // Trả về người dùng tìm được (hoặc null nếu không tìm thấy)
+            return user;
         }
-        // Phương thức lấy người dùng theo tên
+
+        // Lấy người dùng theo tên
         public async Task<User> GetUserByNameAsync(string userName)
         {
             return await _userCollection.Find(user => user.Name == userName).FirstOrDefaultAsync();
         }
 
-        // Cập nhật thông tin người dùng (Bất đồng bộ)
+        // Cập nhật thông tin người dùng
         public async Task UpdateUserAsync(User user)
         {
             var filter = Builders<User>.Filter.Eq(u => u.Email, user.Email);
@@ -61,7 +67,36 @@ namespace webCore.Services
                 .Set(u => u.Gender, user.Gender)
                 .Set(u => u.Address, user.Address);
 
-            await _userCollection.UpdateOneAsync(filter, update); // Dùng bất đồng bộ
+            await _userCollection.UpdateOneAsync(filter, update);
+        }
+
+        // Xóa người dùng (thay đổi trạng thái thay vì xóa cứng)
+        public async Task DeleteUserAsync(string email)
+        {
+            var filter = Builders<User>.Filter.Eq(u => u.Email, email);
+            var update = Builders<User>.Update.Set(u => u.Deleted, true);
+
+            await _userCollection.UpdateOneAsync(filter, update);
+        }
+        // Lấy danh mục gốc (không có ParentId)
+        public async Task<List<Category>> GetRootCategoriesAsync()
+        {
+            var filter = Builders<Category>.Filter.Eq(c => c.Deleted, false)
+                         & Builders<Category>.Filter.Eq(c => c.ParentId, null);
+            return await _categoryCollection.Find(filter).ToListAsync();
+        }
+
+        // Lấy danh mục con theo ParentId
+        public async Task<List<Category>> GetSubCategoriesByParentIdAsync(string parentId)
+        {
+            var filter = Builders<Category>.Filter.Eq(c => c.Deleted, false)
+                         & Builders<Category>.Filter.Eq(c => c.ParentId, parentId);
+            return await _categoryCollection.Find(filter).ToListAsync();
+        }
+        public async Task<List<Category>> GetCategoriesAsync()
+        {
+            var filter = Builders<Category>.Filter.Eq(c => c.Deleted, false);
+            return await _categoryCollection.Find(filter).ToListAsync();
         }
     }
 }

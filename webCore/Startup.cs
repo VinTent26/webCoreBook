@@ -22,17 +22,23 @@ namespace webCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Thêm các dịch vụ cần thiết cho ứng dụng
             services.AddControllersWithViews();
-            services.AddSingleton<CloudinaryService>();  // Dịch vụ Cloudinary cho việc upload ảnh
-            services.AddSingleton<MongoDBService>();     // Dịch vụ MongoDB để làm việc với cơ sở dữ liệu
-            services.AddHttpContextAccessor();          // Truy cập thông tin từ HttpContext
+
+            // Dịch vụ Cloudinary cho việc upload ảnh
+            services.AddSingleton<CloudinaryService>();
+
+            // Dịch vụ MongoDB để làm việc với cơ sở dữ liệu
+            services.AddSingleton<MongoDBService>();
+
+            // Truy cập thông tin từ HttpContext
+            services.AddHttpContextAccessor();
 
             // Cấu hình session
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
-                // Nếu không chỉ định, tên cookie mặc định sẽ là .AspNetCore.Session
-                options.Cookie.Name = ".AspBookCore.Session";
+                options.Cookie.Name = ".AspBookCore.Session";  // Tên cookie session
                 options.IdleTimeout = TimeSpan.FromMinutes(30);  // Thời gian hết hạn session
                 options.Cookie.IsEssential = true;  // Cookie bắt buộc
             });
@@ -44,7 +50,10 @@ namespace webCore
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // Cấu hình session
             app.UseSession();
+
+            // Cấu hình các trang lỗi và môi trường phát triển
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -55,13 +64,17 @@ namespace webCore
                 app.UseHsts();
             }
 
+            // Chuyển hướng và sử dụng các file tĩnh
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            // Cấu hình routing
             app.UseRouting();
 
+            // Cấu hình ủy quyền
             app.UseAuthorization();
 
+            // Định nghĩa các endpoint cho ứng dụng
             app.UseEndpoints(endpoints =>
             {
                 // Route mặc định
@@ -77,4 +90,3 @@ namespace webCore
         }
     }
 }
-
