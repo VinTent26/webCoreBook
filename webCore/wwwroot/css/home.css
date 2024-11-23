@@ -42,11 +42,23 @@ header .container .row {
   color: gray;
   text-decoration: line-through;
   margin-right: 10px;
+  font-size: 14px; /* Kích thước font cho dễ nhìn */
 }
 .new-price {
   color: #28a745;
   font-weight: bold;
+  font-size: 16px; /* Tăng kích thước font cho nổi bật */
 }
+.discount-percentage {
+  background-color: #ff5722; /* Màu nền cho % giảm giá */
+  color: #fff;
+  border-radius: 50%;
+  display: inline-block;
+  padding: 3px 6px;
+  font-size: 0.8rem;
+  margin-left: 10px; /* Khoảng cách giữa % giảm giá và giá mới */
+}
+
 /* Search Form Styles */
 .inner-search {
   display: flex;
@@ -227,6 +239,7 @@ header .container .row {
 /* Card Styles */
 .card {
   margin-bottom: 20px;
+  position: relative; /* Cần thiết để định vị nhãn giảm giá */
 }
 
 .card-img-top {
@@ -245,43 +258,129 @@ header .container .row {
   color: #28a745;
 }
 
+/* Các kiểu cho phần giảm giá */
+.discount-badge {
+    background-color: #ff5722; /* Màu nền cho badge giảm giá */
+    color: white;
+    padding: 3px 6px;
+    font-size: 14px;
+    border-radius: 3px;
+}
+
+.old-price {
+    color: gray;
+    text-decoration: line-through;
+    font-size: 14px;
+}
+
+.new-price {
+    color: #28a745;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.card {
+    position: relative; /* Cần thiết để định vị nhãn giảm giá */
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: contain;
+}
+
+.arrow {
+    display: inline-block;
+    transition: transform 0.3s ease;
+    transform: rotate(-90deg); /* Mặc định chỉ sang trái */
+}
+
+    .arrow.open {
+        transform: rotate(-1deg); /* Xoay xuống khi mở */
+    }
+
+.subcategories {
+    margin-top: 10px;
+    list-style-type: none;
+    padding-left: 20px;
+}
 /* ===== FOOTER STYLES ===== */
- /* Footer background */
- footer  {
-  background-color: #66C5FF; /* Màu nền đen */
+/* Footer background */
+footer {
+    background-color: #66C5FF; /* Màu nền đen */
 }
 
 /* Logo trong footer */
 .footer-logo a {
-  font-size: 44px;
-  font-weight: bold;
-  color: #fff;
-  text-decoration: none;
+    font-size: 44px;
+    font-weight: bold;
+    color: #fff;
+    text-decoration: none;
 }
-.footer-logo .title-second{
-  font-size: 44px;
+
+.footer-logo .title-second {
+    font-size: 44px;
 }
 /* Icon Mạng xã hội */
 .social-icons a {
-  font-size: 35px;
- 
+    font-size: 35px;
 }
 
-.social-icons a:hover {
-  color: #28a745; /* Màu khi hover */
-}
-.contact-info p:nth-child(1){
-  font-weight: bold;
-  font-size: 20px;
+    .social-icons a:hover {
+        color: #28a745; /* Màu khi hover */
+    }
+
+.contact-info p:nth-child(1) {
+    font-weight: bold;
+    font-size: 20px;
 }
 /* Liên hệ */
 .contact-info p {
-  margin: 0;
-  font-size: 14px;
+    margin: 0;
+    font-size: 14px;
 }
 
 /* Dòng chữ bản quyền */
 footer p {
-  font-size: 14px;
-  color: #333;
+    font-size: 14px;
+    color: #333;
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: contain;
+}
+
+.arrow {
+    display: inline-block;
+    transition: transform 0.3s ease;
+    transform: rotate(-90deg); /* Mặc định chỉ sang trái */
+}
+
+    .arrow.open {
+        transform: rotate(-1deg); /* Xoay xuống khi mở */
+    }
+
+.subcategories {
+    margin-top: 10px;
+    list-style-type: none;
+    padding-left: 20px;
+}
+.btn5 {
+    margin-left: 20px;
+    border: 2px solid #000000;
+    border-radius: 5px;
+    padding: 10px 20px;
+    background-color: #fff;
+    color: #000000;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+    .btn5:hover {
+        background-color: #64A3C4;
+        color: #fff;
+    }
+
+.cbbox {
+    border: 2px solid #000000;
+    border-radius: 5px;
 }

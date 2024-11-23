@@ -1,39 +1,35 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Diagnostics;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using webCore.Models;
+using webCore.Services;
 
 namespace webCore.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly MongoDBService _mongoDBService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, MongoDBService mongoDBService)
         {
             _logger = logger;
+            _mongoDBService = mongoDBService;
         }
 
-        // Thực hiện hiển thị trang chủ (Index)
-        [HttpGet]
-        public IActionResult Index()
+        // Action Index, trả về trang chủ và lấy dữ liệu từ MongoDB
+        public async Task<IActionResult> Index()
         {
-            // Trả về view của trang chủ
-            return View();
-        }
+            // Lấy danh sách danh mục từ MongoDB
+            var categories = await _mongoDBService.GetCategoriesAsync();
+            ViewBag.Categories = categories;
 
-        // Thực hiện trả về view Privacy
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+            // Lấy danh sách sản phẩm từ MongoDB
+            var products = await _mongoDBService.GetProductsAsync();
+            ViewBag.Products = products;
 
-        // Xử lý lỗi khi có sự cố xảy ra
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(); // Trả về view mặc định Index.cshtml
         }
     }
 }
