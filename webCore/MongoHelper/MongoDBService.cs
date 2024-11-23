@@ -9,7 +9,7 @@ namespace webCore.Services
 {
     public class MongoDBService
     {
-        private readonly IMongoCollection<Product> _productCollection;
+        private readonly IMongoCollection<Product_admin> _productCollection;
         private readonly IMongoCollection<User> _userCollection;
         private readonly IMongoCollection<Category> _categoryCollection;
 
@@ -18,21 +18,19 @@ namespace webCore.Services
             var mongoClient = new MongoClient(configuration["MongoDB:ConnectionString"]);
             var mongoDatabase = mongoClient.GetDatabase(configuration["MongoDB:DatabaseName"]);
 
-            _productCollection = mongoDatabase.GetCollection<Product>("products");
+            _productCollection = mongoDatabase.GetCollection<Product_admin>("Product");
             _userCollection = mongoDatabase.GetCollection<User>("Users");
             _categoryCollection = mongoDatabase.GetCollection<Category>("Category");
         }
-
-        // Lưu sản phẩm
-        public async Task SaveProductAsync(Product product)
+        public async Task<Product_admin> GetProductByIdAsync(string id)
         {
-            await _productCollection.InsertOneAsync(product);
+            return await _productCollection.Find(p => p.Id == id && !p.Deleted).FirstOrDefaultAsync();
         }
-
         // Lấy danh sách sản phẩm
-        public async Task<List<Product>> GetProductsAsync()
+        public async Task<List<Product_admin>> GetProductsAsync()
         {
-            return await _productCollection.Find(product => true).ToListAsync();
+            var filter = Builders<Product_admin>.Filter.Eq(p => p.Deleted, false); // Lấy sản phẩm chưa bị xóa
+            return await _productCollection.Find(filter).ToListAsync();
         }
 
         // Lưu người dùng

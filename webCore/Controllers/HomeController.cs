@@ -18,12 +18,18 @@ namespace webCore.Controllers
             _mongoDBService = mongoDBService;
         }
 
+        // Action Index, trả về trang chủ và lấy dữ liệu từ MongoDB
         public async Task<IActionResult> Index()
         {
-            // Lấy danh mục cha từ MongoDB
+            // Lấy danh sách danh mục từ MongoDB
             var categories = await _mongoDBService.GetCategoriesAsync();
             ViewBag.Categories = categories;
-            return View();
+
+            // Lấy danh sách sản phẩm từ MongoDB
+            var products = await _mongoDBService.GetProductsAsync();
+            ViewBag.Products = products;
+
+            return View(); // Trả về view mặc định Index.cshtml
         }
     }
 }
