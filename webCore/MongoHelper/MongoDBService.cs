@@ -10,6 +10,8 @@ namespace webCore.Services
     {
         private readonly IMongoCollection<Product> _productCollection;
         private readonly IMongoCollection<User> _userCollection;
+        internal IMongoCollection<Product_admin> _detailProductCollection;
+
 
         public MongoDBService(IConfiguration configuration)
         {
@@ -18,6 +20,9 @@ namespace webCore.Services
 
             _productCollection = mongoDatabase.GetCollection<Product>("products");
             _userCollection = mongoDatabase.GetCollection<User>("Users");
+            _detailProductCollection= mongoDatabase.GetCollection<Product_admin>("Product");
+
+
         }
 
         // Lưu sản phẩm

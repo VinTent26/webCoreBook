@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using webCore.Services;
 using Microsoft.AspNetCore.Http;
+using webCore.MongoHelper;
 
 namespace webCore
 {
@@ -26,7 +27,7 @@ namespace webCore
             services.AddSingleton<CloudinaryService>();  // Dịch vụ Cloudinary cho việc upload ảnh
             services.AddSingleton<MongoDBService>();     // Dịch vụ MongoDB để làm việc với cơ sở dữ liệu
             services.AddHttpContextAccessor();          // Truy cập thông tin từ HttpContext
-
+            services.AddScoped<DetailProductService>();
             // Cấu hình session
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
