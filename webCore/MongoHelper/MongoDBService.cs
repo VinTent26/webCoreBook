@@ -101,5 +101,15 @@ namespace webCore.Services
             var filter = Builders<Category>.Filter.Eq(c => c.Deleted, false);
             return await _categoryCollection.Find(filter).ToListAsync();
         }
+
+        public async Task<Category> GetCategoryBreadcrumbByIdAsync(string categoryId)
+        {
+            return await _categoryCollection.Find(c => c._id == categoryId).FirstOrDefaultAsync();
+        }
+        public async Task<Product_admin> GetProductBreadcrumbByIdAsync(string productId)
+        {
+            return await _productCollection.Find(p => p.Id == productId).FirstOrDefaultAsync();
+        }
+
     }
 }

@@ -31,5 +31,33 @@ namespace webCore.Controllers
 
             return View(); // Trả về view mặc định Index.cshtml
         }
+        [HttpGet("api/breadcrumbs/{categoryId}")]
+        public async Task<IActionResult> GetBreadcrumbs(string categoryId)
+        {
+            if (string.IsNullOrEmpty(categoryId))
+            {
+                return BadRequest("Category ID is required.");
+            }
+
+            // Truy vấn danh mục breadcrumb
+            var breadcrumbs = new List<Category>();
+            string currentCategoryId = categoryId;
+
+            while (!string.IsNullOrEmpty(currentCategoryId))
+            {
+                var category = await _mongoDBService.GetCategoryBreadcrumbByIdAsync(currentCategoryId);
+                if (category != null)
+                {
+                    breadcrumbs.Insert(0, category); // Thêm vào đầu danh sách
+                    currentCategoryId = category.ParentId; // Lấy danh mục cha
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return Ok(breadcrumbs);
+        }
     }
 }

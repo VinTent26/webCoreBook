@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 using webCore.Models;
 using webCore.Services;
@@ -68,43 +70,44 @@ namespace webCore.Controllers
             return View();  // Hiển thị trang đăng nhập
         }
 
-        // Action xử lý đăng nhập
         [HttpPost]
-        public async Task<IActionResult> Sign_in(User loginUser)
+        public async Task<IActionResult> Sign_in([FromBody] User loginUser)
         {
             if (ModelState.IsValid)
             {
-
-                // Lấy tài khoản từ MongoDB dựa vào email
                 var user = await _mongoDBService.GetAccountByEmailAsync(loginUser.Email);
 
                 if (user == null)
                 {
-                    // Nếu tài khoản không tồn tại
-                    ModelState.AddModelError("", "Tài khoản không tồn tại.");
-                    return View(loginUser);
+                    return Json(new { success = false, message = "Tài khoản không tồn tại." });
                 }
 
-                // So sánh mật khẩu nhập vào với mật khẩu trong MongoDB (không mã hóa)
                 if (loginUser.Password == user.Password)
                 {
-                    // Đăng nhập thành công
-                    HttpContext.Session.SetString("UserToken", user.Token);
-                    HttpContext.Session.SetString("UserName", user.Name);
-
-                    // Chuyển đến trang Index của controller Home
-                    return RedirectToAction("Index", "Home");
+                    // Đăng nhập thành công, lưu thông tin vào session
+                    HttpContext.Session.SetString("UserName", user.Name); // Lưu tên người dùng vào session
+                    return Json(new { success = true, token = user.Token });
                 }
                 else
                 {
-                    // Nếu mật khẩu không khớp
-                    ModelState.AddModelError("", "Mật khẩu không đúng.");
-                    return View(loginUser);
+                    return Json(new { success = false, message = "Mật khẩu không đúng." });
                 }
             }
 
-            // Trả lại view nếu ModelState không hợp lệ (ví dụ thiếu email hoặc mật khẩu)
-            return View(loginUser);
+            return Json(new { success = false, message = "Thông tin không hợp lệ." });
         }
+
+        // Action xử lý đăng xuất
+        [HttpPost]
+        public IActionResult Sign_out()
+        {
+            // Xóa thông tin UserName và UserToken khỏi session
+            HttpContext.Session.Remove("UserName");
+            HttpContext.Session.Remove("UserToken");
+
+            // Chuyển hướng về trang chủ
+            return RedirectToAction("Index", "Home");
+        }
+
     }
 }

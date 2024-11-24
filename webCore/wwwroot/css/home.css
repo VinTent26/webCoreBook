@@ -170,9 +170,16 @@ header .container .row {
 .hidden {
     display: none !important;
 }
+#logoutForm{
+    padding:10px 20px;
+}
+#logoutButton {
+    border: none;
+    background: none;
+}
 /* ===== SECTION STYLES ===== */
 #section-one {
-  padding: 40px 0;
+    padding: 40px 0;
 }
 
 /* List Styles */

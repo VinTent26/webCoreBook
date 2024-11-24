@@ -39,6 +39,7 @@ namespace webCore
             services.AddSingleton<MongoDBService>();     // Dịch vụ MongoDB để làm việc với cơ sở dữ liệu
             services.AddHttpContextAccessor();          // Truy cập thông tin từ HttpContext
             services.AddScoped<DetailProductService>();
+           
             // Cấu hình session
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
@@ -46,6 +47,11 @@ namespace webCore
                 options.Cookie.Name = ".AspBookCore.Session";  // Tên cookie session
                 options.IdleTimeout = TimeSpan.FromMinutes(30);  // Thời gian hết hạn session
                 options.Cookie.IsEssential = true;  // Cookie bắt buộc
+            });
+            // Cấu hình JSON options trong ConfigureServices
+            services.AddControllers().AddJsonOptions(opts =>
+            {
+                opts.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
             });
 
             // Cấu hình các dịch vụ liên quan đến tài khoản người dùng và dữ liệu của ứng dụng

@@ -2,15 +2,20 @@
     border: 2px black;
     border-radius: 15px;
     padding: 20px;
+    margin-left:35px;
     background-color: #ffffff;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
+.row{
 
-.book {
-    width: 325px;
-    height: 450px;
 }
-
+.book {
+    width: 310px;
+    height: 420px;
+}
+.image-container {
+    text-align: center; /* Căn giữa hình ảnh */
+}
 .value {
     width: 114px;
     height: 29px;
@@ -55,4 +60,16 @@
 .section-custom {
     max-width: 100%;
     margin: 0 auto;
+}
+.input-group input {
+    width: 50px;
+}
+.quantity{
+    align-items:baseline;
+}
+.breadcrumbs {
+    margin-top: -35px;
+}
+.add_button, buy_button{
+    width:190px;
 }

@@ -17,6 +17,7 @@
           crossorigin="anonymous" />
     <link rel="stylesheet" href="/css/home.css" asp-append-version="true" />
     <script src="/js/user_icon.js"></script>
+
 </head>
 <body>
     <!-- header -->
@@ -63,9 +64,18 @@
 
                     <!-- Dropdown menu -->
                     <div id="userDropdownMenu" class="user-dropdown hidden">
-                        <a href="@Url.Action("Index", "DetailUser")">Thông tin cá nhân</a>
-                        <a href="@Url.Action("Sign_in", "User")">Đăng xuất</a>
+                        <!-- Mục thông tin cá nhân và đăng xuất (hiển thị nếu người dùng đã đăng nhập) -->
+                        <a id="profileLink" href="@Url.Action("Index", "DetailUser")" class="hidden">Thông tin cá nhân</a>
+
+                        <form id="logoutForm" method="post" action="@Url.Action("Sign_out", "User")" >
+                            <button type="submit" id="logoutButton">Đăng xuất</button>
+                        </form>
+
+                        <!-- Mục đăng nhập và đăng ký (hiển thị nếu người dùng chưa đăng nhập) -->
+                        <a id="loginLink" href="@Url.Action("Sign_in", "User")" class="hidden">Đăng nhập</a>
+                        <a id="registerLink" href="@Url.Action("Sign_up", "User")" class="hidden">Đăng ký</a>
                     </div>
+
                     <!-- Username -->
                     <div class="user-name">
                         @{

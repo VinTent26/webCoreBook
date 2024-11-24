@@ -4,64 +4,65 @@
     var parentCategories = categories?.Where(c => c.ParentId == null).ToList();
     var products = ViewBag.Products as List<webCore.Models.Product_admin>;
 }
-    <div class="container">
-        <div class="row">
-            <aside class="list col-md-4">
-                <ul class="list-group">
-                    <li class="inner-title list-group-item">
-                        <h3>Danh mục sản phẩm</h3>
-                    </li>
-                    @if (parentCategories != null)
+@model IEnumerable<Product_admin>
+<div class="container">
+    <div class="row">
+        <aside class="list col-md-4">
+            <ul class="list-group">
+                <li class="inner-title list-group-item">
+                    <h3>Danh mục sản phẩm</h3>
+                </li>
+                @if (parentCategories != null)
+                {
+                    foreach (var parent in parentCategories)
                     {
-                        foreach (var parent in parentCategories)
-                        {
-                            <li class="list-group-item" onclick="toggleArrow(this)">
-                                <a>@parent.Title<span class="arrow"></span></a>
-                                <ul class="list-group subcategories" style="display: none;">
-                                    @foreach (var sub in categories.Where(c => c.ParentId == parent._id))
-                                    {
-                                        <li class="list-group-item">
-                                            <a>@sub.Title</a>
-                                        </li>
-                                    }
-                                </ul>
-                            </li>
-                        }
+                        <li class="list-group-item" onclick="toggleArrow(this)">
+                            <a>@parent.Title<span class="arrow"></span></a>
+                            <ul class="list-group subcategories" style="display: none;">
+                                @foreach (var sub in categories.Where(c => c.ParentId == parent._id))
+                                {
+                                    <li class="list-group-item">
+                                        <a>@sub.Title</a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
                     }
-                </ul>
-            </aside>
-            <main class="main col-md-8 p-3">
-                <div class="main-banner position-relative">
-                    <!-- Slideshow -->
-                    <div id="bookCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img src="/image/image_theme1.jpg" class="d-block w-100" alt="..." />
-                                <div class="carousel-caption d-none d-md-block">
-                                    <button class="btn1">Mua ngay</button>
-                                </div>
-                            </div>
-                            <div class="carousel-item">
-                                <img src="/image/image_theme2.jpg" class="d-block w-100" alt="..." />
-                                <div class="carousel-caption d-none d-md-block">
-                                    <button class="btn2">Mua ngay</button>
-                                </div>
-                            </div>
-                            <div class="carousel-item">
-                                <img src="/image/image_theme3.jpg" class="d-block w-100" alt="..." />
-                                <div class="carousel-caption d-none d-md-block">
-                                    <button class="btn3">Mua ngay</button>
-                                </div>
+                }
+            </ul>
+        </aside>
+        <main class="main col-md-8 p-3">
+            <div class="main-banner position-relative">
+                <!-- Slideshow -->
+                <div id="bookCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="/image/image_theme1.jpg" class="d-block w-100" alt="..." />
+                            <div class="carousel-caption d-none d-md-block">
+                                <button class="btn1">Mua ngay</button>
                             </div>
                         </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#bookCarousel" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#bookCarousel" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        </button>
+                        <div class="carousel-item">
+                            <img src="/image/image_theme2.jpg" class="d-block w-100" alt="..." />
+                            <div class="carousel-caption d-none d-md-block">
+                                <button class="btn2">Mua ngay</button>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <img src="/image/image_theme3.jpg" class="d-block w-100" alt="..." />
+                            <div class="carousel-caption d-none d-md-block">
+                                <button class="btn3">Mua ngay</button>
+                            </div>
+                        </div>
                     </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#bookCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#bookCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    </button>
                 </div>
+            </div>
             <!-- Danh sách sản phẩm -->
             <div class="product-list mt-5">
                 <div class="row">
@@ -69,37 +70,40 @@
                     {
                         foreach (var product in products)
                         {
-                            <div class="col-md-4 mb-3">
-                                <div class="card">
-                                    <img src="@product.Image" class="card-img-top" alt="@product.Title" />
-                                    <div class="card-body">
-                                        <h5 class="card-title">@product.Title</h5>
-                                        <p class="card-text">
-                                            @if (product.DiscountPercentage > 0)
-                                            {
-                                                <!-- Bọc giảm giá trong một khung hình chữ nhật -->
-                                                    <span class="badge discount-badge">
-                                                        Giảm @product.DiscountPercentage%
-                                                    </span>
-                                                    <br />
-                                                    <span class="text-muted old-price">
-                                                        @string.Format("{0:C}", product.Price)
-                                                    </span>
-                                                    <br />
-                                                    <span class="price new-price">
-                                                        @string.Format("{0:C}", product.Price * (1 - product.DiscountPercentage / 100))
-                                                    </span>
-                                            }
-                                            else
-                                            {
-                                                <span class="price normal-price">
-                                                    @string.Format("{0:C}", product.Price)
-                                                </span>
-                                            }
-                                        </p>
-                                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <a href="@Url.Action("DetailProduct", "DetailProduct", new { id = product.Id })">
+                                <img src="@product.Image" class="card-img-top" alt="@product.Title" />
+                                <div class="card-body">
+                                    <h5 class="card-title">@product.Title</h5>
+                                    <p class="card-text">
+                                        @if (product.DiscountPercentage > 0)
+                                        {
+                                            <!-- Bọc giảm giá trong một khung hình chữ nhật -->
+                                            <span class="badge discount-badge">
+                                                Giảm @product.DiscountPercentage%
+                                            </span>
+                                            <br />
+                                            <span class="text-muted old-price">
+                                                @string.Format("{0:C}", product.Price)
+                                            </span>
+                                            <br />
+                                            <span class="price new-price">
+                                                @string.Format("{0:C}", product.Price * (1 - product.DiscountPercentage / 100))
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="price normal-price">
+                                                @string.Format("{0:C}", product.Price)
+                                            </span>
+                                        }
+                                    </p>
                                 </div>
-                            </div>
+                            </a>
+                        </div>
+                   
+                    </div>
                         }
                     }
                     else
@@ -125,4 +129,4 @@
             arrow.classList.remove("open"); // Gỡ class 'open' để mũi tên về trạng thái ban đầu
         }
     }
-    </script>
+</script>
