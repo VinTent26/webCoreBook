@@ -1,7 +1,69 @@
-﻿
+﻿@model webCore.Models.Account_admin
+
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Chỉnh sửa tài khoản";
+    Layout = "Admin";
 }
+<link rel="stylesheet" href="/css/edit_account.css" />
 
-<h1>Edit</h1>
+<div class="form-container">
+    <h2>Chỉnh sửa tài khoản</h2>
 
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            <ul>
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            </ul>
+        </div>
+    }
+
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <!-- Truyền ID tài khoản -->
+        <input type="hidden" asp-for="Id" />
+
+        <label for="name">Họ tên *</label>
+        <input type="text" asp-for="FullName" required />
+
+        <label for="email">Email *</label>
+        <input type="email" asp-for="Email" required />
+
+        <label for="phone">Điện thoại *</label>
+        <input type="text" asp-for="Phone" required />
+
+        <label for="image">Ảnh đại diện</label>
+        <input type="file" id="image" name="Avatar" accept="image/*" onchange="previewImage(event)" />
+
+        <div class="image-preview-container">
+            @if (!string.IsNullOrEmpty(Model.Avatar))
+            {
+                <img id="imagePreview" src="@Model.Avatar" alt="Ảnh xem trước" />
+            }
+            else
+            {
+                <img id="imagePreview" alt="Ảnh xem trước" />
+            }
+        </div>
+
+        <label for="role">Phân quyền</label>
+        <select asp-for="RoleId">
+            <option value="Quản trị viên" @(Model.RoleId= ="Quản trị viên" ? "selected" : "" )>Quản trị viên</option>
+            <option value="Quản lý nội dung" @(Model.RoleId= ="Quản lý nội dung" ? "selected" : "" )>Quản lý nội dung</option>
+        </select>
+
+        <div class="status">
+            <label>Trạng thái</label>
+            <input type="radio" asp-for="Status" value="Hoạt động" @(Model.Status= ="Hoạt động" ? "checked" : "" ) />
+            <label for="active" class="active">Hoạt động</label>
+            <input type="radio" asp-for="Status" value="Không hoạt động" @(Model.Status= ="Không hoạt động" ? "checked" : "" ) />
+            <label for="inactive" class="inactive">Dừng hoạt động</label>
+        </div>
+
+        <button type="submit">Cập nhật</button>
+    </form>
+</div>
+
+<script src="/js/upload_img.js"></script>

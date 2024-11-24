@@ -52,7 +52,9 @@
                     </td>
                     <td class="actions-cell">
                         <button class="icon-btn edit-btn" title="Edit">
-                            <i class="fas fa-edit"></i>
+                            <a href="@Url.Action("Edit", "Account", new { id = account.Id })">
+                                <i class="fas fa-edit"></i>
+                            </a>
                         </button>
                         <button class="icon-btn delete-btn" title="Delete">
                             <i class="fas fa-trash-alt"></i>

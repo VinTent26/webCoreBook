@@ -11,8 +11,9 @@ namespace webCore.Services
     {
         private readonly IMongoCollection<Product> _productCollection;
         private readonly IMongoCollection<User> _userCollection;
-        private readonly IMongoCollection<Account_admin> _AccountCollection;
+        internal readonly IMongoCollection<Account_admin> _accountCollection;
         internal readonly IMongoCollection<Voucher> _voucherCollection;
+       
 
         public MongoDBService(IConfiguration configuration)
         {
@@ -20,10 +21,10 @@ namespace webCore.Services
             var mongoDatabase = mongoClient.GetDatabase(configuration["MongoDB:DatabaseName"]);
             _productCollection = mongoDatabase.GetCollection<Product>("products");
             _userCollection = mongoDatabase.GetCollection<User>("Users");
-            _AccountCollection = mongoDatabase.GetCollection<Account_admin>("Accounts");
+            _accountCollection = mongoDatabase.GetCollection<Account_admin>("Accounts");
             _voucherCollection = mongoDatabase.GetCollection<Voucher>("Vouchers");
         }
-        public async Task UpdateAccountAsync(Account_admin account)
+        /*public async Task UpdateAccountAsync(Account_admin account)
         {
             var filter = Builders<Account_admin>.Filter.Eq(a => a.Id, account.Id);
             await _AccountCollection.ReplaceOneAsync(filter, account);
@@ -54,9 +55,9 @@ namespace webCore.Services
             await _userCollection.InsertOneAsync(user);
         }*/
 
-        internal async Task SaveAccountAsync(Account_admin account)
+        /*internal async Task SaveAccountAsync(Account_admin account)
         {
             await _AccountCollection.InsertOneAsync(account);
-        }
+        }*/
     }
 }

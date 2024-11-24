@@ -4,17 +4,18 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using webCore.Models;
+using webCore.MongoHelper;
 using webCore.Services;
 
 namespace webCore.Controllers
 {
     public class Admin_singinController : Controller
     {
-        private readonly MongoDBService _mongoDBService;
+        private readonly AccountService _accountService;
 
-        public Admin_singinController(MongoDBService mongoDBService)
+        public Admin_singinController(AccountService accountService)
         {
-            _mongoDBService = mongoDBService;
+            _accountService = accountService;
         }
 
         [HttpGet]
@@ -27,7 +28,7 @@ namespace webCore.Controllers
         public async Task<IActionResult> Login(string username, string password)
         {
             // Tìm kiếm tài khoản trong MongoDB
-            var account = (await _mongoDBService.GetAccounts())
+            var account = (await _accountService.GetAccounts())
                 .FirstOrDefault(a => a.Email == username && a.Password == password);
 
             if (account != null)

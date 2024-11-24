@@ -27,6 +27,7 @@ namespace webCore
             services.AddSingleton<CloudinaryService>();
             services.AddSingleton<MongoDBService>();
             services.AddSingleton<VoucherService>();
+            services.AddSingleton<AccountService>();
 
             // Cấu hình Session với các tùy chọn
             services.AddSession(options =>
