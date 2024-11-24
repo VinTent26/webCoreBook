@@ -11,12 +11,15 @@ namespace webCore.Controllers
     public class UserController : Controller
     {
         private readonly MongoDBService _mongoDBService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserController(MongoDBService mongoDBService)
+
+        public UserController(MongoDBService mongoDBService, IHttpContextAccessor httpContextAccessor)
         {
             _mongoDBService = mongoDBService;
+            _httpContextAccessor = httpContextAccessor;
         }
-
+        [ServiceFilter(typeof(SetLoginStatusFilter))]
         // Action để hiển thị form đăng ký
         [HttpGet]
         public IActionResult Sign_up()
@@ -70,32 +73,42 @@ namespace webCore.Controllers
             return View();  // Hiển thị trang đăng nhập
         }
 
+        [ServiceFilter(typeof(SetLoginStatusFilter))]
         [HttpPost]
-        public async Task<IActionResult> Sign_in([FromBody] User loginUser)
+        public async Task<IActionResult> Sign_in(User loginUser)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var user = await _mongoDBService.GetAccountByEmailAsync(loginUser.Email);
-
-                if (user == null)
-                {
-                    return Json(new { success = false, message = "Tài khoản không tồn tại." });
-                }
-
-                if (loginUser.Password == user.Password)
-                {
-                    // Đăng nhập thành công, lưu thông tin vào session
-                    HttpContext.Session.SetString("UserName", user.Name); // Lưu tên người dùng vào session
-                    return Json(new { success = true, token = user.Token });
-                }
-                else
-                {
-                    return Json(new { success = false, message = "Mật khẩu không đúng." });
-                }
+                // Trả lại view nếu ModelState không hợp lệ
+                return View(loginUser);
             }
 
-            return Json(new { success = false, message = "Thông tin không hợp lệ." });
+            // Lấy tài khoản từ MongoDB dựa vào email
+            var user = await _mongoDBService.GetAccountByEmailAsync(loginUser.Email);
+
+            if (user == null)
+            {
+                // Nếu tài khoản không tồn tại
+                ModelState.AddModelError("", "Tài khoản không tồn tại.");
+                return View(loginUser);
+            }
+
+            // So sánh mật khẩu nhập vào với mật khẩu trong MongoDB
+            if (loginUser.Password != user.Password)
+            {
+                // Nếu mật khẩu không khớp
+                ModelState.AddModelError("", "Mật khẩu không đúng.");
+                return View(loginUser);
+            }
+
+            // Đăng nhập thành công
+            HttpContext.Session.SetString("UserToken", user.Token);
+            HttpContext.Session.SetString("UserName", user.Name);
+
+            // Chuyển đến trang Index của controller Home
+            return RedirectToAction("Index", "Home");
         }
+
 
         // Action xử lý đăng xuất
         [HttpPost]

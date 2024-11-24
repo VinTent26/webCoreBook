@@ -16,7 +16,7 @@
           integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
           crossorigin="anonymous" />
     <link rel="stylesheet" href="/css/home.css" asp-append-version="true" />
-    <script src="/js/user_icon.js"></script>
+
 
 </head>
 <body>
@@ -67,7 +67,7 @@
                         <!-- Mục thông tin cá nhân và đăng xuất (hiển thị nếu người dùng đã đăng nhập) -->
                         <a id="profileLink" href="@Url.Action("Index", "DetailUser")" class="hidden">Thông tin cá nhân</a>
 
-                        <form id="logoutForm" method="post" action="@Url.Action("Sign_out", "User")" >
+                        <form id="logoutForm" method="post" action="@Url.Action("Sign_out", "User")">
                             <button type="submit" id="logoutButton">Đăng xuất</button>
                         </form>
 
@@ -76,6 +76,38 @@
                         <a id="registerLink" href="@Url.Action("Sign_up", "User")" class="hidden">Đăng ký</a>
                     </div>
 
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            var userIcon = document.getElementById("userIcon");
+                            var userDropdownMenu = document.getElementById("userDropdownMenu");
+                            var profileLink = document.getElementById("profileLink");
+                            var logoutForm = document.getElementById("logoutForm");
+                            var loginLink = document.getElementById("loginLink");
+                            var registerLink = document.getElementById("registerLink");
+
+                            // Lấy trạng thái đăng nhập từ ViewBag
+                            var isLoggedIn = '@ViewBag.IsLoggedIn' === 'True';
+
+                            // Khi nhấn vào userIcon, toggle dropdown menu
+                            userIcon.addEventListener('click', function (e) {
+                                e.preventDefault(); // Ngừng sự kiện mặc định (nếu có)
+                                userDropdownMenu.classList.toggle("hidden");
+                            });
+
+                            // Kiểm tra trạng thái đăng nhập và hiển thị các mục phù hợp
+                            if (isLoggedIn) {
+                                profileLink.classList.remove("hidden");
+                                logoutForm.classList.remove("hidden");
+                                loginLink.classList.add("hidden");
+                                registerLink.classList.add("hidden");
+                            } else {
+                                profileLink.classList.add("hidden");
+                                logoutForm.classList.add("hidden");
+                                loginLink.classList.remove("hidden");
+                                registerLink.classList.remove("hidden");
+                            }
+                        });
+                    </script>
                     <!-- Username -->
                     <div class="user-name">
                         @{

@@ -39,7 +39,13 @@ namespace webCore
             services.AddSingleton<MongoDBService>();     // Dịch vụ MongoDB để làm việc với cơ sở dữ liệu
             services.AddHttpContextAccessor();          // Truy cập thông tin từ HttpContext
             services.AddScoped<DetailProductService>();
-           
+
+            services.AddControllersWithViews(options =>
+            {
+                // Đăng ký Action Filter toàn cục
+                options.Filters.Add<SetLoginStatusFilter>();
+            });
+            services.AddScoped<SetLoginStatusFilter>();
             // Cấu hình session
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
