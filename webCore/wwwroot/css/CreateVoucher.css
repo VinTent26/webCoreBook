@@ -1,0 +1,122 @@
+﻿
+/* Form container */
+.form-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* Tiêu đề của form */
+h2 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: black;
+}
+
+/* Cảnh báo lỗi */
+.alert {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+    .alert ul {
+        list-style-type: none;
+    }
+
+    .alert li {
+        margin: 5px 0;
+    }
+
+/* Label cho các trường nhập */
+label {
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
+    font-size: 14px;
+    color: #555;
+}
+
+/* Các trường input và select */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Thêm kiểu cho các trường chọn lựa radio */
+.status input[type="radio"] {
+    margin-right: 5px;
+}
+
+/* Nút bấm */
+button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+    button[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+
+/* Cải thiện kiểu dáng các nút radio */
+.status {
+    margin-top: 10px;
+    display: flex;
+    gap: 15px;
+}
+
+    .status label {
+        font-size: 14px;
+        color: #555;
+    }
+
+    .status .active {
+        color: green;
+    }
+
+    .status .inactive {
+        color: red;
+    }
+
+/* Các trường hợp khi radio được chọn */
+input[type="radio"]:checked + label {
+    font-weight: bold;
+    color: #007bff;
+}
+
+/* Đảm bảo responsive cho form */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 20px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    button[type="submit"] {
+        font-size: 14px;
+    }
+}

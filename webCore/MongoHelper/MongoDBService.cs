@@ -11,6 +11,10 @@ namespace webCore.Services
     {
         private readonly IMongoCollection<Product> _productCollection;
         private readonly IMongoCollection<User> _userCollection;
+        internal readonly IMongoCollection<Account_admin> _accountCollection;
+        internal readonly IMongoCollection<Voucher> _voucherCollection;
+       
+
         private readonly IMongoCollection<Account_admin> _AccountCollection;
         private readonly IMongoCollection<Category_admin> _CategoryCollection;
         private readonly IMongoCollection<Product_admin> _ProductCollection;
@@ -21,6 +25,8 @@ namespace webCore.Services
             var mongoDatabase = mongoClient.GetDatabase(configuration["MongoDB:DatabaseName"]);
             _productCollection = mongoDatabase.GetCollection<Product>("products");
             _userCollection = mongoDatabase.GetCollection<User>("Users");
+            _accountCollection = mongoDatabase.GetCollection<Account_admin>("Accounts");
+            _voucherCollection = mongoDatabase.GetCollection<Voucher>("Vouchers");
             _AccountCollection = mongoDatabase.GetCollection<Account_admin>("Accounts");
             _CategoryCollection = mongoDatabase.GetCollection<Category_admin>("Category");
             _ProductCollection = mongoDatabase.GetCollection<Product_admin>("Product");
@@ -38,6 +44,7 @@ namespace webCore.Services
         {
             await _userCollection.InsertOneAsync(user);
         }
+       
 
         internal async Task SaveAccountAsync(Account_admin account)
         {

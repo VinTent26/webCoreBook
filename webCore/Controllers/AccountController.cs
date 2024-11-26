@@ -14,13 +14,13 @@ namespace webCore.Controllers
     [AuthenticateHelper]
     public class AccountController : Controller
     {
-        private readonly MongoDBService _mongoDBService;
+        private readonly AccountService _accountService;
         private readonly CloudinaryService _cloudinaryService;
         private readonly ILogger<AccountController> _logger;
 
-        public AccountController(MongoDBService mongoDBService, CloudinaryService cloudinaryService, ILogger<AccountController> logger)
+        public AccountController(AccountService accountService, CloudinaryService cloudinaryService, ILogger<AccountController> logger)
         {
-            _mongoDBService = mongoDBService;
+            _accountService = accountService;
             _cloudinaryService = cloudinaryService;
             _logger = logger;
         }
@@ -35,7 +35,7 @@ namespace webCore.Controllers
             try
             {
                 // Fetch accounts asynchronously from MongoDB
-                var accounts = await _mongoDBService.GetAccounts();
+                var accounts = await _accountService.GetAccounts();
                 return View(accounts); // Pass the accounts to the view
             }
             catch (Exception ex)
@@ -60,7 +60,7 @@ namespace webCore.Controllers
         {
             if (ModelState.IsValid)
             {
-                var existingAccount = (await _mongoDBService.GetAccounts())
+                var existingAccount = (await _accountService.GetAccounts())
                     .FirstOrDefault(a => a.Email == account.Email);
 
                 if (existingAccount != null)
@@ -90,7 +90,7 @@ namespace webCore.Controllers
                 try
                 {
                     // Save the new account to MongoDB
-                    await _mongoDBService.SaveAccountAsync(account);
+                    await _accountService.SaveAccountAsync(account);
                 }
                 catch (Exception ex)
                 {
@@ -105,5 +105,147 @@ namespace webCore.Controllers
 
             return View(account);
         }
+        public async Task<IActionResult> Edit(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return NotFound();
+
+            try
+            {
+                // Lấy tài khoản từ MongoDB
+                var account = await _accountService.GetAccountByIdAsync(id);
+                if (account == null)
+                    return NotFound();
+
+                return View(account);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching account for editing.");
+                return View("Error");
+            }
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, Account_admin updatedAccount, IFormFile Avatar, string Password)
+        {
+            if (id != updatedAccount.Id)
+                return BadRequest("Account ID mismatch.");
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // Lấy tài khoản hiện tại từ MongoDB
+                    var existingAccount = await _accountService.GetAccountByIdAsync(id);
+                    if (existingAccount == null)
+                        return NotFound("Account not found.");
+
+                    // Kiểm tra trùng email (ngoại trừ email của tài khoản hiện tại)
+                    var duplicateEmailAccount = (await _accountService.GetAccounts())
+                        .FirstOrDefault(a => a.Email == updatedAccount.Email && a.Id != id);
+                    if (duplicateEmailAccount != null)
+                    {
+                        ModelState.AddModelError("Email", "Email này đã được sử dụng. Vui lòng chọn email khác.");
+                        return View(updatedAccount);
+                    }
+
+                    // Cập nhật các trường
+                    existingAccount.FullName = updatedAccount.FullName;
+                    existingAccount.Email = updatedAccount.Email;
+                    existingAccount.Phone = updatedAccount.Phone;
+                    existingAccount.Status = updatedAccount.Status;
+                    existingAccount.RoleId = updatedAccount.RoleId;
+
+                    // Nếu mật khẩu không trống thì cập nhật mật khẩu mới
+                    if (!string.IsNullOrEmpty(Password))
+                    {
+                        existingAccount.Password = Password; // Lưu mật khẩu mới (nên mã hóa mật khẩu trước khi lưu)
+                    }
+
+                    // Xử lý tải ảnh đại diện nếu có
+                    if (Avatar != null && Avatar.Length > 0)
+                    {
+                        try
+                        {
+                            existingAccount.Avatar = await _cloudinaryService.UploadImageAsync(Avatar);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, "Error uploading avatar.");
+                            ModelState.AddModelError("", "Failed to upload avatar. Please try again.");
+                            return View(updatedAccount);
+                        }
+                    }
+
+                    // Ghi thời gian cập nhật
+                    existingAccount.UpdatedAt = DateTime.UtcNow;
+
+                    // Lưu thay đổi vào MongoDB
+                    await _accountService.UpdateAccountAsync(existingAccount);
+
+                    // Quay lại trang danh sách tài khoản
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error updating account.");
+                    ModelState.AddModelError("", "Could not update account. Please try again.");
+                }
+            }
+
+            // Trả lại view với thông tin tài khoản đã chỉnh sửa nếu có lỗi
+            return View(updatedAccount);
+        }
+        // GET: Account/Delete/{id}
+        public async Task<IActionResult> Delete(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return NotFound();
+
+            try
+            {
+                // Fetch the account by ID from MongoDB
+                var account = await _accountService.GetAccountByIdAsync(id);
+                if (account == null)
+                    return NotFound();
+
+                // Return the account to the view for confirmation
+                return View(account);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching account for deletion.");
+                return View("Error");
+            }
+        }
+        // POST: Account/Delete/{id}
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return NotFound();
+
+            try
+            {
+                // Lấy tài khoản theo ID để đảm bảo tài khoản tồn tại
+                var account = await _accountService.GetAccountByIdAsync(id);
+                if (account == null)
+                    return NotFound();
+
+                // Xóa tài khoản khỏi MongoDB
+                await _accountService.DeleteAccountAsync(id);
+
+                // Quay lại trang Index sau khi xóa thành công
+                return RedirectToAction(nameof(Index)); // Quay lại danh sách tài khoản
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi xóa tài khoản.");
+                return View("Error");
+            }
+        }
+
     }
 }
+

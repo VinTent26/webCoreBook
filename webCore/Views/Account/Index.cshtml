@@ -42,26 +42,33 @@
                     <td>@account.Email</td>
                     <td>@account.RoleId</td>
                     <td class="status-@account.Status.ToLower()">
-                        <!-- Display the status name based on the value -->
                         @if (account.Status.Equals("Hoạt động", StringComparison.OrdinalIgnoreCase))
                         {
-                            <span class="status-active">Hoạt động</span> }
-                        else 
-                         {
-                            <span class="status-inactive">Dừng hoạt động</span> }     
+                            <span class="status-active">Hoạt động</span>
+                        }
+                        else
+                        {
+                            <span class="status-inactive">Dừng hoạt động</span>
+                        }
                     </td>
                     <td class="actions-cell">
                         <button class="icon-btn edit-btn" title="Edit">
-                            <i class="fas fa-edit"></i>
+                            <a href="@Url.Action("Edit", "Account", new { id = account.Id })">
+                                <i class="fas fa-edit"></i>
+                            </a>
                         </button>
-                        <button class="icon-btn delete-btn" title="Delete">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
+
+                        <!-- Delete Button -->
+                        <form action="@Url.Action("DeleteConfirmed", "Account", new { id = account.Id })" method="post" style="display:inline-block;" onsubmit="return confirmDelete();">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="icon-btn delete-btn" title="Delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
                     </td>
                 </tr>
             }
         </tbody>
-
     </table>
 
     <!-- Pagination -->
@@ -85,3 +92,9 @@
         </ul>
     </nav>
 </div>
+
+<script>
+    function confirmDelete() {
+        return confirm("Bạn có chắc chắn muốn xóa tài khoản này?");
+    }
+</script>
