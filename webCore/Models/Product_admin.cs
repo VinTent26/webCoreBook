@@ -9,6 +9,13 @@ using System.Text.RegularExpressions;
 
 namespace webCore.Models
 {
+    public enum FeaturedStatus
+    {
+        None = 0,         // Không nổi bật
+        Highlighted = 1,  // Nổi bật
+        New = 2,          // Mới
+        Suggested = 3     // Gợi ý
+    }
     [Table("Product")]
     public class Product_admin
     {
@@ -43,7 +50,7 @@ namespace webCore.Models
 
         public string CategoryTitle { get; set; }
 
-        public int Featured { get; set; }
+        public FeaturedStatus Featured { get; set; } = FeaturedStatus.None;
 
         [MaxLength(50)]
         public string Status { get; set; }

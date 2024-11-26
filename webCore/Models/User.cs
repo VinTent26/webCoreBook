@@ -28,10 +28,10 @@ namespace webCore.Models
 
         public string Token { get; set; } = GenerateRandomString(20);
 
-        public int Status { get; set; }
+        public int? Status { get; set; }
 
         public bool Deleted { get; set; }
-        public DateTime Birthday { get; set; }
+        public DateTime? Birthday { get; set; }
         public string Phone { get; set; }
         public string Gender { get; set; }
         public string Address { get; set; }

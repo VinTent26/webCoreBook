@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using webCore.Services;
 using Microsoft.AspNetCore.Http;
+using MongoDB.Driver;
 
 namespace webCore
 {
@@ -22,38 +23,39 @@ namespace webCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Thêm các dịch vụ cần thiết cho ứng dụng
+            // Add controllers and views
             services.AddControllersWithViews();
 
-            // Dịch vụ Cloudinary cho việc upload ảnh
+            // Add MongoDB Client (singleton because it is thread-safe)
+            services.AddSingleton<IMongoClient>(sp =>
+                new MongoClient(Configuration.GetConnectionString("MongoDBConnection")));
+
+            // Add Cloudinary service for image upload (singleton)
             services.AddSingleton<CloudinaryService>();
 
-            // Dịch vụ MongoDB để làm việc với cơ sở dữ liệu
-            services.AddSingleton<MongoDBService>();
+            // Register MongoDBService with DI container
+            services.AddScoped<MongoDBService>();  // MongoDBService will automatically receive IConfiguration through DI
 
-            // Truy cập thông tin từ HttpContext
+            // Access HTTP context for session management
             services.AddHttpContextAccessor();
 
-            // Cấu hình session
+            // Session configuration
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
-                options.Cookie.Name = ".AspBookCore.Session";  // Tên cookie session
-                options.IdleTimeout = TimeSpan.FromMinutes(30);  // Thời gian hết hạn session
-                options.Cookie.IsEssential = true;  // Cookie bắt buộc
+                options.Cookie.Name = ".AspBookCore.Session";  // Session cookie name
+                options.IdleTimeout = TimeSpan.FromMinutes(30);  // Session expiration time
+                options.Cookie.IsEssential = true;  // Cookie is required for the session
             });
-
-            // Cấu hình các dịch vụ liên quan đến tài khoản người dùng và dữ liệu của ứng dụng
-            services.AddScoped<MongoDBService>();  // Thêm MongoDB service cho dự án
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // Cấu hình session
+            // Use session
             app.UseSession();
 
-            // Cấu hình các trang lỗi và môi trường phát triển
+            // Configure error handling and environment settings
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -64,28 +66,28 @@ namespace webCore
                 app.UseHsts();
             }
 
-            // Chuyển hướng và sử dụng các file tĩnh
+            // Enable HTTPS redirection and static file serving
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            // Cấu hình routing
+            // Routing configuration
             app.UseRouting();
 
-            // Cấu hình ủy quyền
+            // Authorization middleware (if needed)
             app.UseAuthorization();
 
-            // Định nghĩa các endpoint cho ứng dụng
+            // Configure endpoints for the application
             app.UseEndpoints(endpoints =>
             {
-                // Route mặc định
+                // Default route
                 endpoints.MapControllerRoute(
-                 name: "default",
-                 pattern: "{controller=Home}/{action=Index}/{id?}");
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
 
-                // Route riêng cho DetailController
+                // Custom route for DetailUserController
                 endpoints.MapControllerRoute(
-                    name: "detailUser", // Tên route tùy chỉnh
-                    pattern: "DetailUser/{action=Index}/{id?}"); // Truy cập DetailController qua /DetailUser
+                    name: "detailUser",
+                    pattern: "DetailUser/{action=Index}/{id?}");
             });
         }
     }

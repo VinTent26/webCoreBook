@@ -25,11 +25,20 @@ namespace webCore.Controllers
             var categories = await _mongoDBService.GetCategoriesAsync();
             ViewBag.Categories = categories;
 
-            // Lấy danh sách sản phẩm từ MongoDB
-            var products = await _mongoDBService.GetProductsAsync();
-            ViewBag.Products = products;
+            // Lấy danh sách sản phẩm nhóm theo trạng thái Featured
+            var groupedProducts = await _mongoDBService.GetProductsGroupedByFeaturedAsync();
+            ViewBag.GroupedProducts = groupedProducts;
 
-            return View(); // Trả về view mặc định Index.cshtml
+            return View(); // Trả về view Index.cshtml
+        }
+        // Trả về danh sách sách theo Position
+        public async Task<IActionResult> GetProductsByPosition(int position)
+        {
+            // Lấy danh sách sách theo Position từ MongoDB
+            var products = await _mongoDBService.GetProductsByCategoryPositionAsync(position);
+
+            // Trả về Partial View
+            return PartialView("_BookListPartial", products);
         }
     }
 }

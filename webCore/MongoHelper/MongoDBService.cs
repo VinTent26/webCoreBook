@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace webCore.Services
 {
@@ -12,6 +13,7 @@ namespace webCore.Services
         private readonly IMongoCollection<Product_admin> _productCollection;
         private readonly IMongoCollection<User> _userCollection;
         private readonly IMongoCollection<Category> _categoryCollection;
+        private readonly IMongoDatabase _mongoDatabase;
 
         public MongoDBService(IConfiguration configuration)
         {
@@ -27,11 +29,33 @@ namespace webCore.Services
             return await _productCollection.Find(p => p.Id == id && !p.Deleted).FirstOrDefaultAsync();
         }
         // Lấy danh sách sản phẩm
-        public async Task<List<Product_admin>> GetProductsAsync()
+        public async Task<Dictionary<string, List<Product_admin>>> GetProductsGroupedByFeaturedAsync()
         {
-            var filter = Builders<Product_admin>.Filter.Eq(p => p.Deleted, false); // Lấy sản phẩm chưa bị xóa
-            return await _productCollection.Find(filter).ToListAsync();
+            var filter = Builders<Product_admin>.Filter.Eq(p => p.Deleted, false);
+            var products = await _productCollection.Find(filter).ToListAsync();
+
+            var groupedProducts = products
+                .GroupBy(p => p.Featured)
+                .ToDictionary(
+                    g => GetFeaturedStatusName(g.Key),
+                    g => g.ToList()
+                );
+
+            return groupedProducts;
         }
+
+        private string GetFeaturedStatusName(FeaturedStatus status)
+        {
+            switch (status)
+            {
+                case FeaturedStatus.Highlighted: return "Nổi bật";
+                case FeaturedStatus.New: return "Mới";
+                case FeaturedStatus.Suggested: return "Gợi ý";
+                default: return "Không nổi bật";
+            }
+        }
+
+
 
         // Lưu người dùng
         public async Task SaveUserAsync(User user)
@@ -47,27 +71,57 @@ namespace webCore.Services
             return user;
         }
 
-        // Lấy người dùng theo tên
-        public async Task<User> GetUserByNameAsync(string userName)
+        // Lấy thông tin người dùng theo Username
+        public async Task<User> GetUserByUsernameAsync(string userName)
         {
-            return await _userCollection.Find(user => user.Name == userName).FirstOrDefaultAsync();
+            var user = await _userCollection.Find(u => u.Name == userName).FirstOrDefaultAsync();
+            return user;
         }
 
         // Cập nhật thông tin người dùng
-        public async Task UpdateUserAsync(User user)
+        public async Task<bool> UpdateUserAsync(User user)
         {
-            var filter = Builders<User>.Filter.Eq(u => u.Email, user.Email);
-            var update = Builders<User>.Update
-                .Set(u => u.Name, user.Name)
-                .Set(u => u.Password, user.Password)
-                .Set(u => u.Birthday, user.Birthday)
-                .Set(u => u.Phone, user.Phone)
-                .Set(u => u.Gender, user.Gender)
-                .Set(u => u.Address, user.Address);
+            try
+            {
+                // Tạo filter để tìm người dùng cần cập nhật theo Id (để đảm bảo cập nhật đúng người dùng)
+                var filter = Builders<User>.Filter.Eq(u => u.Id, user.Id);
 
-            await _userCollection.UpdateOneAsync(filter, update);
+                // Tạo update với các trường cần thay đổi
+                var update = Builders<User>.Update
+                    .Set(u => u.Name, user.Name)          // Cập nhật tên người dùng
+                    .Set(u => u.Phone, user.Phone)        // Cập nhật số điện thoại
+                    .Set(u => u.Gender, user.Gender)      // Cập nhật giới tính
+                    .Set(u => u.Birthday, user.Birthday)  // Cập nhật ngày sinh
+                    .Set(u => u.Address, user.Address)    // Cập nhật địa chỉ
+                    .Set(u => u.Password, user.Password)  // Cập nhật mật khẩu
+                    .Set(u => u.ProfileImage, user.ProfileImage);  // Cập nhật ảnh đại diện
+
+                // Thực hiện cập nhật
+                var result = await _userCollection.UpdateOneAsync(filter, update);
+
+                // Kiểm tra kết quả
+                if (result.MatchedCount == 0)
+                {
+                    Console.WriteLine("Không tìm thấy người dùng để cập nhật.");
+                    return false;
+                }
+
+                if (result.ModifiedCount > 0)
+                {
+                    return true;  // Cập nhật thành công
+                }
+                else
+                {
+                    Console.WriteLine("Không có thay đổi nào được thực hiện.");
+                    return false;  // Không có thay đổi
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi khi cập nhật người dùng: {ex.Message}");
+                return false;
+            }
         }
-
         // Xóa người dùng (thay đổi trạng thái thay vì xóa cứng)
         public async Task DeleteUserAsync(string email)
         {
@@ -95,6 +149,17 @@ namespace webCore.Services
         {
             var filter = Builders<Category>.Filter.Eq(c => c.Deleted, false);
             return await _categoryCollection.Find(filter).ToListAsync();
+        }
+        public async Task<List<Product_admin>> GetProductsByCategoryPositionAsync(int position)
+        {
+            var filter = Builders<Product_admin>.Filter.Eq(p => p.Position, position) &
+                         Builders<Product_admin>.Filter.Eq(p => p.Deleted, false);
+
+            return await _productCollection.Find(filter).ToListAsync();
+        }
+        public IMongoCollection<Product_admin> GetProductsCollection()
+        {
+            return _mongoDatabase.GetCollection<Product_admin>("Product");
         }
     }
 }

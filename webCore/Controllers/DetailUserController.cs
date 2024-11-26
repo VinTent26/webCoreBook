@@ -1,55 +1,113 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using webCore.Services;
-using webCore.Models;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.IO;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using webCore.Models;
+using webCore.Services;
 
-namespace webCore.Controllers
+public class DetailUserController : Controller
 {
-    public class DetailUserController : Controller
-    {
-        private readonly MongoDBService _mongoDBService;
+    private readonly MongoDBService _mongoDBService;
 
-        public DetailUserController(MongoDBService mongoDBService)
+    public DetailUserController(MongoDBService mongoDBService)
+    {
+        _mongoDBService = mongoDBService;
+    }
+
+    // GET: DetailUser/Index
+    public async Task<IActionResult> Index()
+    {
+        var userName = HttpContext.Session.GetString("UserName"); // Lấy thông tin UserName từ Session
+        if (string.IsNullOrEmpty(userName))
         {
-            _mongoDBService = mongoDBService;
+            return RedirectToAction("SignIn", "User");
         }
 
-        // Action hiển thị thông tin người dùng
-        public async Task<IActionResult> Index()
+        var user = await _mongoDBService.GetUserByUsernameAsync(userName); // Lấy thông tin người dùng qua Username
+        if (user == null)
+        {
+            TempData["Message"] = "Không tìm thấy thông tin người dùng.";
+            return View();
+        }
+
+        return View(user);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Index(User model, IFormFile ProfileImage)
+    {
+        try
         {
             // Lấy tên người dùng từ session
-            var userName = HttpContext.Session.GetString("UserName");
-
-            if (string.IsNullOrEmpty(userName))
+            string currentUserName = HttpContext.Session.GetString("UserName");
+            if (string.IsNullOrEmpty(currentUserName))
             {
-                // Nếu không có tên người dùng trong session, chuyển hướng đến trang đăng nhập
-                return RedirectToAction("SignIn", "User");
+                TempData["Message"] = "Không tìm thấy tên người dùng.";
+                return View(model);
             }
 
-            // Lấy thông tin người dùng từ MongoDB theo tên
-            var user = await _mongoDBService.GetUserByNameAsync(userName);
-
-            if (user == null)
+            // Lấy thông tin người dùng hiện tại từ MongoDB
+            var currentUser = await _mongoDBService.GetUserByUsernameAsync(currentUserName);
+            if (currentUser == null)
             {
-                // Nếu không tìm thấy người dùng, hiển thị thông báo lỗi
                 TempData["Message"] = "Không tìm thấy thông tin người dùng.";
-                return View();
+                return View(model);
             }
 
-            // Trả về view với thông tin người dùng
-            return View(user);
-        }
+            // Cập nhật thông tin người dùng, bao gồm tên người dùng mới
+            currentUser.Name = model.Name;  // Cập nhật tên người dùng mới
+            HttpContext.Session.SetString("UserName", model.Name); // Cập nhật lại session với tên mới
 
-        // Action cập nhật thông tin người dùng
-        [HttpPost]
-        public async Task<IActionResult> UpdateProfile(User user)
+            currentUser.Phone = model.Phone;  // Cập nhật số điện thoại
+            currentUser.Gender = model.Gender;  // Cập nhật giới tính
+            currentUser.Birthday = model.Birthday.HasValue
+                ? DateTime.SpecifyKind(model.Birthday.Value.Date, DateTimeKind.Unspecified)
+                : currentUser.Birthday;  // Cập nhật ngày sinh
+            currentUser.Address = model.Address;  // Cập nhật địa chỉ
+
+            // Cập nhật mật khẩu nếu có thay đổi
+            if (!string.IsNullOrEmpty(model.Password))
+            {
+                if (long.TryParse(model.Password, out long numericPassword))
+                {
+                    currentUser.Password = numericPassword.ToString(); // Lưu mật khẩu dưới dạng chuỗi số
+                }
+                else
+                {
+                    var passwordHasher = new PasswordHasher<User>();
+                    currentUser.Password = passwordHasher.HashPassword(currentUser, model.Password);  // Mã hóa mật khẩu
+                }
+            }
+
+            // Xử lý ảnh đại diện nếu có
+            if (ProfileImage != null)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    await ProfileImage.CopyToAsync(ms);
+                    currentUser.ProfileImage = "data:image/png;base64," + Convert.ToBase64String(ms.ToArray());
+                }
+            }
+
+            // Thực hiện cập nhật thông tin người dùng trong MongoDB
+            var updateResult = await _mongoDBService.UpdateUserAsync(currentUser);
+            if (updateResult)
+            {
+                TempData["Message"] = "Cập nhật thông tin thành công!";
+            }
+            else
+            {
+                TempData["Message"] = "Không có thay đổi nào được thực hiện.";
+            }
+        }
+        catch (Exception ex)
         {
-            // Cập nhật thông tin người dùng trong MongoDB
-            await _mongoDBService.UpdateUserAsync(user);
-
-            // Sau khi cập nhật thành công, quay lại trang chi tiết
-            return RedirectToAction("Index", "DetailUser");
+            TempData["Message"] = $"Đã xảy ra lỗi: {ex.Message}";
         }
+
+        return View(model);
     }
 }
+

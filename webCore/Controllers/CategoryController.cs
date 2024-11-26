@@ -24,9 +24,9 @@ namespace webCore.Controllers
             var categories = await _mongoDBService.GetCategoriesAsync();
             ViewBag.Categories = categories;
 
-            // Lấy danh sách sản phẩm từ MongoDB
-            var products = await _mongoDBService.GetProductsAsync();
-            ViewBag.Products = products;
+            // Lấy danh sách sản phẩm nhóm theo Featured
+            var groupedProducts = await _mongoDBService.GetProductsGroupedByFeaturedAsync();
+            ViewBag.GroupedProducts = groupedProducts;
 
             return View(); // Trả về view mặc định Index.cshtml
         }
