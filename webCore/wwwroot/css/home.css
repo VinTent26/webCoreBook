@@ -90,12 +90,7 @@ header {
     color: #000;
 }
 
-/* Định dạng cho icon user */
-.inner-user i {
-    font-size: 1.5rem;
-    color: #000;
-}
-/* Icon Container Styles */
+/* Đảm bảo rằng các icon và tên người dùng có khoảng cách hợp lý */
 .items-icon {
     display: flex;
     justify-content: center;
@@ -105,7 +100,7 @@ header {
     margin-top: 30px;
 }
 
-/* Inner Cart, User, Chat styles */
+/* Icon Cart, User, Chat */
 .inner-cart,
 .inner-user,
 .inner-chat {
@@ -122,35 +117,41 @@ header {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.inner-cart a,
-.inner-user a,
-.inner-chat a {
-    font-size: 1.5em;
-    color: #333;
-    transform: rotate(-45deg);
-}
+    .inner-cart a,
+    .inner-user a,
+    .inner-chat a {
+        font-size: 1.5em;
+        color: #333;
+        transform: rotate(-45deg);
+    }
 
-.inner-cart:hover,
-.inner-user:hover,
-.inner-chat:hover {
-    background-color: #c5c6c6;
-}
+    .inner-cart:hover,
+    .inner-user:hover,
+    .inner-chat:hover {
+        background-color: #c5c6c6;
+    }
 
-.inner-cart a:hover,
-.inner-user a:hover,
-.inner-chat a:hover {
-    color: #28a745;
-}
+    .inner-cart a:hover,
+    .inner-user a:hover,
+    .inner-chat a:hover {
+        color: #28a745;
+    }
 
-/* Align username below user icon */
+/* Căn chỉnh tên người dùng hoặc "Đăng nhập" dưới icon */
 .user-name {
-    margin-top: 10px; /* Khoảng cách giữa icon và username */
-    text-align: center; /* Căn giữa username dưới icon */
+    margin-top: 10px; /* Khoảng cách giữa icon và tên người dùng */
+    text-align: center; /* Căn giữa tên người dùng */
     font-size: 0.9rem;
     color: #000;
-    margin-left: auto;
-    margin-right: auto;
+    margin-right: 12px
 }
+
+    /* Nếu không muốn hiển thị khoảng cách giữa icon và tên người dùng khi không đăng nhập */
+    .user-name p {
+        margin: 0;
+        font-size: 1rem;
+        color: #333;
+    }
 
 /* Dropdown Styles */
 .user-dropdown {
