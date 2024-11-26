@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -54,6 +55,42 @@ namespace webCore.MongoHelper
             await _voucherCollection.UpdateOneAsync(v => v.Code == code, update);
 
             return totalAmount - discountAmount; // Tổng tiền sau giảm
+        }
+        public async Task<Voucher> GetVoucherByIdAsync(string id)
+        {
+            var objectId = new ObjectId(id);
+            return await _voucherCollection.Find(v => v.Id == objectId).FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> UpdateVoucherAsync(string id, Voucher updatedVoucher)
+        {
+            var objectId = new ObjectId(id);
+
+            // Tạo định nghĩa cho các trường cần cập nhật
+            var updateDefinition = Builders<Voucher>.Update
+                .Set(v => v.Code, updatedVoucher.Code)
+                .Set(v => v.DiscountType, updatedVoucher.DiscountType)
+                .Set(v => v.DiscountValue, updatedVoucher.DiscountValue)
+                .Set(v => v.StartDate, updatedVoucher.StartDate)
+                .Set(v => v.EndDate, updatedVoucher.EndDate)
+                .Set(v => v.UsageLimit, updatedVoucher.UsageLimit)
+                .Set(v => v.IsActive, updatedVoucher.IsActive);
+
+            // Gửi yêu cầu cập nhật tới MongoDB
+            var updateResult = await _voucherCollection.UpdateOneAsync(
+                v => v.Id == objectId,
+                updateDefinition
+            );
+
+            return updateResult.IsAcknowledged && updateResult.ModifiedCount > 0;
+        }
+
+        public async Task<bool> DeleteVoucherAsync(string id)
+        {
+            var objectId = new ObjectId(id);
+            var deleteResult = await _voucherCollection.DeleteOneAsync(v => v.Id == objectId);
+
+            return deleteResult.IsAcknowledged && deleteResult.DeletedCount > 0;
         }
     }
 }

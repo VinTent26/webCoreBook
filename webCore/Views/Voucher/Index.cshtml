@@ -43,8 +43,8 @@
                         <a href="@Url.Action("Edit", "Voucher", new { id = voucher.Id })" class="icon-btn edit-btn" title="Edit">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <form asp-action="Delete" method="post" style="display:inline;" asp-route-id="@voucher.Id">
-                            <button type="submit" class="icon-btn delete-btn" title="Delete" onclick="return confirm('Bạn có chắc chắn muốn xóa voucher này?');">
+                        <form asp-action="DeleteConfirmed" method="post" style="display:inline;" asp-route-id="@voucher.Id" onsubmit="return confirm('Bạn có chắc chắn muốn xóa voucher này?');">
+                            <button type="submit" class="icon-btn delete-btn" title="Delete">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </form>

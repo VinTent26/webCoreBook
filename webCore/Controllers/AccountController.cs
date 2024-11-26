@@ -125,11 +125,9 @@ namespace webCore.Controllers
                 return View("Error");
             }
         }
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, Account_admin updatedAccount, IFormFile Avatar)
+        public async Task<IActionResult> Edit(string id, Account_admin updatedAccount, IFormFile Avatar, string Password)
         {
             if (id != updatedAccount.Id)
                 return BadRequest("Account ID mismatch.");
@@ -158,6 +156,12 @@ namespace webCore.Controllers
                     existingAccount.Phone = updatedAccount.Phone;
                     existingAccount.Status = updatedAccount.Status;
                     existingAccount.RoleId = updatedAccount.RoleId;
+
+                    // Nếu mật khẩu không trống thì cập nhật mật khẩu mới
+                    if (!string.IsNullOrEmpty(Password))
+                    {
+                        existingAccount.Password = Password; // Lưu mật khẩu mới (nên mã hóa mật khẩu trước khi lưu)
+                    }
 
                     // Xử lý tải ảnh đại diện nếu có
                     if (Avatar != null && Avatar.Length > 0)
@@ -193,8 +197,54 @@ namespace webCore.Controllers
             // Trả lại view với thông tin tài khoản đã chỉnh sửa nếu có lỗi
             return View(updatedAccount);
         }
+        // GET: Account/Delete/{id}
+        public async Task<IActionResult> Delete(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return NotFound();
 
+            try
+            {
+                // Fetch the account by ID from MongoDB
+                var account = await _accountService.GetAccountByIdAsync(id);
+                if (account == null)
+                    return NotFound();
 
+                // Return the account to the view for confirmation
+                return View(account);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching account for deletion.");
+                return View("Error");
+            }
+        }
+        // POST: Account/Delete/{id}
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return NotFound();
+
+            try
+            {
+                // Lấy tài khoản theo ID để đảm bảo tài khoản tồn tại
+                var account = await _accountService.GetAccountByIdAsync(id);
+                if (account == null)
+                    return NotFound();
+
+                // Xóa tài khoản khỏi MongoDB
+                await _accountService.DeleteAccountAsync(id);
+
+                // Quay lại trang Index sau khi xóa thành công
+                return RedirectToAction(nameof(Index)); // Quay lại danh sách tài khoản
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi xóa tài khoản.");
+                return View("Error");
+            }
+        }
 
     }
 }

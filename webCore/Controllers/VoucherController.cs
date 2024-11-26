@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using System.Threading.Tasks;
 using webCore.Models;
 using webCore.MongoHelper;
@@ -58,5 +59,80 @@ namespace webCore.Controllers
 
             return View(voucher);
         }
+        // GET: VoucherController/Edit/{id}
+        public async Task<IActionResult> Edit(string id)
+        {
+            var voucher = await _voucherService.GetVoucherByIdAsync(id);
+            if (voucher == null)
+            {
+                return NotFound();
+            }
+
+            var adminName = HttpContext.Session.GetString("AdminName");
+            ViewBag.AdminName = adminName;
+
+            return View(voucher);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, Voucher voucher)
+        {
+            if (ModelState.IsValid)
+            {
+                if (voucher.StartDate <= voucher.EndDate)
+                {
+                    var result = await _voucherService.UpdateVoucherAsync(id, voucher);
+                    if (result)
+                    {
+                        TempData["Message"] = "Voucher đã được cập nhật thành công!";
+                        return RedirectToAction("Index");
+                    }
+                    ModelState.AddModelError("", "Không thể cập nhật voucher.");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Ngày bắt đầu phải trước ngày kết thúc.");
+                }
+            }
+
+            return View(voucher);
+        }
+
+        // GET: VoucherController/Delete/{id}
+        public async Task<IActionResult> Delete(string id)
+        {
+            var voucher = await _voucherService.GetVoucherByIdAsync(id);
+            if (voucher == null)
+            {
+                return NotFound();
+            }
+
+            var adminName = HttpContext.Session.GetString("AdminName");
+            ViewBag.AdminName = adminName;
+
+            return View(voucher);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var result = await _voucherService.DeleteVoucherAsync(id);
+
+            if (result)
+            {
+                TempData["Message"] = "Voucher đã được xóa thành công!";
+                // Redirect back to the Index page after successful deletion
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", "Không thể xóa voucher.");
+            // In case of error, redirect back to the Index page to show an error message
+            return RedirectToAction("Index");
+        }
+
+
     }
 }
+

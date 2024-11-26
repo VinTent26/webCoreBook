@@ -20,7 +20,6 @@ namespace webCore.Models
         [MaxLength(100)]
         public string Email { get; set; }
 
-        [Required]
         [MaxLength(100)]
         public string Password { get; set; }
 
@@ -33,7 +32,6 @@ namespace webCore.Models
 
         public string Avatar { get; set; }
 
-        [MaxLength(50)]
         public string RoleId { get; set; }
 
         [MaxLength(50)]
