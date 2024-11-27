@@ -21,6 +21,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/cart.css" asp-append-version="true" />
     <script src="/js/AddCart.js"></script>
+    @*<script src="/js/Quantity.js"></script>*@
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/quantityCart.js"></script>
 </head>
 <body>
     <div class="container">
@@ -41,7 +44,8 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th><input type="checkbox"> Chọn tất cả (@Model.Count sản phẩm)</th>
+                                <th><input type="checkbox" class="select-all"> Chọn tất cả (<span id="cart-item-count">@Model.Count</span> sản phẩm)</th>
+                                <th>Đơn giá</th> <!-- Cột mới cho đơn giá -->
                                 <th>Số lượng</th>
                                 <th>Thành tiền</th>
                                 <th></th>
@@ -52,35 +56,53 @@
                             {
                                 foreach (var item in Model)
                                 {
-                                    <tr>
-                                        <td class="d-flex align-items-center">
-                                            <input type="checkbox" />
-                                            <img src="@item.Image" alt="@item.Title" class="cart-image" />
-                                            <div class="cart-item-details">
-                                                <span>@item.Title</span>
-                                                <span>@item.Price.ToString("C")</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex align-items-center quantity" data-min="1" data-max="10">
-                                                <button class="btn btn-light btn-minus">-</button>
-                                                <input type="number" value="1" class="form-control text-center quantity-input" style="width: 50px;">
-                                                <button class="btn btn-light btn-plus">+</button>
-                                            </div>
-                                        </td>
-                                        <td>@(item.Price * item.Quantity).ToString("C")</td>
-                                        <td>
-                                            <button class="btn btn-danger btn-sm">
-                                                <i class="fas fa-trash"></i>
+                                    var discountedPrice = item.Price * (1 - item.DiscountPercentage / 100);
+                               
+                            <tr>
+                                <td class="d-flex ">
+                                    <input type="checkbox" class="select-item" data-price="@discountedPrice" data-quantity="@item.Quantity" data-id="@item.ProductId" />
+                                    <img src="@item.Image" alt="@item.Title" class="cart-image" />
+                                    <div class="cart-item-details">
+                                        <span>@item.Title</span>
+                                    </div>
+                                </td>
+                                <td class="price-column" data-price="@item.Price.ToString("G", System.Globalization.CultureInfo.InvariantCulture)"
+                                    data-discount="@item.DiscountPercentage.ToString("G", System.Globalization.CultureInfo.InvariantCulture)">
+                                    @discountedPrice.ToString("C")
+                                    <div class="price">
+                                        <small>@item.Price.ToString("C")</small> <!-- Giá gốc -->
+                                    </div>
+                                </td>
+                                <td class="quantity-column">
+                                    <div class="d-flex quantity">
+                                        <div class="input-group mb-3">
+                                            <button class="btn btn-outline-secondary btn-minus" type="button">
+                                                <i class="bi bi-dash"></i>
                                             </button>
-                                        </td>
-                                    </tr>
+                                            <input type="text" class="form-control text-center quantity-input" value="@item.Quantity" min="1" max="10">
+                                            <button class="btn btn-outline-secondary btn-plus" type="button">
+                                                <i class="bi bi-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="price-column2" data-total="@((discountedPrice * item.Quantity).ToString("G", System.Globalization.CultureInfo.InvariantCulture))">
+                                    @((discountedPrice * item.Quantity).ToString("C"))
+                                </td>
+
+
+                                <td>
+                                    <button class="btn btn-danger btn-sm delete-product">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
                                 }
                             }
                             else
                             {
                                 <tr>
-                                    <td colspan="4" class="text-center">Giỏ hàng trống</td>
+                                    <td colspan="5" class="text-center">Giỏ hàng trống</td>
                                 </tr>
                             }
                         </tbody>
@@ -94,17 +116,24 @@
                     <!-- Discount Section -->
                     <div class="discount-box">
                         <h4>Khuyến mãi</h4>
-                        <p><i class="fa-solid fa-tag"></i> Giảm 50% cho người mới</p>
-                        <a href="#" class="apply-discount">Chọn hoặc nhập khuyến mãi khác</a>
+                        @if (ViewData["VoucherDiscount"] != null)
+                        {
+                            <p><i class="fa-solid fa-tag"></i> Giảm @ViewData["VoucherDiscount"]</p>
+                        }
+                        else
+                        {
+                            <p><i class="fa-solid fa-tag"></i> Không có khuyến mãi.</p>
+                        }
+                        <a href="@Url.Action("VoucherClient", "VoucherClient")" class="apply-discount">Chọn hoặc nhập khuyến mãi khác</a>
                     </div>
 
                     <hr />
 
                     <!-- Order Information -->
                     <h4>Thông tin đơn hàng</h4>
-                    <p>Thành tiền: <span class="summary-amount">@Model.Sum(i => i.Price * i.Quantity).ToString("C")</span></p>
-                    <p>Khuyến mãi: <span class="summary-discount">0đ</span></p>
-                    <p>Tổng tiền: <span class="summary-total">@Model.Sum(i => i.Price * i.Quantity).ToString("C")</span></p>
+                    <p>Thành tiền: <span class="summary-amount">0đ</span></p>
+                    <p>Khuyến mãi: <span class="summary-discount">@ViewData["VoucherDiscount"]đ</span></p>
+                    <p>Tổng tiền: <span class="summary-total">0đ</span></p>
 
                     <!-- Payment Button -->
                     <div class="btn_pay mt-3">

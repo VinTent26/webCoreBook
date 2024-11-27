@@ -52,36 +52,58 @@
                             </div>
                             <div class="mt-3 d-flex justify-content-between">
                                 <button class="btn mb-4 add_button mr-2"
-                                        onclick="addToCart('@Model.Id', '@Model.Title', @Model.Price, 1, '@Model.Image')">
+                                        data-productId="@Model.Id"
+                                        data-title="@Model.Title"
+                                        data-price="@Model.Price"
+                                        data-discountPercentage="@Model.DiscountPercentage"
+                                        data-image="@Model.Image">
                                     Thêm vào giỏ hàng
                                 </button>
-
                                 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                                 <script>
-                                        function addToCart(productId, title, price, quantity, image) {
-                                            $.ajax({
-                                                url: '@Url.Action("AddToCart", "Cart")',  // Gọi tới Action AddToCart trong CartController
-                                                type: 'POST',
-                                                data: {
-                                                    productId: productId,
-                                                    title: title,
-                                                    price: price,
-                                                    quantity: quantity,
-                                                    image: image
-                                                },
-                                                success: function(response) {
-                                                    if (response.success) {
-                                                        alert(response.message);  // Thông báo thành công
-                                                    } else {
-                                                        alert(response.message);  // Thông báo lỗi (nếu có)
-                                                    }
-                                                },
-                                                error: function() {
-                                                    alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng.');
+                                    function addToCart(button) {
+                                        // Lấy giá trị từ các data attributes trong button
+                                        var productId = $(button).data('productid');
+                                        var title = $(button).data('title');
+                                        var price = $(button).data('price');
+                                        var discountPercentage = $(button).data('discountpercentage');
+                                        var image = $(button).data('image');
+
+                                        // Lấy giá trị số lượng từ input .quantity
+                                        var quantity = $(button).closest('.row').find('.quantity input').val();  // Lấy giá trị số lượng từ input trong phần quantity
+
+                                        $.ajax({
+                                            url: '@Url.Action("AddToCart", "Cart")',  // Gọi tới Action AddToCart trong CartController
+                                            type: 'POST',
+                                            data: {
+                                                productId: productId,
+                                                title: title,
+                                                price: price,
+                                                discountPercentage: discountPercentage,
+                                                quantity: quantity,  // Truyền số lượng vào AJAX request
+                                                image: image
+                                            },
+                                            success: function(response) {
+                                                if (response.success) {
+                                                    alert(response.message);  // Thông báo thành công
+                                                } else {
+                                                    alert(response.message);  // Thông báo lỗi (nếu có)
                                                 }
-                                            });
-                                        }
+                                            },
+                                            error: function() {
+                                                alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng.');
+                                            }
+                                        });
+                                    }
+
+                                    // Thêm sự kiện click vào nút "Thêm vào giỏ hàng"
+                                    $(document).ready(function() {
+                                        $('.add_button').on('click', function() {
+                                            addToCart(this);  // Gọi hàm addToCart và truyền button hiện tại làm tham số
+                                        });
+                                    });
                                 </script>
+
                                 <button class="btn buy_button ml-2">Mua ngay</button>
                             </div>
                             <div class="d-flex quantity">
@@ -96,6 +118,7 @@
                                     </button>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>

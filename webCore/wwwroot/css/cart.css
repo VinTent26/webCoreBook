@@ -121,7 +121,17 @@ header {
     padding: 20px;
     padding-bottom: 5px;
 }
+.table th, .table td {
+    word-wrap: break-word;
+}
 
+.table .price-column {
+    width: 100px; /* Điều chỉnh độ rộng của cột Đơn giá */
+}
+.price {
+    color: gray;
+    text-decoration: line-through;
+}
 input[type="checkbox"] {
     margin-right: 10px;
 }
@@ -180,6 +190,31 @@ input[type="checkbox"] {
     text-align: center;
     margin-top: 10px;
 }
+.quantity {
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+}
+
+.input-group {
+    display: flex; 
+    width: 100%;
+    max-width: 110px; 
+    flex-wrap: nowrap; /* Không cho các phần tử trong nhóm bị tách ra */
+}
+
+    .input-group .btn {
+        width: 35px; 
+        height: 40px; 
+       
+    }
+
+    .input-group input {
+        text-align: center; 
+        width: 50px; 
+        height: 40px; 
+    }
+
 
 /* Discount Box */
 .discount-box {
@@ -200,7 +235,12 @@ input[type="checkbox"] {
         margin: 5px 0;
         font-size: 0.9rem;
     }
-
+.price-column2 {
+    width: 110px;
+}
+.quantity-column{
+    width:150px;
+}
 /* Footer */
 footer {
     background-color: #66C5FF;

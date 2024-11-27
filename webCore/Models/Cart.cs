@@ -34,6 +34,9 @@ namespace webCore.Models
         [BsonElement("Price")]
         public decimal Price { get; set; }
 
+        [BsonElement("DiscountPercentage")]
+        public decimal DiscountPercentage { get; set; }
+
         [BsonElement("Quantity")]
         public int Quantity { get; set; }
 

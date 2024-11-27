@@ -1,0 +1,169 @@
+﻿$(document).ready(function () {
+    // Sự kiện khi giảm số lượng
+    $('.btn-minus').on('click', function () {
+        var quantityInput = $(this).closest('.quantity').find('.quantity-input');
+        var quantity = parseInt(quantityInput.val()) - 1;
+        if (quantity >= 1) {
+            quantityInput.val(quantity);
+            updatePrice($(this).closest('tr'));
+        }
+    });
+
+    // Sự kiện khi tăng số lượng
+    $('.btn-plus').on('click', function () {
+        var quantityInput = $(this).closest('.quantity').find('.quantity-input');
+        var quantity = parseInt(quantityInput.val()) + 1;
+        if (quantity <= 10) { // Giới hạn số lượng tối đa
+            quantityInput.val(quantity);
+            updatePrice($(this).closest('tr'));
+        }
+    });
+
+    // Hàm tính lại thành tiền
+    function updatePrice(row) {
+        // Lấy giá đã giảm từ data-price
+        var discountedPrice = parseFloat(row.find('.price-column').data('price')) *
+            (1 - parseFloat(row.find('.price-column').data('discount')) / 100);
+        var quantity = parseInt(row.find('.quantity-input').val()); // Lấy số lượng từ input
+
+        // Tính thành tiền với số lượng
+        var totalPrice = discountedPrice * quantity;
+
+        // Cập nhật lại giá thành tiền trong bảng (đảm bảo luôn có 2 chữ số thập phân và thêm đơn vị ₫)
+        row.find('.price-column2').text((totalPrice.toFixed(2)).replace(/\d(?=(\d{3})+\.)/g, '$&,') + ' ₫');
+    }
+
+    // Cập nhật giá trị khi người dùng thay đổi trực tiếp số lượng
+    $('.quantity-input').on('change', function () {
+        updatePrice($(this).closest('tr'));
+    });
+});
+
+
+///////////////
+
+$(document).ready(function () {
+    function updateSummary() {
+        let totalAmount = 0; // Tổng thành tiền của các sản phẩm được chọn
+        let discount = 0; // Khuyến mãi cố định, bạn có thể thay đổi hoặc lấy từ server
+
+        // Duyệt qua các checkbox được chọn
+        $(".select-item:checked").each(function () {
+            // Lấy giá trị thành tiền từ thuộc tính 'data-total' (số liệu gốc, chưa định dạng tiền tệ)
+            let itemTotal = $(this).closest("tr").find(".price-column2").data("total");
+
+            // Cộng dồn giá trị thành tiền
+            totalAmount += parseFloat(itemTotal); // Chuyển đổi thành số
+        });
+
+        // Tính tổng tiền sau khi trừ khuyến mãi
+        let totalAfterDiscount = totalAmount - discount;
+
+        // Cập nhật giao diện
+        $(".summary-amount").text((totalAmount.toFixed(2)).replace(/\d(?=(\d{3})+\.)/g, '$&,') + " ₫");
+        $(".summary-discount").text((discount.toFixed(2)).replace(/\d(?=(\d{3})+\.)/g, '$&,') + " ₫");
+        $(".summary-total").text((totalAfterDiscount.toFixed(2)).replace(/\d(?=(\d{3})+\.)/g, '$&,') + " ₫");
+    }
+
+    // Khi chọn checkbox sản phẩm
+    $(".select-item").change(function () {
+        updateSummary();
+    });
+
+    // Khi chọn "Chọn tất cả"
+    $(".select-all").change(function () {
+        $(".select-item").prop("checked", $(this).prop("checked"));
+        updateSummary();
+    });
+
+    // Xử lý xóa sản phẩm khi nhấn nút xóa
+    $(".delete-product").click(function () {
+        var productId = $(this).closest("tr").find(".select-item").data("id");
+
+        // Gửi yêu cầu AJAX để xóa sản phẩm khỏi MongoDB
+        $.ajax({
+            url: '/Cart/DeleteProduct',  // Địa chỉ API xóa sản phẩm
+            type: 'POST',
+            data: { productId: productId },
+            success: function (response) {
+                if (response.success) {
+                    // Xóa sản phẩm khỏi giao diện giỏ hàng
+                    $(this).closest("tr").remove();  // Xóa sản phẩm khỏi giỏ hàng trên giao diện
+
+                    // Kiểm tra xem giỏ hàng còn sản phẩm không
+                    if ($("tr.cart-item").length === 0) {
+                        // Nếu không còn sản phẩm, hiển thị thông báo giỏ hàng trống
+                        $("tbody").html('<tr><td colspan="5" class="text-center">Giỏ hàng trống</td></tr>');
+                        $("#cart-item-count").text("0");
+                        $(".select-all").prop("disabled", true);  // Tắt checkbox "Chọn tất cả"
+                    }
+
+                    updateSummary();
+                    alert("Sản phẩm đã được xóa.");
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function (error) {
+                alert("Có lỗi xảy ra khi xóa sản phẩm.");
+            }
+        });
+    });
+});
+
+
+////////////
+$(document).ready(function () {
+    // Kiểm tra xem có sản phẩm nào được chọn không
+    function checkIfProductSelected() {
+        if ($(".select-item:checked").length === 0) {
+            alert("Vui lòng chọn ít nhất một sản phẩm để áp dụng khuyến mãi.");
+            return false;
+        }
+        return true;
+    }
+
+    // Khi click vào liên kết chọn khuyến mãi
+    $(".apply-discount").click(function (e) {
+        // Kiểm tra xem người dùng đã chọn sản phẩm chưa
+        if (!checkIfProductSelected()) {
+            e.preventDefault();  // Ngừng chuyển trang nếu chưa chọn sản phẩm
+        }
+    });
+
+    // Khi chọn checkbox sản phẩm
+    $(".select-item").change(function () {
+        // Cập nhật trạng thái của checkbox "Chọn tất cả"
+        if ($(".select-item:checked").length === $(".select-item").length) {
+            $(".select-all").prop("checked", true);
+        } else {
+            $(".select-all").prop("checked", false);
+        }
+    });
+
+    // Khi chọn "Chọn tất cả"
+    $(".select-all").change(function () {
+        $(".select-item").prop("checked", $(this).prop("checked"));
+    });
+});
+
+
+
+
+// Cập nhật giao diện giỏ hàng
+function updateCartSummary(discount, discountType) {
+    // Lấy giá trị thành tiền ban đầu từ giỏ hàng (ví dụ)
+    let amount = parseFloat(document.querySelector('.summary-amount').textContent.replace('đ', '').trim());
+
+    // Tính toán giảm giá
+    let discountValue = 0;
+    if (discountType === 'Percentage') {
+        discountValue = amount * (discount / 100);
+    } else {
+        discountValue = discount;
+    }
+
+    // Cập nhật giao diện giỏ hàng
+    document.querySelector('.summary-discount').textContent = `${discountValue.toFixed(0)}đ`;
+    document.querySelector('.summary-total').textContent = `${(amount - discountValue).toFixed(0)}đ`;
+}

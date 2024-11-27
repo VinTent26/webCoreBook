@@ -40,7 +40,7 @@ namespace webCore
             services.AddHttpContextAccessor();          // Truy cập thông tin từ HttpContext
             services.AddScoped<DetailProductService>();
             services.AddScoped<CartService>();
-
+            services.AddScoped<VoucherClientService>();
             services.AddControllersWithViews(options =>
             {
                 // Đăng ký Action Filter toàn cục
