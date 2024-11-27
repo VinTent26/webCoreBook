@@ -13,6 +13,7 @@ namespace webCore.Services
         private readonly IMongoCollection<User> _userCollection;
         internal IMongoCollection<Product_admin> _detailProductCollection;
         private readonly IMongoCollection<Category> _categoryCollection;
+        internal readonly IMongoCollection<Cart> _cartCollection;
 
 
         public MongoDBService(IConfiguration configuration)
@@ -24,7 +25,7 @@ namespace webCore.Services
             _userCollection = mongoDatabase.GetCollection<User>("Users");
             _categoryCollection = mongoDatabase.GetCollection<Category>("Category");
             _detailProductCollection= mongoDatabase.GetCollection<Product_admin>("Product");
-
+            _cartCollection= mongoDatabase.GetCollection<Cart>("Cart");
 
         }
         public async Task<Product_admin> GetProductByIdAsync(string id)

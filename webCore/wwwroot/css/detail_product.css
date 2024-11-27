@@ -9,6 +9,10 @@
 .row{
 
 }
+.rounded-box h5{
+    font-size:35px;
+    color:blue;
+}
 .book {
     width: 310px;
     height: 420px;
@@ -33,7 +37,7 @@
 
 .buy_button {
     font-size: 18px;
-    width: 160px;
+    width: 190px;
     height: 45px;
     border-radius: 15px;
     color: #ffffff;
@@ -70,6 +74,4 @@
 .breadcrumbs {
     margin-top: -35px;
 }
-.add_button, buy_button{
-    width:190px;
-}
+

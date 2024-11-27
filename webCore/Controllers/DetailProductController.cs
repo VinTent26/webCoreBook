@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,12 +34,29 @@ namespace webCore.Controllers
             {
                 return NotFound("Product not found.");
             }
+
             // Lấy các sản phẩm tương tự
-            var similarProducts = await GetSimilarProducts(product);  // Đảm bảo truyền đúng đối tượng 'product'
+            var similarProducts = await GetSimilarProducts(product);
 
             // Gán danh sách sản phẩm tương tự vào ViewBag
             ViewBag.SimilarProducts = similarProducts;
 
+            // Lấy thông tin phiên người dùng từ session (nếu có)
+            var userName = HttpContext.Session.GetString("UserName"); // Lấy tên người dùng từ session
+            var userToken = HttpContext.Session.GetString("UserToken"); // Lấy token từ session
+
+            if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(userToken))
+            {
+                // Người dùng đã đăng nhập
+                ViewBag.UserName = userName;
+                ViewBag.UserToken = userToken;
+            }
+            else
+            {
+                // Người dùng chưa đăng nhập
+                ViewBag.UserName = null;
+                ViewBag.UserToken = null;
+            }
 
             var breadcrumbs = new List<Category>();
 
@@ -70,6 +88,8 @@ namespace webCore.Controllers
 
             // Lưu danh sách breadcrumb vào ViewBag
             ViewBag.Breadcrumbs = breadcrumbs;
+
+            // Trả về view và truyền thông tin sản phẩm
             return View(product);
         }
 

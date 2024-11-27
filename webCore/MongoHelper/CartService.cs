@@ -1,0 +1,41 @@
+﻿using MongoDB.Driver;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using webCore.Models;
+using webCore.Services;
+
+namespace webCore.MongoHelper
+{
+    public class CartService
+    {
+        private readonly IMongoCollection<Cart> _cartCollection;
+        public CartService(MongoDBService mongoDBService)
+        {
+            _cartCollection = mongoDBService._cartCollection;
+        }
+
+        // Lấy giỏ hàng của người dùng
+        public async Task<Cart> GetCartByUserIdAsync(string userId)
+        {
+            return await _cartCollection.Find(cart => cart.UserId == userId).FirstOrDefaultAsync();
+        }
+
+        // Thêm hoặc cập nhật giỏ hàng
+        public async Task AddOrUpdateCartAsync(Cart cart)
+        {
+            var existingCart = await GetCartByUserIdAsync(cart.UserId);
+            if (existingCart == null)
+            {
+                // Nếu giỏ hàng chưa tồn tại, tạo mới
+                await _cartCollection.InsertOneAsync(cart);
+            }
+            else
+            {
+                // Cập nhật giỏ hàng hiện có
+                await _cartCollection.ReplaceOneAsync(c => c.Id == existingCart.Id, cart);
+            }
+        }
+    }
+}
