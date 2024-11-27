@@ -3,6 +3,7 @@
     var categories = ViewBag.Categories as List<webCore.Models.Category>;
     var parentCategories = categories?.Where(c => c.ParentId == null).ToList();
     var groupedProducts = ViewBag.GroupedProducts as Dictionary<string, List<webCore.Models.Product_admin>>;
+    var featuredProducts = ViewBag.FeaturedProducts as List<webCore.Models.Product_admin>;
 
     // Sắp xếp các nhóm sản phẩm theo thứ tự: Gợi ý, Mới, Nổi bật, Không nổi bật
     var orderedGroupedProducts = groupedProducts
@@ -89,7 +90,6 @@
                                         <div class="card-body">
                                             <h5 class="card-title">@product.Title</h5>
                                             <p class="card-text">
-                                                <!-- Hiển thị thẻ giảm giá nếu có -->
                                                 @if (product.DiscountPercentage > 0)
                                                 {
                                                     <span class="badge discount-badge">

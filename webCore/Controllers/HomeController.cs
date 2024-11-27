@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using webCore.Models;
 using webCore.Services;
+using System.Linq;
 
 namespace webCore.Controllers
 {
@@ -39,6 +41,24 @@ namespace webCore.Controllers
 
             // Trả về Partial View
             return PartialView("_BookListPartial", products);
+        }
+        // Lấy danh sách sản phẩm theo trạng thái Featured
+        // Phương thức tìm kiếm
+        public async Task<IActionResult> Search(string searchQuery)
+        {
+            if (string.IsNullOrEmpty(searchQuery))
+            {
+                return PartialView("_ProductList", new List<Product_admin>());
+            }
+
+            // Tìm kiếm sản phẩm từ MongoDB
+            var allProducts = await _mongoDBService.GetProductsAsync(); // Lấy toàn bộ sản phẩm
+            var searchResults = allProducts
+                .Where(p => p.Title.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            // Trả về PartialView với kết quả
+            return PartialView("_ProductList", searchResults);
         }
     }
 }

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using MongoDB.Bson;
 
 namespace webCore.Services
 {
@@ -160,6 +161,12 @@ namespace webCore.Services
         public IMongoCollection<Product_admin> GetProductsCollection()
         {
             return _mongoDatabase.GetCollection<Product_admin>("Product");
+        }
+        
+        // Lấy tất cả sản phẩm
+        public async Task<List<Product_admin>> GetProductsAsync()
+        {
+            return await _productCollection.Find(product => true).ToListAsync();
         }
     }
 }
