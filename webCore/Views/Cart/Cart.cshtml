@@ -58,7 +58,7 @@
                                 {
                                     var discountedPrice = item.Price * (1 - item.DiscountPercentage / 100);
                                
-                            <tr>
+                            <tr class="cart-item" data-product-id="@item.ProductId">
                                 <td class="d-flex ">
                                     <input type="checkbox" class="select-item" data-price="@discountedPrice" data-quantity="@item.Quantity" data-id="@item.ProductId" />
                                     <img src="@item.Image" alt="@item.Title" class="cart-image" />
@@ -68,7 +68,7 @@
                                 </td>
                                 <td class="price-column" data-price="@item.Price.ToString("G", System.Globalization.CultureInfo.InvariantCulture)"
                                     data-discount="@item.DiscountPercentage.ToString("G", System.Globalization.CultureInfo.InvariantCulture)">
-                                    @discountedPrice.ToString("C")
+                                    <span>@discountedPrice.ToString("C")</span>
                                     <div class="price">
                                         <small>@item.Price.ToString("C")</small> <!-- Giá gốc -->
                                     </div>
@@ -140,8 +140,9 @@
                         <button class="btn btn-primary">THANH TOÁN</button>
                     </div>
                 </div>
-            </div>
+                </div>
         </div>
     </div>
+     
 </body>
 </html>

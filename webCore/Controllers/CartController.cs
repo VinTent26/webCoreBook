@@ -65,6 +65,7 @@ namespace webCore.Controllers
         }
 
         // Hiển thị giỏ hàng của người dùng
+
         [HttpGet]
         public async Task<IActionResult> Cart()
         {
@@ -78,21 +79,6 @@ namespace webCore.Controllers
 
             // Lấy giỏ hàng của người dùng từ dịch vụ
             var cart = await _cartService.GetCartByUserIdAsync(userId);
-
-            // Kiểm tra nếu voucher đã được áp dụng, lấy thông tin từ session
-            var selectedVoucher = HttpContext.Session.GetString("SelectedVoucher");
-            if (!string.IsNullOrEmpty(selectedVoucher))
-            {
-                var voucherInfo = selectedVoucher.Split(',');
-
-                // Lấy discount và discountType từ session
-                var discount = voucherInfo[0];
-                var discountType = voucherInfo[1];
-
-                // Lưu thông tin voucher vào ViewData
-                ViewData["VoucherDiscount"] = discount;
-                ViewData["VoucherDiscountType"] = discountType;
-            }
 
             // Trả về view với danh sách sản phẩm trong giỏ, hoặc danh sách trống nếu giỏ hàng null
             return View(cart?.Items ?? new List<CartItem>());
@@ -131,6 +117,42 @@ namespace webCore.Controllers
 
             // Trả về kết quả thành công
             return Json(new { success = true, message = "Sản phẩm đã được xóa khỏi giỏ hàng." });
+        }
+        // Hàm cập nhật số lượng sản phẩm trong giỏ hàng
+        [HttpPost]
+        public async Task<IActionResult> UpdateQuantity(string productId, int quantity)
+        {
+            // Lấy UserId từ session
+            var userId = HttpContext.Session.GetString("UserToken");
+            if (string.IsNullOrEmpty(userId))
+            {
+                // Nếu chưa đăng nhập, trả về thông báo lỗi
+                return Json(new { success = false, message = "Bạn cần đăng nhập để cập nhật số lượng." });
+            }
+
+            // Lấy giỏ hàng của người dùng
+            var cart = await _cartService.GetCartByUserIdAsync(userId);
+            if (cart == null)
+            {
+                return Json(new { success = false, message = "Giỏ hàng không tồn tại." });
+            }
+
+            // Tìm sản phẩm trong giỏ hàng
+            var item = cart.Items.FirstOrDefault(i => i.ProductId == productId);
+            if (item != null)
+            {
+                // Cập nhật số lượng
+                item.Quantity = quantity;
+                cart.UpdatedAt = DateTime.UtcNow;
+
+                // Lưu giỏ hàng cập nhật vào MongoDB
+                await _cartService.AddOrUpdateCartAsync(cart);
+
+                // Trả về kết quả thành công
+                return Json(new { success = true, message = "Số lượng sản phẩm đã được cập nhật." });
+            }
+
+            return Json(new { success = false, message = "Sản phẩm không tồn tại trong giỏ hàng." });
         }
     }
 }

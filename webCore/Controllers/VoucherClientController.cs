@@ -37,18 +37,14 @@ namespace webCore.Controllers
         }
 
         // API để lưu voucher vào session khi người dùng áp dụng
+
         [HttpPost]
         public IActionResult ApplyVoucher(string discount, string discountType)
         {
-            if (string.IsNullOrEmpty(discount) || string.IsNullOrEmpty(discountType))
-            {
-                return Json(new { success = false, message = "Không có voucher hợp lệ." });
-            }
-
-            // Lưu thông tin voucher vào session hoặc database
+            // Lưu thông tin voucher vào session
             HttpContext.Session.SetString("SelectedVoucher", $"{discount},{discountType}");
 
-            // Trả về thông tin thành công
+            // Trả về JSON xác nhận thành công
             return Json(new { success = true });
         }
     }
