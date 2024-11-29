@@ -1,4 +1,4 @@
-﻿@model List<webCore.Models.Book_admin> // Specify the model type
+﻿@model List<webCore.Models.Product_admin> // Specify the model type
 
 @{
     ViewData["Title"] = "Index";
@@ -9,7 +9,7 @@
 <div class="container">
     <h1>Danh sách sản phẩm</h1>
     <div class="button-container">
-        <a href="@Url.Action("Create", "Admin_book")" class="add-btn">
+        <a href="@Url.Action("Create", "Admin_product")" class="add-btn">
             <i class="fas fa-user-plus icon"></i> Thêm
         </a>
     </div>
@@ -18,30 +18,36 @@
         <thead>
             <tr>
                 <th>Tên sản phẩm</th>
-                <th>Mô tả</th>
+                <th>Hình ảnh</th>
                 <th>Danh mục</th>
                 <th>Giá</th>
-                <th>Giảm giá</th>
                 <th>Số lượng</th>
-                <th>Hình ảnh</th>
                 <th>Trạng thái</th>
                 <th>Vị trí</th>
                 <th class="actions-header">Hành động</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var book in Model)
+            @foreach (var product in Model)
             {
                 <tr>
-                    <td>@book.Title</td>
-                    <td>@book.Description</td>
-                    <td>@book.CategoryTitle</td>
-                    <td>@book.Price</td>
-                    <td>@book.DiscountPercentage</td>
-                    <td>@book.Stock</td>
-                    <td>@book.Image</td>
-                    <td class="status-@book.Status.ToLower()">
-                        @if (book.Status.Equals("Hoạt động", StringComparison.OrdinalIgnoreCase))
+                    <td>@product.Title</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(product.Image))
+                        {
+                            <img src="@product.Image" alt="Image" style="width: 50px; height: 50px" />
+                        }
+                        else
+                        {
+                            <span>No Image</span>
+                        }
+                    </td>
+                    <td>@product.CategoryTitle</td>
+                    <td>@product.Price</td>
+                    <td>@product.Stock</td>
+                   
+                    <td class="status-@product.Status.ToLower()">
+                        @if (product.Status.Equals("Hoạt động", StringComparison.OrdinalIgnoreCase))
                         {
                             <span class="status-active">Hoạt động</span>
                         }
@@ -50,12 +56,12 @@
                             <span class="status-inactive">Dừng hoạt động</span>
                         }
                     </td>
-                    <td>@book.Position</td>
+                    <td>@product.Position</td>
                     <td class="actions-cell">
-                        <button class="icon-btn edit-btn" title="Edit" onclick="window.location.href='@Url.Action("Update", "Admin_book", new { id = book.Id })'">
+                        <button class="icon-btn edit-btn" title="Edit" onclick="window.location.href='@Url.Action("Update", "Admin_product", new { id = product.Id })'">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="icon-btn delete-btn" title="Delete" onclick="showDeleteModal('@book.Id', '@book.Title')">
+                        <button class="icon-btn delete-btn" title="Delete" onclick="showDeleteModal('@product.Id', '@product.Title')">
                             <i class="fas fa-trash-alt"></i>
                         </button>
                     </td>
@@ -73,15 +79,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Bạn có chắc chắn muốn xóa danh mục <strong id="categoryTitle"></strong>?</p>
+                    <p>Bạn có chắc chắn muốn xóa sản phẩm <strong id="productTitle"></strong>?</p>
                 </div>
                 <div class="modal-footer">
-                    <!-- Khi nhấn "Hủy", modal sẽ tự động đóng -->
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='@Url.Action("Index", "Admin_product")'">Hủy</button>
                     <form id="confirmDeleteForm" method="post" style="display:inline;">
-                        <!-- Dynamic URL for Delete -->
-                        <input type="hidden" id="bookId" name="id" />
-                        <button type="submit" class="btn btn-danger">Xóa</button> <!-- Đóng thẻ button đúng -->
+                        <input type="hidden" id="productId" name="id" />
+                        <button type="submit" class="btn btn-danger">Xóa</button>
                     </form>
                 </div>
             </div>
@@ -90,19 +94,27 @@
 
 
     <script>
-                    function showDeleteModal(id, title) {
-                // Gán thông tin danh mục vào modal
-                document.getElementById('categoryTitle').textContent = title;
-                document.getElementById('categoryId').value = id;
+                 function showDeleteModal(id, title) {
+                document.getElementById('productTitle').textContent = title;
+                document.getElementById('productId').value = id;
 
-                // Cập nhật action của form để gửi yêu cầu xóa đúng danh mục
-                var formAction = '/Admin_category/DeleteConfirmed/' + id;
+                var formAction = '/Admin_product/DeleteConfirmed/' + id;
                 document.getElementById('confirmDeleteForm').action = formAction;
 
-                // Hiển thị modal
                 var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
                 deleteModal.show();
-
+            }
+                //đóng modal
+            function closeModal() {
+                var modalElement = document.getElementById('deleteModal');
+                var modal = bootstrap.Modal.getInstance(modalElement);
+                if (modal) {
+                    modal.hide();
+                } else {
+                    // Nếu không tìm thấy instance, có thể khởi tạo lại modal
+                    var newModal = new bootstrap.Modal(modalElement);
+                    newModal.hide();
+                }
         }
 
     </script>

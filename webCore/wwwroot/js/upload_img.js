@@ -13,3 +13,4 @@ function previewImage(event) {
         imagePreview.style.display = 'none'; // Ẩn ảnh nếu không có ảnh nào được chọn
     }
 }
+
