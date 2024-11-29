@@ -11,9 +11,9 @@ namespace webCore.Services
 {
     public class MongoDBService
     {
-        private readonly IMongoCollection<Product_admin> _productCollection;
+        internal readonly IMongoCollection<Product_admin> _productCollection;
         private readonly IMongoCollection<User> _userCollection;
-        private readonly IMongoCollection<Category> _categoryCollection;
+        internal readonly IMongoCollection<Category> _categoryCollection;
         private readonly IMongoDatabase _mongoDatabase;
 
         public MongoDBService(IConfiguration configuration)
@@ -29,35 +29,6 @@ namespace webCore.Services
         {
             return await _productCollection.Find(p => p.Id == id && !p.Deleted).FirstOrDefaultAsync();
         }
-        // Lấy danh sách sản phẩm
-        public async Task<Dictionary<string, List<Product_admin>>> GetProductsGroupedByFeaturedAsync()
-        {
-            var filter = Builders<Product_admin>.Filter.Eq(p => p.Deleted, false);
-            var products = await _productCollection.Find(filter).ToListAsync();
-
-            var groupedProducts = products
-                .GroupBy(p => p.Featured)
-                .ToDictionary(
-                    g => GetFeaturedStatusName(g.Key),
-                    g => g.ToList()
-                );
-
-            return groupedProducts;
-        }
-
-        private string GetFeaturedStatusName(FeaturedStatus status)
-        {
-            switch (status)
-            {
-                case FeaturedStatus.Highlighted: return "Nổi bật";
-                case FeaturedStatus.New: return "Mới";
-                case FeaturedStatus.Suggested: return "Gợi ý";
-                default: return "Không nổi bật";
-            }
-        }
-
-
-
         // Lưu người dùng
         public async Task SaveUserAsync(User user)
         {
@@ -132,41 +103,10 @@ namespace webCore.Services
             await _userCollection.UpdateOneAsync(filter, update);
         }
         // Lấy danh mục gốc (không có ParentId)
-        public async Task<List<Category>> GetRootCategoriesAsync()
-        {
-            var filter = Builders<Category>.Filter.Eq(c => c.Deleted, false)
-                         & Builders<Category>.Filter.Eq(c => c.ParentId, null);
-            return await _categoryCollection.Find(filter).ToListAsync();
-        }
-
-        // Lấy danh mục con theo ParentId
-        public async Task<List<Category>> GetSubCategoriesByParentIdAsync(string parentId)
-        {
-            var filter = Builders<Category>.Filter.Eq(c => c.Deleted, false)
-                         & Builders<Category>.Filter.Eq(c => c.ParentId, parentId);
-            return await _categoryCollection.Find(filter).ToListAsync();
-        }
-        public async Task<List<Category>> GetCategoriesAsync()
-        {
-            var filter = Builders<Category>.Filter.Eq(c => c.Deleted, false);
-            return await _categoryCollection.Find(filter).ToListAsync();
-        }
-        public async Task<List<Product_admin>> GetProductsByCategoryPositionAsync(int position)
-        {
-            var filter = Builders<Product_admin>.Filter.Eq(p => p.Position, position) &
-                         Builders<Product_admin>.Filter.Eq(p => p.Deleted, false);
-
-            return await _productCollection.Find(filter).ToListAsync();
-        }
         public IMongoCollection<Product_admin> GetProductsCollection()
         {
             return _mongoDatabase.GetCollection<Product_admin>("Product");
         }
-        
-        // Lấy tất cả sản phẩm
-        public async Task<List<Product_admin>> GetProductsAsync()
-        {
-            return await _productCollection.Find(product => true).ToListAsync();
-        }
+
     }
 }

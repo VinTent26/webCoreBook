@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using webCore.Models;
 using webCore.Services;
 using System.Linq;
+using webCore.MongoHelper;
 
 namespace webCore.Controllers
 {
@@ -13,22 +14,24 @@ namespace webCore.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly MongoDBService _mongoDBService;
-
-        public HomeController(ILogger<HomeController> logger, MongoDBService mongoDBService)
+        private readonly ProductService _productService;
+        private readonly CategoryService _categoryService;
+        public HomeController(MongoDBService mongoDBService, ProductService productService, CategoryService categoryService)
         {
-            _logger = logger;
             _mongoDBService = mongoDBService;
+            _productService = productService;
+            _categoryService = categoryService;
         }
 
         // Action Index, trả về trang chủ và lấy dữ liệu từ MongoDB
         public async Task<IActionResult> Index()
         {
             // Lấy danh sách danh mục từ MongoDB
-            var categories = await _mongoDBService.GetCategoriesAsync();
+            var categories = await _categoryService.GetCategoriesAsync();
             ViewBag.Categories = categories;
 
             // Lấy danh sách sản phẩm nhóm theo trạng thái Featured
-            var groupedProducts = await _mongoDBService.GetProductsGroupedByFeaturedAsync();
+            var groupedProducts = await _productService.GetProductsGroupedByFeaturedAsync();
             ViewBag.GroupedProducts = groupedProducts;
 
             return View(); // Trả về view Index.cshtml
@@ -37,7 +40,7 @@ namespace webCore.Controllers
         public async Task<IActionResult> GetProductsByPosition(int position)
         {
             // Lấy danh sách sách theo Position từ MongoDB
-            var products = await _mongoDBService.GetProductsByCategoryPositionAsync(position);
+            var products = await _productService.GetProductsByCategoryPositionAsync(position);
 
             // Trả về Partial View
             return PartialView("_BookListPartial", products);
@@ -52,7 +55,7 @@ namespace webCore.Controllers
             }
 
             // Tìm kiếm sản phẩm từ MongoDB
-            var allProducts = await _mongoDBService.GetProductsAsync(); // Lấy toàn bộ sản phẩm
+            var allProducts = await _productService.GetProductsAsync(); // Lấy toàn bộ sản phẩm
             var searchResults = allProducts
                 .Where(p => p.Title.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
                 .ToList();

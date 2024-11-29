@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using System;
+using webCore.MongoHelper;
 using webCore.Services;
 
 namespace webCore
@@ -54,7 +55,8 @@ namespace webCore
 
             // Access HTTP context for session management
             services.AddHttpContextAccessor();
-
+            services.AddScoped<ProductService>();
+            services.AddScoped<CategoryService>();
             // Session configuration
             services.AddDistributedMemoryCache();
             services.AddSession(options =>

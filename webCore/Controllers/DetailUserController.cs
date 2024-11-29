@@ -17,6 +17,7 @@ public class DetailUserController : Controller
     }
 
     // GET: DetailUser/Index
+    [HttpGet]
     public async Task<IActionResult> Index()
     {
         var userName = HttpContext.Session.GetString("UserName"); // Lấy thông tin UserName từ Session
@@ -32,6 +33,9 @@ public class DetailUserController : Controller
             return View();
         }
 
+        // Đảm bảo ảnh đại diện hiện tại được gửi sang view
+        ViewBag.ProfileImage = user.ProfileImage;
+
         return View(user);
     }
 
@@ -45,7 +49,7 @@ public class DetailUserController : Controller
             if (string.IsNullOrEmpty(currentUserName))
             {
                 TempData["Message"] = "Không tìm thấy tên người dùng.";
-                return View(model);
+                return RedirectToAction("SignIn", "User");
             }
 
             // Lấy thông tin người dùng hiện tại từ MongoDB
@@ -56,16 +60,15 @@ public class DetailUserController : Controller
                 return View(model);
             }
 
-            // Cập nhật thông tin người dùng, bao gồm tên người dùng mới
-            currentUser.Name = model.Name;  // Cập nhật tên người dùng mới
-            HttpContext.Session.SetString("UserName", model.Name); // Cập nhật lại session với tên mới
-
-            currentUser.Phone = model.Phone;  // Cập nhật số điện thoại
-            currentUser.Gender = model.Gender;  // Cập nhật giới tính
+            // Cập nhật thông tin người dùng
+            currentUser.Name = model.Name;
+            HttpContext.Session.SetString("UserName", model.Name); // Cập nhật session với tên mới
+            currentUser.Phone = model.Phone;
+            currentUser.Gender = model.Gender;
             currentUser.Birthday = model.Birthday.HasValue
                 ? DateTime.SpecifyKind(model.Birthday.Value.Date, DateTimeKind.Unspecified)
-                : currentUser.Birthday;  // Cập nhật ngày sinh
-            currentUser.Address = model.Address;  // Cập nhật địa chỉ
+                : currentUser.Birthday;
+            currentUser.Address = model.Address;
 
             // Cập nhật mật khẩu nếu có thay đổi
             if (!string.IsNullOrEmpty(model.Password))
@@ -77,12 +80,12 @@ public class DetailUserController : Controller
                 else
                 {
                     var passwordHasher = new PasswordHasher<User>();
-                    currentUser.Password = passwordHasher.HashPassword(currentUser, model.Password);  // Mã hóa mật khẩu
+                    currentUser.Password = passwordHasher.HashPassword(currentUser, model.Password); // Mã hóa mật khẩu
                 }
             }
 
-            // Xử lý ảnh đại diện nếu có
-            if (ProfileImage != null)
+            // Xử lý ảnh đại diện
+            if (ProfileImage != null && ProfileImage.Length > 0)
             {
                 using (var ms = new MemoryStream())
                 {
@@ -101,6 +104,9 @@ public class DetailUserController : Controller
             {
                 TempData["Message"] = "Không có thay đổi nào được thực hiện.";
             }
+
+            // Đảm bảo ảnh đại diện hiển thị lại sau khi cập nhật
+            ViewBag.ProfileImage = currentUser.ProfileImage;
         }
         catch (Exception ex)
         {
