@@ -25,6 +25,8 @@ namespace webCore.Services
             var mongoDatabase = mongoClient.GetDatabase(configuration["MongoDB:DatabaseName"]);
             _productCollection = mongoDatabase.GetCollection<Product>("products");
             _userCollection = mongoDatabase.GetCollection<User>("Users");
+            _accountCollection = mongoDatabase.GetCollection<Account_admin>("Accounts");
+            _voucherCollection = mongoDatabase.GetCollection<Voucher>("Vouchers");
             _AccountCollection = mongoDatabase.GetCollection<Account_admin>("Accounts");
             _CategoryCollection = mongoDatabase.GetCollection<Category_admin>("Category");
             _BookCollection = mongoDatabase.GetCollection<Book_admin>("Book");
@@ -41,8 +43,6 @@ namespace webCore.Services
         public async Task SaveUserAsync(User user)
         {
             await _userCollection.InsertOneAsync(user);
-            _accountCollection = mongoDatabase.GetCollection<Account_admin>("Accounts");
-            _voucherCollection = mongoDatabase.GetCollection<Voucher>("Vouchers");
         }
 
         internal async Task SaveAccountAsync(Account_admin account)
