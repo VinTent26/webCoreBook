@@ -11,9 +11,6 @@ namespace webCore.Services
     {
         private readonly IMongoCollection<Product> _productCollection;
         private readonly IMongoCollection<User> _userCollection;
-        private readonly IMongoCollection<Account_admin> _AccountCollection;
-        private readonly IMongoCollection<Category_admin> _CategoryCollection;
-        private readonly IMongoCollection<Book_admin> _BookCollection;
 
         internal readonly IMongoCollection<Account_admin> _accountCollection;
         internal readonly IMongoCollection<Voucher> _voucherCollection;
@@ -94,6 +91,11 @@ namespace webCore.Services
         {
             var filter = Builders<Product_admin>.Filter.Eq(c => c.Id, product.Id);
             await _ProductCollection.ReplaceOneAsync(filter, product);
+        }
+        public async Task DeleteProductAsync(string id)
+        {
+            var filter = Builders<Product_admin>.Filter.Eq(c => c.Id, id);
+            await _ProductCollection.DeleteOneAsync(filter);
         }
     }
 }
