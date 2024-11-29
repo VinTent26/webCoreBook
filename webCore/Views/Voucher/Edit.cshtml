@@ -23,14 +23,8 @@
         <label for="code">Mã Voucher *</label>
         <input type="text" id="code" name="Code" value="@Model.Code" required />
 
-        <label for="discountType">Loại Giảm Giá *</label>
-        <select id="discountType" name="DiscountType" required>
-            <option value="Percentage">Giảm theo %</option>
-            <option value="FixedAmount">Giảm cố định</option>
-        </select>
-
-        <label for="discountValue">Giá Trị Giảm Giá *</label>
-        <input type="number" id="discountValue" name="DiscountValue" value="@Model.DiscountValue" required />
+        <label for="discountValue">Giá Trị Giảm Giá (%) *</label>
+        <input type="number" id="discountValue" name="DiscountValue" value="@Model.DiscountValue" step="0.01" required />
 
         <label for="startDate">Ngày Bắt Đầu *</label>
         <input type="date" id="startDate" name="StartDate" value="@Model.StartDate.ToString("yyyy-MM-dd")" required />
@@ -49,7 +43,8 @@
             <label for="inactive" class="inactive">Dừng hoạt động</label>
         </div>
 
-        <button type="submit">Lưu Thay Đổi</button>
+        <button type="submit" style="width:150px;">Lưu Thay Đổi</button>
         <a asp-action="Index" class="btn btn-secondary">Hủy</a>
     </form>
+
 </div>

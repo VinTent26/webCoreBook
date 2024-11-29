@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using System;
 using System.Threading.Tasks;
 using webCore.Models;
 using webCore.MongoHelper;
@@ -76,28 +77,41 @@ namespace webCore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, Voucher voucher)
+        public async Task<IActionResult> Edit(string id, Voucher updatedVoucher)
         {
+            if (string.IsNullOrEmpty(id))
+                return BadRequest("Voucher ID không hợp lệ.");
+
             if (ModelState.IsValid)
             {
-                if (voucher.StartDate <= voucher.EndDate)
+                try
                 {
-                    var result = await _voucherService.UpdateVoucherAsync(id, voucher);
-                    if (result)
+                    // Gán lại ObjectId cho voucher
+                    updatedVoucher.Id = new ObjectId(id);
+
+                    // Gọi service để cập nhật voucher
+                    bool result = await _voucherService.UpdateVoucherAsync(id, updatedVoucher);
+
+                    if (!result)
                     {
-                        TempData["Message"] = "Voucher đã được cập nhật thành công!";
-                        return RedirectToAction("Index");
+                        ModelState.AddModelError("", "Không thể cập nhật voucher. Vui lòng thử lại.");
+                        return View(updatedVoucher);
                     }
-                    ModelState.AddModelError("", "Không thể cập nhật voucher.");
+
+                    TempData["Message"] = "Voucher đã được cập nhật thành công!";
+                    return RedirectToAction("Index");
                 }
-                else
+                catch (Exception ex)
                 {
-                    ModelState.AddModelError("", "Ngày bắt đầu phải trước ngày kết thúc.");
+                    ModelState.AddModelError("", $"Đã xảy ra lỗi: {ex.Message}");
                 }
             }
 
-            return View(voucher);
+            return View(updatedVoucher);
         }
+
+
+
 
         // GET: VoucherController/Delete/{id}
         public async Task<IActionResult> Delete(string id)

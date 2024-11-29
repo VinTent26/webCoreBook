@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="/css/Voucher.css" />
 
 <div class="container">
-    <h1>Danh sách Voucher</h1>
+    <h1 class="title"style="font-size: 28px; color: #333; text-align: center;">Danh sách Voucher</h1>
     <div class="button-container">
         <a href="@Url.Action("Create", "Voucher")" class="add-btn">
             <i class="fas fa-plus icon"></i> Thêm Voucher
@@ -17,7 +17,6 @@
         <thead>
             <tr>
                 <th>Mã Voucher</th>
-                <th>Loại Giảm Giá</th>
                 <th>Giá Trị Giảm Giá</th>
                 <th>Ngày Bắt Đầu</th>
                 <th>Ngày Kết Thúc</th>
@@ -32,8 +31,7 @@
             {
                 <tr>
                     <td>@voucher.Code</td>
-                    <td>@(voucher.DiscountType == "Percentage" ? "Giảm theo %" : "Giảm cố định")</td>
-                    <td>@(voucher.DiscountType == "Percentage" ? $"{voucher.DiscountValue}%" : $"{voucher.DiscountValue} VND")</td>
+                    <td>@voucher.DiscountValue % </td>
                     <td>@voucher.StartDate.ToString("dd/MM/yyyy")</td>
                     <td>@voucher.EndDate.ToString("dd/MM/yyyy")</td>
                     <td>@voucher.UsageLimit</td>

@@ -26,7 +26,7 @@ namespace webCore.Controllers
         }
 
         // Combine the two Index methods
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
         {
             // Fetch admin name from session
             var adminName = HttpContext.Session.GetString("AdminName");
@@ -36,7 +36,22 @@ namespace webCore.Controllers
             {
                 // Fetch accounts asynchronously from MongoDB
                 var accounts = await _accountService.GetAccounts();
-                return View(accounts); // Pass the accounts to the view
+
+                // Calculate pagination details
+                var totalAccounts = accounts.Count();
+                var totalPages = (int)Math.Ceiling(totalAccounts / (double)pageSize);
+
+                // Get accounts for the current page
+                var accountsOnPage = accounts
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+
+                // Pass pagination data to the view
+                ViewBag.CurrentPage = page;
+                ViewBag.TotalPages = totalPages;
+
+                return View(accountsOnPage); // Pass the accounts for the current page
             }
             catch (Exception ex)
             {
