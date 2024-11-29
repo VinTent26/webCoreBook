@@ -1,105 +1,171 @@
 ﻿@model webCore.Models.User
 
 @{
-    Layout = "_Layout"; // Sử dụng layout để kế thừa header
+    Layout = "_Layout";
 }
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Thông tin cá nhân</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/user.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/user.css" asp-append-version="true" />
 </head>
 <body>
-    <!-- Section One -->
-    <div id="section-one" class="py-5">
-        <div class="container">
-            <div class="personal-info-section w-100">
-                <div class="inner-info">
-                    <h5 class="mb-3">Thông tin cá nhân</h5>
+    <div class="container mt-3">
+        <!-- Nút Back -->
+        <div class="back-button">
+            <a href="/Home/Index">
+                <i class="fas fa-arrow-left"></i> Quay lại
+            </a>
+        </div>
+
+        <h2 class="text-center mt-3">Cập nhật thông tin cá nhân</h2>
+
+        <!-- Hiển thị thông báo -->
+        @if (TempData["Message"] != null)
+        {
+            <div class="alert alert-info">@TempData["Message"]</div>
+        }
+
+        <form method="post" enctype="multipart/form-data">
+            <div class="row">
+                <!-- Phần hiển thị ảnh đại diện -->
+                <div class="col-md-3 text-center">
+                    <img id="profilePreview" src="@(ViewBag.ProfileImage ?? "https://via.placeholder.com/120")"
+                         alt="Ảnh đại diện" class="rounded-circle mb-3" style="width: 120px; height: 120px;" />
+                    <div>
+                        <input type="file" id="profileImageInput" name="ProfileImage" class="form-control-file d-none" />
+                        <button type="button" class="btn btn-outline-secondary btn-sm"
+                                onclick="document.getElementById('profileImageInput').click();">
+                            Chọn ảnh
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Hiển thị thông báo thành công nếu có -->
-                @if (TempData["Message"] != null)
-                {
-                    <div class="alert alert-success">
-                        @TempData["Message"]
-                    </div>
-                }
+                <!-- Các trường thông tin -->
+                <div class="col-md-9">
+                    <div class="form-row">
+                        <!-- Name -->
+                        <div class="form-group col-md-6">
+                            <label for="name">Họ và tên</label>
+                            <input type="text" class="form-control" id="name" name="Name"
+                                   value="@(Model?.Name ?? "")" placeholder="Nhập họ và tên" />
+                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                        </div>
 
-                <div class="row">
-                    <div class="inner-img text-center col-md-3">
-                        <!-- Hiển thị ảnh đại diện người dùng, sử dụng ảnh mặc định nếu không có -->
-                        <img src="@(Model?.ProfileImage ?? "https://via.placeholder.com/120")" alt="Profile" class="profile-img mb-2" />
-                        <div>
-                            <button class="btn btn-link">Chọn ảnh</button>
+                        <!-- Phone -->
+                        <div class="form-group col-md-6">
+                            <label for="phone">Số điện thoại</label>
+                            <input type="tel" class="form-control" id="phone" name="Phone"
+                                   value="@(Model?.Phone ?? "")" placeholder="Nhập số điện thoại" />
+                            @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
                         </div>
                     </div>
 
-                    <div class="inner-input col-md-9">
-                        <!-- Form cập nhật thông tin người dùng -->
-                        <form method="post" action="@Url.Action("UpdateProfile", "DetailUser")">
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="fullName">Họ và tên</label>
-                                    <input type="text" class="form-control" id="fullName" name="Name" value="@(Model?.Name ?? "")" placeholder="Nhập họ và tên" />
-                                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="password">Mật khẩu</label>
-                                    <input type="password" class="form-control" id="password" name="Password" value="@(Model?.Password ?? "")" placeholder="Nhập mật khẩu" />
-                                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
+                    <div class="form-row">
+                        <!-- Gender -->
+                        <div class="form-group col-md-6">
+                            <label for="gender">Giới tính</label>
+                            <div>
+                                <input type="radio" id="male" name="Gender" value="male"
+                                @(Model?.Gender == "male" ? "checked" : "") />
+                                <label for="male">Nam</label>
 
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="email">Email</label>
-                                    <input type="email" class="form-control" id="email" name="Email" value="@(Model?.Email ?? "")" disabled />
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="birthday">Ngày sinh</label>
-                                    <input type="date" class="form-control" id="birthday" name="Birthday" value="@(Model?.Birthday != null ? Model.Birthday.ToString("yyyy-MM-dd") : "")" />
-                                    @Html.ValidationMessageFor(model => model.Birthday, "", new { @class = "text-danger" })
-                                </div>
+                                <input type="radio" id="female" name="Gender" value="female" class="ml-3"
+                                @(Model?.Gender == "female" ? "checked" : "") />
+                                <label for="female">Nữ</label>
                             </div>
+                            @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
+                        </div>
 
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="phone">Số điện thoại</label>
-                                    <input type="tel" class="form-control" id="phone" name="Phone" value="@(Model?.Phone ?? "")" placeholder="Nhập số điện thoại" />
-                                    @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="gender">Giới tính</label>
-                                    <div>
-                                        <input type="radio" id="male" name="Gender" value="male" @(Model?.Gender == "male" ? "checked" : "") />
-                                        <label for="male">Nam</label>
-                                        <input type="radio" id="female" name="Gender" value="female" class="ml-3" @(Model?.Gender == "female" ? "checked" : "") />
-                                        <label for="female">Nữ</label>
-                                    </div>
-                                    @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="address">Địa chỉ</label>
-                                <textarea class="form-control" id="address" name="Address" placeholder="Nhập địa chỉ" rows="3">@Model?.Address</textarea>
-                                @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
-                            </div>
-
-                            <button class="btn btn-primary btn-lg" type="submit">Cập nhật</button>
-                        </form>
+                        <!-- Birthday -->
+                        <div class="form-group col-md-6">
+                            <label for="birthday">Ngày sinh</label>
+                            <input type="date" class="form-control" id="birthday" name="Birthday"
+                                   value="@(Model?.Birthday?.ToLocalTime().ToString("yyyy-MM-dd") ?? "")" />
+                            @Html.ValidationMessageFor(model => model.Birthday, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <!-- Email -->
+                        <div class="form-group col-md-6">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="Email" value="@(Model?.Email ?? "")" disabled />
+                        </div>
+                        <!-- Password -->
+                        <div class="form-group col-md-6">
+                            <label for="password">Mật khẩu</label>
+                            <input type="password" class="form-control" id="password" name="Password"
+                                   placeholder="Để trống nếu không muốn thay đổi mật khẩu" />
+                            <small class="form-text text-muted">
+                                Nếu bạn không muốn thay đổi mật khẩu, hãy để trống trường này.
+                            </small>
+                        </div>
+                    </div>
+                    <!-- Address -->
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="address">Địa chỉ</label>
+                            <textarea class="form-control" id="address" name="Address" placeholder="Nhập địa chỉ" rows="3">@Model?.Address</textarea>
+                            @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <!-- Submit Button -->
+            <div class="text-right">
+                <button type="submit" class="btn btn-primary btn-lg">Cập nhật</button>
+            </div>
+        </form>
     </div>
 
+    <!-- JavaScript -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Preview Profile Image -->
+    <script>
+        document.getElementById('profileImageInput').addEventListener('change', function (event) {
+            const reader = new FileReader();
+            reader.onload = function () {
+                document.getElementById('profilePreview').src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        });
+    </script>
+    <style>
+        /* CSS cho nút Quay lại */
+        .back-button {
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+            .back-button a {
+                text-decoration: none;
+                font-weight: bold;
+                display: inline-flex;
+                align-items: center;
+                padding: 10px 15px;
+                color: #fff; /* Màu chữ */
+                background-color: #007bff; /* Màu nền */
+                border-radius: 8px;
+                cursor: pointer;
+                transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu nền */
+            }
+
+                .back-button a:hover {
+                    background-color: #0056b3; /* Màu nền khi hover */
+                }
+
+            .back-button i {
+                margin-right: 8px;
+                font-size: 16px;
+            }
+
+    </style>
 </body>
 </html>

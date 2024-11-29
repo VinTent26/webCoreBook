@@ -3,30 +3,33 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using webCore.Models;
+using webCore.MongoHelper;
 using webCore.Services;
 
 namespace webCore.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ILogger<CategoryController> _logger;  // Corrected logger type
+        private readonly ILogger<HomeController> _logger;
         private readonly MongoDBService _mongoDBService;
-
-        public CategoryController(ILogger<CategoryController> logger, MongoDBService mongoDBService)
+        private readonly ProductService _productService;
+        private readonly CategoryService _categoryService;
+        public CategoryController(MongoDBService mongoDBService, ProductService productService, CategoryService categoryService)
         {
-            _logger = logger;
             _mongoDBService = mongoDBService;
+            _productService = productService;
+            _categoryService = categoryService;
         }
 
         public async Task<IActionResult> Index()
         {
             // Lấy danh sách danh mục từ MongoDB
-            var categories = await _mongoDBService.GetCategoriesAsync();
+            var categories = await _categoryService.GetCategoriesAsync();
             ViewBag.Categories = categories;
 
-            // Lấy danh sách sản phẩm từ MongoDB
-            var products = await _mongoDBService.GetProductsAsync();
-            ViewBag.Products = products;
+            // Lấy danh sách sản phẩm nhóm theo Featured
+            var groupedProducts = await _productService.GetProductsGroupedByFeaturedAsync();
+            ViewBag.GroupedProducts = groupedProducts;
 
             return View(); // Trả về view mặc định Index.cshtml
         }
