@@ -14,7 +14,6 @@ namespace webCore.Services
         internal readonly IMongoCollection<Product_admin> _productCollection;
         private readonly IMongoCollection<User> _userCollection;
         internal IMongoCollection<Product_admin> _detailProductCollection;
-        private readonly IMongoCollection<Category> _categoryCollection;
         internal readonly IMongoCollection<Cart> _cartCollection;
         internal readonly IMongoCollection<Voucher> _voucherCollection;
         internal readonly IMongoCollection<Category> _categoryCollection;
@@ -130,14 +129,8 @@ namespace webCore.Services
             return await _categoryCollection.Find(filter).ToListAsync();
         }
 
-        public async Task<Category> GetCategoryBreadcrumbByIdAsync(string categoryId)
-        {
-            return await _categoryCollection.Find(c => c._id == categoryId).FirstOrDefaultAsync();
-        }
-        public async Task<Product_admin> GetProductBreadcrumbByIdAsync(string productId)
-        {
-            return await _productCollection.Find(p => p.Id == productId).FirstOrDefaultAsync();
-        }
+
+
 
     }
 }

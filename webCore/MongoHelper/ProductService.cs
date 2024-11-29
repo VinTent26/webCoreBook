@@ -53,5 +53,9 @@ namespace webCore.MongoHelper
         {
             return await _productCollection.Find(product => true).ToListAsync();
         }
+        public async Task<Product_admin> GetProductBreadcrumbByIdAsync(string productId)
+        {
+            return await _productCollection.Find(p => p.Id == productId).FirstOrDefaultAsync();
+        }
     }
 }

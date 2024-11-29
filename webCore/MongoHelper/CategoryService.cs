@@ -33,5 +33,9 @@ namespace webCore.MongoHelper
             var filter = Builders<Category>.Filter.Eq(c => c.Deleted, false);
             return await _categoryCollection.Find(filter).ToListAsync();
         }
+        public async Task<Category> GetCategoryBreadcrumbByIdAsync(string categoryId)
+        {
+            return await _categoryCollection.Find(c => c._id == categoryId).FirstOrDefaultAsync();
+        }
     }
 }

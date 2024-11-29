@@ -13,21 +13,16 @@ namespace webCore.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+ 
         private readonly MongoDBService _mongoDBService;
         private readonly ProductService _productService;
         private readonly CategoryService _categoryService;
         public HomeController(MongoDBService mongoDBService, ProductService productService, CategoryService categoryService)
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public HomeController(ILogger<HomeController> logger, MongoDBService mongoDBService, IHttpContextAccessor httpContextAccessor)
         {
             _mongoDBService = mongoDBService;
-            _httpContextAccessor = httpContextAccessor;
             _productService = productService;
             _categoryService = categoryService;
         }
-
         // Action Index, trả về trang chủ và lấy dữ liệu từ MongoDB
         [ServiceFilter(typeof(SetLoginStatusFilter))]
         public async Task<IActionResult> Index()
@@ -132,7 +127,7 @@ namespace webCore.Controllers
 
             while (!string.IsNullOrEmpty(currentCategoryId))
             {
-                var category = await _mongoDBService.GetCategoryBreadcrumbByIdAsync(currentCategoryId);
+                var category = await _categoryService.GetCategoryBreadcrumbByIdAsync(currentCategoryId);
                 if (category != null)
                 {
                     breadcrumbs.Insert(0, category);

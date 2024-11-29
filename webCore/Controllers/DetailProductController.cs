@@ -16,10 +16,15 @@ namespace webCore.Controllers
 
 
         private readonly DetailProductService _detailProductService;
-        public DetailProductController(MongoDBService mongoDBService, DetailProductService detailProductService)
+        private readonly ProductService _productService;
+        private readonly CategoryService _categoryService;
+
+        public DetailProductController(MongoDBService mongoDBService, DetailProductService detailProductService, ProductService productService, CategoryService categoryService)
         {
             _mongoDBService = mongoDBService;
             _detailProductService = detailProductService;
+            _productService = productService;
+            _categoryService = categoryService;
         }
 
         public async Task<IActionResult> DetailProduct(string id)
@@ -74,7 +79,7 @@ namespace webCore.Controllers
             // Lấy breadcrumb của các danh mục cha
             while (!string.IsNullOrEmpty(currentCategoryId))
             {
-                var category = await _mongoDBService.GetCategoryBreadcrumbByIdAsync(currentCategoryId);
+                var category = await _categoryService.GetCategoryBreadcrumbByIdAsync(currentCategoryId);
                 if (category != null)
                 {
                     breadcrumbs.Add(category); // Thêm vào danh sách
@@ -115,7 +120,7 @@ namespace webCore.Controllers
 
             while (!string.IsNullOrEmpty(currentCategoryId))
             {
-                var category = await _mongoDBService.GetCategoryBreadcrumbByIdAsync(currentCategoryId);
+                var category = await _categoryService.GetCategoryBreadcrumbByIdAsync(currentCategoryId);
                 if (category != null)
                 {
                     breadcrumbs.Insert(0, category); // Thêm vào đầu danh sách
