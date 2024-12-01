@@ -1,4 +1,10 @@
-﻿
+﻿@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    var userRoleId = HttpContextAccessor.HttpContext.Session.GetString("RoleId");
+}
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,7 +42,14 @@
             <nav class="sidebar bg-light border-right" style="width: 220px">
                 <div class="list-group">
                     <a href="/Dashboard" class="list-group-item list-group-item-action"><i class="fas fa-home"></i> Trang Chủ</a>
-                    <a href="/Account" class="list-group-item list-group-item-action"><i class="fas fa-users"></i> Người Dùng</a>
+
+
+                    @if (!string.IsNullOrEmpty(userRoleId) && userRoleId.Trim().Equals("Quản trị viên", StringComparison.OrdinalIgnoreCase))
+                    {
+                        <a href="/Account" class="list-group-item list-group-item-action">
+                            <i class="fas fa-users"></i> Người Dùng
+                        </a>
+                    }
                     <a href="/Admin_category" class="list-group-item list-group-item-action"><i class="fas fa-list"></i> Danh Mục</a>
                     <a href="/Admin_product" class="list-group-item list-group-item-action"><i class="fas fa-box"></i> Sản Phẩm</a>
                     <a href="/Voucher" class="list-group-item list-group-item-action"><i class="fas fa-tags"></i> Mã Giảm Giá</a>

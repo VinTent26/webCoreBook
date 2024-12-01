@@ -22,12 +22,12 @@ namespace webCore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-
+            services.AddHttpContextAccessor();
             // Đăng ký các service
             services.AddSingleton<CloudinaryService>();
             services.AddSingleton<MongoDBService>();
             services.AddSingleton<VoucherService>();
-            services.AddSingleton<AccountService>();
+            services.AddScoped<AccountService>();
 
             // Cấu hình Session với các tùy chọn
             services.AddSession(options =>
