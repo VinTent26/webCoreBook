@@ -440,6 +440,10 @@ header {
     height: 350px; /* Đảm bảo chiều cao cố định cho card */
     overflow: hidden; /* Giúp card không thay đổi kích thước khi thay đổi nội dung */
 }
+.card a{
+    text-decoration:none;
+    
+}
 
 .card-title {
     font-size: 16px; /* Chữ lớn hơn */

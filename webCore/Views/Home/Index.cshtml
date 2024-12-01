@@ -12,30 +12,30 @@
                         group.Key == "Nổi bật" ? 3 : 4)
                     .ToList(); }
 
-<div class="container">
-    <div class="row">
-        <!-- Sidebar - Danh mục sản phẩm -->
-        <aside class="list col-md-4">
-            <ul class="list-group">
-                <li class="inner-title list-group-item">
-                    <h3>Danh mục sản phẩm</h3>
-                </li>
-                @if (parentCategories != null)
-                {
-                    foreach (var parent in parentCategories)
-                    {
-    <li class="list-group-item" onclick="toggleArrow(this)">
-        <a>@parent.Title<span class="arrow"></span></a>
-        <ul class="list-group subcategories" style="display: none;">
-            @foreach (var sub in categories.Where(c => c.ParentId == parent._id))
-            {
-<li class="list-group-item" onclick="loadProductsByPosition(@sub.Position)">
-    <a>@sub.Title</a>
-</li>}
-        </ul>
-    </li>}
-                }
-            </ul>
+                <div class="container">
+                    <div class="row">
+                        <!-- Sidebar - Danh mục sản phẩm -->
+                        <aside class="list col-md-4">
+                            <ul class="list-group">
+                                <li class="inner-title list-group-item">
+                                    <h3>Danh mục sản phẩm</h3>
+                                </li>
+                                @if (parentCategories != null)
+                                {
+                                    foreach (var parent in parentCategories)
+                                    {
+                    <li class="list-group-item" onclick="toggleArrow(this)">
+                        <a>@parent.Title<span class="arrow"></span></a>
+                        <ul class="list-group subcategories" style="display: none;">
+                            @foreach (var sub in categories.Where(c => c.ParentId == parent._id))
+                            {
+                <li class="list-group-item" onclick="loadProductsByPosition(@sub.Position)">
+                    <a>@sub.Title</a>
+                </li>}
+                        </ul>
+                    </li>}
+                                }
+                            </ul>
         </aside>
 
         <!-- Main Content - Sản phẩm -->
@@ -76,42 +76,45 @@
                 {
                     foreach (var group in orderedGroupedProducts)
                     {
-    <h3 class="product-group-name">@group.Key</h3> <!-- Hiển thị tên nhóm sản phẩm -->
+                    <h3 class="product-group-name">@group.Key</h3> <!-- Hiển thị tên nhóm sản phẩm -->
                         <div class="row">
                             @foreach (var product in group.Value)
                             {
         <div class="col-md-4 mb-3">
             <div class="card">
-                <img src="@product.Image" class="card-img-top" alt="@product.Title" />
-                <div class="card-body">
-                    <h5 class="card-title">@product.Title</h5>
-                    <p class="card-text">
-                        @if (product.DiscountPercentage > 0)
-                        {
-<span class="badge discount-badge">
-    Giảm @product.DiscountPercentage%
-</span>
-                            <br />
-                                                        <span class="text-muted old-price">
-                                                            @string.Format("{0:C}", product.Price)
-                                                        </span>
-                                                                                    <br />
-                                                                                                                <span class="price new-price">
-                                                                                                                    @string.Format("{0:C}", product.Price * (1 - product.DiscountPercentage / 100))
-                                                                                                                </span> }
-                                                                                                                                        else
-                                                                                                                                        {
-                                                                                                                <span class="price normal-price">
-                                                                                                                    @string.Format("{0:C}", product.Price)
-                                                                                                                </span>}
-                    </p>
+                <a href="@Url.Action("DetailProduct", "DetailProduct", new { id = product.Id })">
+                    <img src="@product.Image" class="card-img-top" alt="@product.Title" />
+                    <div class="card-body">
+                        <h5 class="card-title">@product.Title</h5>
+                        <p class="card-text">
+                            @if (product.DiscountPercentage > 0)
+                            {
+                                <span class="badge discount-badge">
+                                    Giảm @product.DiscountPercentage%
+                                </span>
+                                <br />
+                                <span class="text-muted old-price">
+                                    @string.Format("{0:C}", product.Price)
+                                </span>
+                                <br />
+                                <span class="price new-price">
+                                    @string.Format("{0:C}", product.Price * (1 - product.DiscountPercentage / 100))
+                                </span> }
+                            else
+                            {
+                                <span class="price normal-price">
+                                    @string.Format("{0:C}", product.Price)
+                                </span>}
+                        </p>
 
-                    <!-- Hiển thị nhãn Featured -->
-                    <p class="featured-label">
-                        <strong>@GetFeaturedLabel(product.Featured.ToString())</strong>
-                    </p>
+                        <!-- Hiển thị nhãn Featured -->
+                        <p class="featured-label">
+                            <strong>@GetFeaturedLabel(product.Featured.ToString())</strong>
+                        </p>
 
-                </div>
+
+                    </div>
+                </a>
             </div>
         </div>}
                         </div> }
