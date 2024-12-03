@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using webCore.Models;
 using webCore.MongoHelper;
@@ -62,9 +63,23 @@ namespace webCore.Controllers
 
             // Lưu giỏ hàng vào MongoDB
             await _cartService.AddOrUpdateCartAsync(cart);
-
+            int itemCount = cart.Items.Count;
             // Trả về kết quả thành công
-            return Json(new { success = true, message = "Sản phẩm đã được thêm vào giỏ hàng!" });
+            return Json(new { success = true, itemCount = itemCount, message = "Sản phẩm đã được thêm vào giỏ hàng!" });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCartItemCount()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Lấy userId từ User hiện tại
+
+            if (string.IsNullOrEmpty(userId))
+                return Json(new { itemCount = 0 });
+
+            var cart = await _cartService.GetCartByUserIdAsync(userId);
+            int itemCount = cart?.Items.Count ?? 0; // Đếm số lượng sản phẩm trong giỏ
+
+            return Json(new { itemCount = itemCount });
         }
 
         [ServiceFilter(typeof(SetLoginStatusFilter))]

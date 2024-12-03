@@ -85,9 +85,11 @@
                                             },
                                             success: function(response) {
                                                 if (response.success) {
-                                                    alert(response.message);  // Thông báo thành công
+                                                    // Gửi sự kiện để Layout cập nhật số lượng
+                                                    $(document).trigger('cartUpdated', [response.itemCount]);
+                                                    alert(response.message); // Thông báo thêm thành công
                                                 } else {
-                                                    alert(response.message);  // Thông báo lỗi (nếu có)
+                                                    alert(response.message); // Thông báo lỗi
                                                 }
                                             },
                                             error: function() {

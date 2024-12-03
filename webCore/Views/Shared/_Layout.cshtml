@@ -46,13 +46,53 @@
                     </div>
                 </div>
                 <div class="col-3">
+
                     <div class="items-icon">
                         <!-- Icon Cart -->
-                        <div class="inner-cart">
-                            <a href="@Url.Action("Cart", "Cart")">
-                                <i class="fa-solid fa-cart-shopping"></i>
-                            </a>
+
+                        <div>
+
+                            <div class="inner-cart">
+
+                                <a href="@Url.Action("Cart", "Cart")">
+                                    <i class="fa-solid fa-cart-shopping"></i>
+
+                                </a>
+                            </div>
+                            <div id="cart-item-1" class="cart-item-1">
+                                <p>0</p>
+                            </div>
                         </div>
+                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                        <script>
+                            $(document).ready(function () {
+                                // Hàm để cập nhật số lượng trên giỏ hàng
+                                function updateCartCount(itemCount) {
+                                    if (itemCount > 0) {
+                                        $('#cart-item-1').text(itemCount).show(); // Hiển thị số lượng
+                                    } else {
+                                        $('#cart-item-1').hide(); // Ẩn nếu không có sản phẩm
+                                    }
+                                }
+
+                                // Lấy số lượng giỏ hàng khi tải trang
+                                $.ajax({
+                                    url: '@Url.Action("GetCartItemCount", "Cart")',
+                                    type: 'GET',
+                                    success: function (response) {
+                                        updateCartCount(response.itemCount); // Cập nhật số lượng giỏ hàng
+                                    },
+                                    error: function () {
+                                        console.error('Không thể lấy số lượng giỏ hàng.');
+                                    }
+                                });
+
+                                // Lắng nghe sự kiện cập nhật từ trang chi tiết sản phẩm
+                                $(document).on('cartUpdated', function (event, itemCount) {
+                                    updateCartCount(itemCount); // Cập nhật số lượng trên icon giỏ hàng
+                                });
+                            });
+                        </script>
                         <!-- Icon User -->
                         <div class="inner-user" id="userIcon">
                             <a href="#" class="user-dropdown-toggle">

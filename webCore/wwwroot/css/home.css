@@ -362,6 +362,21 @@ header {
     border: none;
     background: none;
 }
+
+.cart-item-1 {
+    display:none;
+    position: absolute;
+    top: 17px;
+    margin-left: 35px;
+    color: white;
+    border-radius: 50%;
+    background-color: red;
+    padding: 3px 5px;
+    height: 30px;
+    width: 30px;
+    text-align: center;
+    justify-content:center;
+}
 /* ===== SECTION STYLES ===== */
 #section-one {
     padding: 40px 0;
