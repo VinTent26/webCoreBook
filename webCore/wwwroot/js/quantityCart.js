@@ -69,7 +69,7 @@
 });
 */
 
-//////////////
+//////////////Tinh tong tien, xóa sp khi chọn checkbox
 $(document).ready(function () {
     function updateSummary() {
         let totalAmount = 0; // Tổng thành tiền của các sản phẩm được chọn
@@ -163,7 +163,7 @@ $(document).ready(function () {
 });
 
 
-///////////////////////
+///////////////////////áp vc
 
 $(document).ready(function () {
     // Kiểm tra xem có sản phẩm nào được chọn không
@@ -201,7 +201,7 @@ $(document).ready(function () {
 
 
 
-/////
+/////khi quay lại từ trang vc thì vẫn giữ được trạng thái
 $(document).ready(function () {
     // Lưu trạng thái sản phẩm đã chọn lên server
     function saveSelectedProducts() {
@@ -235,9 +235,28 @@ $(document).ready(function () {
     // Khi trạng thái của checkbox thay đổi
     $(".select-item").change(function () {
         saveSelectedProducts(); // Lưu trạng thái sản phẩm đã chọn
+        updateSelectAllState();
     });
-});
 
+    // Khi trạng thái của checkbox "Chọn tất cả" thay đổi
+    $(".select-all").change(function () {
+        const isChecked = $(this).prop("checked");
+        $(".select-item").prop("checked", isChecked); // Chọn hoặc bỏ chọn tất cả các checkbox sản phẩm
+        saveSelectedProducts(); // Lưu trạng thái
+    });
+
+    // Cập nhật trạng thái checkbox "Chọn tất cả"
+    function updateSelectAllState() {
+        const totalItems = $(".select-item").length;
+        const selectedItems = $(".select-item:checked").length;
+
+        // Nếu tất cả các item được chọn, đánh dấu "Chọn tất cả" là checked
+        $(".select-all").prop("checked", totalItems === selectedItems);
+    }
+
+    // Cập nhật trạng thái ban đầu của checkbox "Chọn tất cả"
+    updateSelectAllState();
+});
 
 
 ////////////////

@@ -140,33 +140,74 @@
 
                     <!-- Order Information -->
                     <h4>Thông tin đơn hàng</h4>
-                    <p>Thành tiền: <span class="summary-amount">@ViewData["TotalAmount"]đ</span></p>
+                    <p>
+                        Thành tiền:
+                        @if (ViewData["TotalAmount"] != null)
+                        {
+                        <span class="summary-amount">@ViewData["TotalAmount"]đ</span>
+                        }
+                        else
+                        {
+                            <span class="summary-amount">0đ</span>
+                        }
+                    </p>
 
                     <!-- Tính khuyến mãi từ VoucherDiscount -->
                     @{
-                        decimal totalAmount = (decimal)ViewData["TotalAmount"];
+                        decimal totalAmount = 0;
                         decimal voucherDiscount = 0;
+
+                        // Kiểm tra và lấy TotalAmount từ ViewData
+                        if (ViewData["TotalAmount"] != null)
+                        {
+                            totalAmount = (decimal)ViewData["TotalAmount"];
+                        }
+
+                        // Kiểm tra và lấy VoucherDiscount từ ViewData
                         if (ViewData["VoucherDiscount"] != null)
                         {
                             voucherDiscount = decimal.Parse(ViewData["VoucherDiscount"].ToString());
+                          
                         }
+
                         decimal discountAmount = totalAmount * voucherDiscount / 100;  // Khuyến mãi tính từ VoucherDiscount
                     }
 
                     <!-- Hiển thị phần trăm giảm giá -->
-                    <p>Khuyến mãi: <span class="summary-discount">@discountAmount.ToString("C")</span></p>
+                    <p>
+                        Khuyến mãi:
+                        @if (discountAmount > 0)
+                        {
+                            <span class="summary-discount">@discountAmount.ToString("C")</span>
+                        }
+                        else
+                        {
+                            <span class="summary-discount">0đ</span>
+                        }
+                    </p>
 
                     <!-- Tính Tổng tiền sau khi áp dụng khuyến mãi -->
                     @{
                         decimal finalAmount = totalAmount - discountAmount;  // Tổng tiền sau khi áp dụng khuyến mãi
                     }
-                    <p>Tổng tiền: <span class="summary-total">@finalAmount.ToString("C")</span></p>
 
+                    <p>
+                        Tổng tiền:
+                        @if (finalAmount > 0)
+                        {
+                            <span class="summary-total">@finalAmount.ToString("C")</span>
+                        }
+                        else
+                        {
+                            <span class="summary-total">0đ</span>
+                        }
+                    </p>
 
                     <!-- Payment Button -->
                     <div class="btn_pay mt-3">
                         <button class="btn btn-primary">THANH TOÁN</button>
                     </div>
+
                 </div>
             </div>
         </div>

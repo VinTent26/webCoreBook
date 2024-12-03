@@ -99,7 +99,8 @@ namespace webCore.Controllers
             var selectedItems = cart.Items.Where(item => selectedProductIds.Contains(item.ProductId.ToString())).ToList();
 
             // Tính toán tổng tiền cho các sản phẩm đã chọn
-            decimal totalAmount = selectedItems.Sum(item => item.Price * item.Quantity);
+            decimal totalAmount = selectedItems.Sum(item => (item.Price * (1 - item.DiscountPercentage / 100)) * item.Quantity);
+            totalAmount = Math.Round(totalAmount, 2); // Làm tròn đến 2 chữ số sau dấu thập phân
             decimal discountAmount = 0;
 
             if (!string.IsNullOrEmpty(voucherDiscount))
