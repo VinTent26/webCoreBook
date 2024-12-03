@@ -387,4 +387,33 @@ $(document).ready(function () {
 ////////////////
 
 
+$(document).ready(function () {
+    // Hàm kiểm tra trạng thái của các checkbox
+    function checkSelectedProducts() {
+        // Kiểm tra xem có checkbox nào được chọn không
+        var isAnyItemChecked = $(".select-item:checked").length > 0;
 
+        // Thay đổi nội dung khuyến mãi nếu không có sản phẩm nào được chọn
+        if (isAnyItemChecked) {
+            if (voucherDiscount) {
+                $("#voucher-discount").html('<i class="fa-solid fa-tag"></i> Không có khuyến mãi.');
+            }
+        } else {
+            // Nếu không có sản phẩm nào được chọn, hiển thị "Không có khuyến mãi"
+            $("#voucher-discount").html('<i class="fa-solid fa-tag"></i> Không có khuyến mãi.');
+        }
+    }
+
+    // Lắng nghe sự thay đổi của các checkbox
+    $(".select-item").change(function () {
+        checkSelectedProducts(); // Kiểm tra lại sau mỗi lần thay đổi checkbox
+    });
+    // Lắng nghe sự thay đổi của checkbox select-all
+    $(".select-all").change(function () {
+        // Kiểm tra lại sau khi chọn hoặc bỏ chọn "Chọn tất cả"
+        checkSelectedProducts();
+    });
+
+    // Khởi chạy kiểm tra ban đầu khi trang được tải
+    checkSelectedProducts();
+});

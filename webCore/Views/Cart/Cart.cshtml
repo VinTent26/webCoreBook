@@ -127,11 +127,11 @@
                         <h4>Khuyến mãi</h4>
                         @if (ViewData["VoucherDiscount"] != null)
                         {
-                            <p><i class="fa-solid fa-tag"></i> Giảm @ViewData["VoucherDiscount"]%</p>
+                            <p id="voucher-discount"><i class="fa-solid fa-tag"></i> Giảm @ViewData["VoucherDiscount"]%</p>
                         }
                         else
                         {
-                            <p><i class="fa-solid fa-tag"></i> Không có khuyến mãi.</p>
+                            <p id="voucher-discount"><i class="fa-solid fa-tag"></i> Không có khuyến mãi.</p>
                         }
                         <a href="@Url.Action("VoucherClient", "VoucherClient")" class="apply-discount">Chọn hoặc nhập khuyến mãi khác</a>
                     </div>

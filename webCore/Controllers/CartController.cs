@@ -109,6 +109,7 @@ namespace webCore.Controllers
                 discountAmount = totalAmount * (discountValue / 100);
             }
 
+
             decimal finalAmount = totalAmount - discountAmount;
 
             // Cập nhật các giá trị cần hiển thị vào ViewData
