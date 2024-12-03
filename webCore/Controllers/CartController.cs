@@ -92,8 +92,14 @@ namespace webCore.Controllers
             // Lấy thông tin voucher từ session
             var voucherDiscount = HttpContext.Session.GetString("SelectedVoucher");
 
-            // Nếu có voucher, tính toán giá trị giảm giá và cập nhật ViewData
-            decimal totalAmount = cart.Items.Sum(item => item.Price * item.Quantity);
+            // Lấy danh sách các sản phẩm đã chọn từ session (List<string>)
+            var selectedProductIds = JsonConvert.DeserializeObject<List<string>>(HttpContext.Session.GetString("SelectedProductIds") ?? "[]");
+
+            // Lọc ra các sản phẩm đã chọn trong giỏ hàng để tính tổng tiền
+            var selectedItems = cart.Items.Where(item => selectedProductIds.Contains(item.ProductId.ToString())).ToList();
+
+            // Tính toán tổng tiền cho các sản phẩm đã chọn
+            decimal totalAmount = selectedItems.Sum(item => item.Price * item.Quantity);
             decimal discountAmount = 0;
 
             if (!string.IsNullOrEmpty(voucherDiscount))
@@ -104,23 +110,31 @@ namespace webCore.Controllers
 
             decimal finalAmount = totalAmount - discountAmount;
 
-            // Lấy danh sách các sản phẩm đã chọn từ session (List<string>)
-            var selectedProductIds = JsonConvert.DeserializeObject<List<string>>(HttpContext.Session.GetString("SelectedProductIds") ?? "[]");
-
             // Cập nhật các giá trị cần hiển thị vào ViewData
             ViewData["VoucherDiscount"] = voucherDiscount;  // Voucher giảm giá
             ViewData["TotalAmount"] = totalAmount;           // Tổng tiền trước giảm giá
             ViewData["FinalAmount"] = finalAmount;           // Tổng tiền sau giảm giá
             ViewData["SelectedProductIds"] = selectedProductIds; // Danh sách các sản phẩm đã chọn
 
-            return View(cart.Items); // Trả về danh sách các sản phẩm trong giỏ
+            // Trả về danh sách tất cả các sản phẩm trong giỏ hàng
+            return View(cart.Items); // Trả về tất cả các sản phẩm trong giỏ
         }
 
 
         [HttpPost]
-        public IActionResult SaveSelectedProducts(List<string> selectedProductIds)
+        public IActionResult SaveSelectedProducts([FromBody] List<string> selectedProductIds)
         {
-            // Lưu danh sách sản phẩm đã chọn vào session (dưới dạng string)
+            // Kiểm tra xem dữ liệu có được nhận hay không
+            if (selectedProductIds == null || !selectedProductIds.Any())
+            {
+                // Nếu không có sản phẩm nào được chọn, có thể ghi log hoặc trả về lỗi
+                return Json(new { success = false, message = "No products selected" });
+            }
+
+            // In ra danh sách các sản phẩm đã chọn (logging)
+            Console.WriteLine("Products selected: " + string.Join(", ", selectedProductIds));
+
+            // Lưu danh sách sản phẩm đã chọn vào session
             HttpContext.Session.SetString("SelectedProductIds", JsonConvert.SerializeObject(selectedProductIds));
 
             // Trả về JSON xác nhận thành công

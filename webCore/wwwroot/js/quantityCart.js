@@ -211,14 +211,25 @@ $(document).ready(function () {
             })
             .get();
 
+        // Kiểm tra dữ liệu trước khi gửi lên server
+        console.log('Selected Product IDs:', selectedProductIds);
+
         // Gửi dữ liệu sản phẩm đã chọn lên server
         fetch('/Cart/SaveSelectedProducts', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(selectedProductIds),  // Gửi dưới dạng List<string>
-        });
+            body: JSON.stringify(selectedProductIds),  // Gửi mảng trực tiếp
+        })
+            .then(response => response.json()) // Đảm bảo nhận phản hồi JSON từ server
+            .then(data => {
+                // Xử lý phản hồi từ server nếu cần
+                console.log('Selected products saved successfully');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     }
 
     // Khi trạng thái của checkbox thay đổi
@@ -226,6 +237,8 @@ $(document).ready(function () {
         saveSelectedProducts(); // Lưu trạng thái sản phẩm đã chọn
     });
 });
+
+
 
 ////////////////
 
