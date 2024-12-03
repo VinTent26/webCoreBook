@@ -67,10 +67,16 @@ namespace webCore.Controllers
             return Json(new { success = true, message = "Sản phẩm đã được thêm vào giỏ hàng!" });
         }
 
+        [ServiceFilter(typeof(SetLoginStatusFilter))]
         // Hiển thị giỏ hàng của người dùng
         [HttpGet]
         public async Task<IActionResult> Cart()
         {
+            // Kiểm tra trạng thái đăng nhập từ session
+            var isLoggedIn = HttpContext.Session.GetString("UserToken") != null;
+
+            // Truyền thông tin vào ViewBag hoặc Model để sử dụng trong View
+            ViewBag.IsLoggedIn = isLoggedIn;
             // Lấy UserId từ session
             var userId = HttpContext.Session.GetString("UserToken");
             if (string.IsNullOrEmpty(userId))

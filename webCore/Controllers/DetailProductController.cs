@@ -27,8 +27,15 @@ namespace webCore.Controllers
             _categoryService = categoryService;
         }
 
+        [ServiceFilter(typeof(SetLoginStatusFilter))]
         public async Task<IActionResult> DetailProduct(string id)
         {
+            // Kiểm tra trạng thái đăng nhập từ session
+            var isLoggedIn = HttpContext.Session.GetString("UserToken") != null;
+
+            // Truyền thông tin vào ViewBag hoặc Model để sử dụng trong View
+            ViewBag.IsLoggedIn = isLoggedIn;
+
             if (string.IsNullOrEmpty(id))
             {
                 return NotFound("Product ID is required.");

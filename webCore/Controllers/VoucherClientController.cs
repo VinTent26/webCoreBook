@@ -22,6 +22,7 @@ namespace webCore.Controllers
         // Phương thức hiển thị danh sách các voucher
         public async Task<IActionResult> VoucherClient()
         {
+
             var userId = HttpContext.Session.GetString("UserToken");
             var voucherDiscount = HttpContext.Session.GetString("SelectedVoucher");
 
