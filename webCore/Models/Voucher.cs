@@ -15,9 +15,6 @@ namespace webCore.Models
         [BsonElement("Code")]
         public string Code { get; set; }
 
-        [BsonElement("DiscountType")]
-        public string DiscountType { get; set; } // "Percentage" or "FixedAmount"
-
         [BsonElement("DiscountValue")]
         public decimal DiscountValue { get; set; }
 

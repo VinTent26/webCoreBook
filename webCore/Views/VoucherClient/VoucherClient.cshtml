@@ -39,20 +39,21 @@
                         <div class="col-6 col-md-4 col-lg-2">
                             <div class="card shadow-sm h-100">
                                 <div class="card-body">
+                                    <h5 class="card-title">@voucher.Code</h5>
                                     <p class="card-text">
-                                        @if (voucher.DiscountType == "Percentage")
-                                        {
-                                            @($"{voucher.DiscountValue} % Giảm giá")
-                                        }
-                                        else
-                                        {
-                                            @($"{voucher.DiscountValue:C} Giảm giá")
-                                        }
-
+                                        @($"{voucher.DiscountValue} % Giảm giá")
                                     </p>
                                     <p class="card-text">Áp dụng từ: @voucher.StartDate.ToString("dd/MM/yyyy")</p>
                                     <p class="card-text">Đến: @voucher.EndDate.ToString("dd/MM/yyyy")</p>
-                                    <button class="btn btn-primary w-100 apply-voucher" data-discount="@voucher.DiscountValue" data-discount-type="@voucher.DiscountType">Áp dụng</button>
+
+                                    <!-- Lưu thông tin voucher vào data-attributes -->
+                                    <button class="btn btn-primary w-100 apply-voucher"
+                                            data-code="@voucher.Code"
+                                            data-discount="@voucher.DiscountValue"
+                                            data-start-date="@voucher.StartDate.ToString("yyyy-MM-dd")"
+                                            data-end-date="@voucher.EndDate.ToString("yyyy-MM-dd")">
+                                        Áp dụng
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -90,5 +91,7 @@
             });
         });
     </script>
+
+
 </body>
 </html>

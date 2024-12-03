@@ -57,60 +57,69 @@
                                 foreach (var item in Model)
                                 {
                                     var discountedPrice = item.Price * (1 - item.DiscountPercentage / 100);
-                               
-                            <tr class="cart-item" data-product-id="@item.ProductId">
-                                <td class="d-flex ">
-                                    <input type="checkbox" class="select-item" data-price="@discountedPrice" data-quantity="@item.Quantity" data-id="@item.ProductId" />
-                                    <img src="@item.Image" alt="@item.Title" class="cart-image" />
-                                    <div class="cart-item-details">
-                                        <span>@item.Title</span>
+                                    var productId = item.ProductId.ToString();  // Chuyển ID sản phẩm thành string
+
+                        <tr class="cart-item" data-product-id="@productId">
+                            <td class="d-flex">
+                                <input type="checkbox" class="select-item"
+                                       data-price="@discountedPrice"
+                                       data-quantity="@item.Quantity"
+                                       data-id="@productId"
+                                       @if (ViewData["SelectedProductIds"] != null && ((List<string>)ViewData["SelectedProductIds"]).Contains(productId)) { @: checked
+                                       }
+                                       />
+
+                                <img src="@item.Image" alt="@item.Title" class="cart-image" />
+                                <div class="cart-item-details">
+                                    <span>@item.Title</span>
+                                </div>
+                            </td>
+                            <td class="price-column" data-price="@item.Price.ToString("G", System.Globalization.CultureInfo.InvariantCulture)"
+                                data-discount="@item.DiscountPercentage.ToString("G", System.Globalization.CultureInfo.InvariantCulture)">
+                                <span>@discountedPrice.ToString("C")</span>
+                                <div class="price">
+                                    <small>@item.Price.ToString("C")</small> <!-- Giá gốc -->
+                                </div>
+                            </td>
+                            <td class="quantity-column">
+                                <div class="d-flex quantity">
+                                    <div class="input-group mb-3">
+                                        <button class="btn btn-outline-secondary btn-minus" type="button">
+                                            <i class="bi bi-dash"></i>
+                                        </button>
+                                        <input type="text" class="form-control text-center quantity-input" value="@item.Quantity" min="1" max="10">
+                                        <button class="btn btn-outline-secondary btn-plus" type="button">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
                                     </div>
-                                </td>
-                                <td class="price-column" data-price="@item.Price.ToString("G", System.Globalization.CultureInfo.InvariantCulture)"
-                                    data-discount="@item.DiscountPercentage.ToString("G", System.Globalization.CultureInfo.InvariantCulture)">
-                                    <span>@discountedPrice.ToString("C")</span>
-                                    <div class="price">
-                                        <small>@item.Price.ToString("C")</small> <!-- Giá gốc -->
-                                    </div>
-                                </td>
-                                <td class="quantity-column">
-                                    <div class="d-flex quantity">
-                                        <div class="input-group mb-3">
-                                            <button class="btn btn-outline-secondary btn-minus" type="button">
-                                                <i class="bi bi-dash"></i>
-                                            </button>
-                                            <input type="text" class="form-control text-center quantity-input" value="@item.Quantity" min="1" max="10">
-                                            <button class="btn btn-outline-secondary btn-plus" type="button">
-                                                <i class="bi bi-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="price-column2" data-total="@((discountedPrice * item.Quantity).ToString("G", System.Globalization.CultureInfo.InvariantCulture))">
-                                    @((discountedPrice * item.Quantity).ToString("C"))
-                                </td>
+                                </div>
+                            </td>
+                            <td class="price-column2" data-total="@((discountedPrice * item.Quantity).ToString("G", System.Globalization.CultureInfo.InvariantCulture))">
+                                @((discountedPrice * item.Quantity).ToString("C"))
+                            </td>
 
 
-                                <td>
-                                    <button class="btn btn-danger btn-sm delete-product">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                                }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="5" class="text-center">Giỏ hàng trống</td>
-                                </tr>
-                            }
+                            <td>
+                                <button class="btn btn-danger btn-sm delete-product">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                        <tr>
+                            <td colspan="5" class="text-center">Giỏ hàng trống</td>
+                        </tr>
+                    }
                         </tbody>
                     </table>
                 </div>
             </div>
 
             <!-- Cart Summary Section -->
+    
             <div class="col-md-4 section_2">
                 <div class="cart-summary">
                     <!-- Discount Section -->
@@ -118,7 +127,7 @@
                         <h4>Khuyến mãi</h4>
                         @if (ViewData["VoucherDiscount"] != null)
                         {
-                            <p><i class="fa-solid fa-tag"></i> Giảm @ViewData["VoucherDiscount"]</p>
+                            <p><i class="fa-solid fa-tag"></i> Giảm @ViewData["VoucherDiscount"]%</p>
                         }
                         else
                         {
@@ -131,16 +140,35 @@
 
                     <!-- Order Information -->
                     <h4>Thông tin đơn hàng</h4>
-                    <p>Thành tiền: <span class="summary-amount">0đ</span></p>
-                    <p>Khuyến mãi: <span class="summary-discount">@ViewData["VoucherDiscount"]đ</span></p>
-                    <p>Tổng tiền: <span class="summary-total">0đ</span></p>
+                    <p>Thành tiền: <span class="summary-amount">@ViewData["TotalAmount"]đ</span></p>
+
+                    <!-- Tính khuyến mãi từ VoucherDiscount -->
+                    @{
+                        decimal totalAmount = (decimal)ViewData["TotalAmount"];
+                        decimal voucherDiscount = 0;
+                        if (ViewData["VoucherDiscount"] != null)
+                        {
+                            voucherDiscount = decimal.Parse(ViewData["VoucherDiscount"].ToString());
+                        }
+                        decimal discountAmount = totalAmount * voucherDiscount / 100;  // Khuyến mãi tính từ VoucherDiscount
+                    }
+
+                    <!-- Hiển thị phần trăm giảm giá -->
+                    <p>Khuyến mãi: <span class="summary-discount">@discountAmount.ToString("C")</span></p>
+
+                    <!-- Tính Tổng tiền sau khi áp dụng khuyến mãi -->
+                    @{
+                        decimal finalAmount = totalAmount - discountAmount;  // Tổng tiền sau khi áp dụng khuyến mãi
+                    }
+                    <p>Tổng tiền: <span class="summary-total">@finalAmount.ToString("C")</span></p>
+
 
                     <!-- Payment Button -->
                     <div class="btn_pay mt-3">
                         <button class="btn btn-primary">THANH TOÁN</button>
                     </div>
                 </div>
-                </div>
+            </div>
         </div>
     </div>
      

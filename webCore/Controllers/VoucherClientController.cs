@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using webCore.Models;
@@ -22,6 +23,7 @@ namespace webCore.Controllers
         public async Task<IActionResult> VoucherClient()
         {
             var userId = HttpContext.Session.GetString("UserToken");
+            var voucherDiscount = HttpContext.Session.GetString("SelectedVoucher");
 
             // Kiểm tra nếu chưa đăng nhập, điều hướng về trang đăng nhập
             if (string.IsNullOrEmpty(userId))
@@ -29,23 +31,22 @@ namespace webCore.Controllers
                 return RedirectToAction("Sign_in", "User");
             }
 
-            // Lấy tất cả voucher có trạng thái 'IsActive' là true
+            // lấy tất cả voucher có trạng thái 'isActive' là true
             var vouchers = await _voucherService.GetActiveVouchersAsync();
 
             // Trả về view với danh sách voucher
             return View(vouchers);
         }
 
-        // API để lưu voucher vào session khi người dùng áp dụng
-
         [HttpPost]
-        public IActionResult ApplyVoucher(string discount, string discountType)
+        public IActionResult ApplyVoucher(string discount)
         {
             // Lưu thông tin voucher vào session
-            HttpContext.Session.SetString("SelectedVoucher", $"{discount},{discountType}");
+            HttpContext.Session.SetString("SelectedVoucher", $"{discount}");
 
             // Trả về JSON xác nhận thành công
             return Json(new { success = true });
         }
+
     }
 }

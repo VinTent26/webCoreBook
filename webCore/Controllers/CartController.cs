@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,12 @@ namespace webCore.Controllers
     public class CartController : Controller
     {
         private readonly CartService _cartService;
+        private readonly VoucherClientService _voucherService;
 
-        public CartController(CartService cartService)
+        public CartController(CartService cartService, VoucherClientService voucherService)
         {
             _cartService = cartService;
+            _voucherService = voucherService;
         }
 
         // Thêm sản phẩm vào giỏ hàng
@@ -65,7 +68,6 @@ namespace webCore.Controllers
         }
 
         // Hiển thị giỏ hàng của người dùng
-
         [HttpGet]
         public async Task<IActionResult> Cart()
         {
@@ -80,9 +82,51 @@ namespace webCore.Controllers
             // Lấy giỏ hàng của người dùng từ dịch vụ
             var cart = await _cartService.GetCartByUserIdAsync(userId);
 
-            // Trả về view với danh sách sản phẩm trong giỏ, hoặc danh sách trống nếu giỏ hàng null
-            return View(cart?.Items ?? new List<CartItem>());
+            // Kiểm tra xem giỏ hàng có tồn tại và có sản phẩm hay không
+            if (cart == null || cart.Items == null || cart.Items.Count == 0)
+            {
+                // Nếu giỏ hàng rỗng, trả về view với danh sách trống
+                return View(new List<CartItem>());
+            }
+
+            // Lấy thông tin voucher từ session
+            var voucherDiscount = HttpContext.Session.GetString("SelectedVoucher");
+
+            // Nếu có voucher, tính toán giá trị giảm giá và cập nhật ViewData
+            decimal totalAmount = cart.Items.Sum(item => item.Price * item.Quantity);
+            decimal discountAmount = 0;
+
+            if (!string.IsNullOrEmpty(voucherDiscount))
+            {
+                decimal discountValue = decimal.Parse(voucherDiscount);
+                discountAmount = totalAmount * (discountValue / 100);
+            }
+
+            decimal finalAmount = totalAmount - discountAmount;
+
+            // Lấy danh sách các sản phẩm đã chọn từ session (List<string>)
+            var selectedProductIds = JsonConvert.DeserializeObject<List<string>>(HttpContext.Session.GetString("SelectedProductIds") ?? "[]");
+
+            // Cập nhật các giá trị cần hiển thị vào ViewData
+            ViewData["VoucherDiscount"] = voucherDiscount;  // Voucher giảm giá
+            ViewData["TotalAmount"] = totalAmount;           // Tổng tiền trước giảm giá
+            ViewData["FinalAmount"] = finalAmount;           // Tổng tiền sau giảm giá
+            ViewData["SelectedProductIds"] = selectedProductIds; // Danh sách các sản phẩm đã chọn
+
+            return View(cart.Items); // Trả về danh sách các sản phẩm trong giỏ
         }
+
+
+        [HttpPost]
+        public IActionResult SaveSelectedProducts(List<string> selectedProductIds)
+        {
+            // Lưu danh sách sản phẩm đã chọn vào session (dưới dạng string)
+            HttpContext.Session.SetString("SelectedProductIds", JsonConvert.SerializeObject(selectedProductIds));
+
+            // Trả về JSON xác nhận thành công
+            return Json(new { success = true });
+        }
+
         [HttpPost]
         public async Task<IActionResult> DeleteProduct(string productId)
         {
