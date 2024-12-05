@@ -8,5 +8,9 @@ namespace webCore.Controllers
         {
             return View();
         }
+        public IActionResult Payment2()
+        {
+            return View();
+        }
     }
 }
