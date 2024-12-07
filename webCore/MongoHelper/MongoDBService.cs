@@ -18,6 +18,7 @@ namespace webCore.Services
         internal readonly IMongoCollection<Voucher> _voucherCollection;
         internal readonly IMongoCollection<Category> _categoryCollection;
         private readonly IMongoDatabase _mongoDatabase;
+     
 
 
         public MongoDBService(IConfiguration configuration)
@@ -31,7 +32,8 @@ namespace webCore.Services
             _detailProductCollection= mongoDatabase.GetCollection<Product_admin>("Product");
             _cartCollection= mongoDatabase.GetCollection<Cart>("Cart");
             _voucherCollection = mongoDatabase.GetCollection<Voucher>("Vouchers");
-
+    
+           
         }
         public async Task<Product_admin> GetProductByIdAsync(string id)
         {

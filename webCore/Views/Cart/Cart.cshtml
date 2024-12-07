@@ -205,7 +205,9 @@
 
                     <!-- Payment Button -->
                     <div class="btn_pay mt-3">
-                        <button class="btn btn-primary">THANH TOÁN</button>
+                        <form action="@Url.Action("Checkout", "Cart")" method="get">
+                            <button type="submit" class="btn btn-success btn-block">Thanh toán</button>
+                        </form>
                     </div>
 
                 </div>

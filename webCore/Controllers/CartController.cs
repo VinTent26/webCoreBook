@@ -235,5 +235,64 @@ namespace webCore.Controllers
 
             return Json(new { success = false, message = "Sản phẩm không tồn tại trong giỏ hàng." });
         }
+        [ServiceFilter(typeof(SetLoginStatusFilter))]
+        [HttpGet]
+        public async Task<IActionResult> Checkout()
+        {
+            // Kiểm tra trạng thái đăng nhập từ session
+            var userId = HttpContext.Session.GetString("UserToken");
+            if (string.IsNullOrEmpty(userId))
+            {
+                // Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập
+                return RedirectToAction("Sign_in", "User");
+            }
+
+            // Lấy giỏ hàng của người dùng từ dịch vụ
+            var cart = await _cartService.GetCartByUserIdAsync(userId);
+
+            if (cart == null || cart.Items == null || cart.Items.Count == 0)
+            {
+                // Nếu giỏ hàng rỗng, trả về trang giỏ hàng
+                return RedirectToAction("Cart");
+            }
+
+            // Lấy thông tin voucher từ session
+            var voucherDiscount = HttpContext.Session.GetString("SelectedVoucher");
+
+            // Lấy danh sách các sản phẩm đã chọn từ session
+            var selectedProductIds = JsonConvert.DeserializeObject<List<string>>(HttpContext.Session.GetString("SelectedProductIds") ?? "[]");
+
+            // Lọc ra các sản phẩm đã chọn trong giỏ hàng để tính tổng tiền
+            var selectedItems = cart.Items.Where(item => selectedProductIds.Contains(item.ProductId)).ToList();
+
+            // Tính toán tổng tiền cho các sản phẩm đã chọn
+            decimal totalAmount = selectedItems.Sum(item => (item.Price * (1 - item.DiscountPercentage / 100)) * item.Quantity);
+            totalAmount = Math.Round(totalAmount, 2); // Làm tròn đến 2 chữ số sau dấu thập phân
+            decimal discountAmount = 0;
+
+            if (!string.IsNullOrEmpty(voucherDiscount))
+            {
+                decimal discountValue = decimal.Parse(voucherDiscount);
+                discountAmount = totalAmount * (discountValue / 100);
+            }
+
+            decimal finalAmount = totalAmount - discountAmount;
+
+            // Cập nhật các giá trị cần hiển thị vào ViewData
+            ViewData["VoucherDiscount"] = voucherDiscount;  // Voucher giảm giá
+            ViewData["TotalAmount"] = totalAmount;           // Tổng tiền trước giảm giá
+            ViewData["FinalAmount"] = finalAmount;           // Tổng tiền sau giảm giá
+            ViewData["SelectedProductIds"] = selectedProductIds; // Danh sách các sản phẩm đã chọn
+
+            // Trả về view thanh toán và truyền thông tin vào view
+            return View(new CheckoutViewModel
+            {
+                Items = selectedItems,
+                TotalAmount = totalAmount,
+                DiscountAmount = discountAmount,
+                FinalAmount = finalAmount,
+                VoucherDiscount = voucherDiscount
+            });
+        }
     }
 }
