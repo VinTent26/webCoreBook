@@ -26,7 +26,7 @@ namespace webCore.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
             var adminName = HttpContext.Session.GetString("AdminName");
             ViewBag.AdminName = adminName;
@@ -35,27 +35,35 @@ namespace webCore.Controllers
 
             try
             {
+                const int pageSize = 7; // Number of products per page
                 var products = await _CategoryProductCollection.GetProduct();
-                var categories = await _CategoryProductCollection.GetCategory(); // Lấy danh sách danh mục
+                var categories = await _CategoryProductCollection.GetCategory(); // Get categories list
 
-                // Tạo một từ điển để ánh xạ CategoryId đến CategoryTitle
+                // Create a dictionary to map CategoryId to CategoryTitle
                 var categoryDictionary = categories.ToDictionary(c => c.Id, c => c.Title);
 
-
-
-                // Gán CategoryTitle cho từng sản phẩm
+                // Assign CategoryTitle to each product
                 foreach (var product in products)
                 {
                     if (!string.IsNullOrEmpty(product.CategoryId) && categoryDictionary.TryGetValue(product.CategoryId, out var categoryTitle))
                     {
-                        product.CategoryTitle = categoryTitle; // Gán title từ từ điển
+                        product.CategoryTitle = categoryTitle;
                     }
                 }
 
-                // Sắp xếp sản phẩm theo vị trí
+                // Sort products by position
                 var sortedProducts = products.OrderBy(c => c.Position).ToList();
-                ViewBag.Products = sortedProducts; // Gán danh sách sản phẩm đã sắp xếp vào ViewBag
-                return View(sortedProducts); // Trả về view với danh sách sản phẩm đã sắp xếp
+
+                // Pagination logic
+                var totalItems = sortedProducts.Count;
+                var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+                var productsToDisplay = sortedProducts.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                ViewBag.Products = productsToDisplay; // Paginated products
+                ViewBag.TotalPages = totalPages;
+                ViewBag.CurrentPage = page;
+
+                return View(productsToDisplay); // Return paginated products to view
             }
             catch (Exception ex)
             {
@@ -63,6 +71,7 @@ namespace webCore.Controllers
                 return View("Error");
             }
         }
+
         public IActionResult Create()
         {
             var adminName = HttpContext.Session.GetString("AdminName");

@@ -23,7 +23,7 @@ namespace webCore.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
             var adminName = HttpContext.Session.GetString("AdminName");
             ViewBag.AdminName = adminName;
@@ -33,7 +33,6 @@ namespace webCore.Controllers
             try
             {
                 var categories = await _CategoryProductCollection.GetCategory();
-
                 foreach (var category in categories)
                 {
                     if (!string.IsNullOrEmpty(category.ParentId))
@@ -43,8 +42,23 @@ namespace webCore.Controllers
                     }
                 }
 
+                // Sort categories based on position
                 var sortedCategories = categories.OrderBy(c => c.Position).ToList();
-                return View(sortedCategories);
+
+                // Pagination logic
+                int itemsPerPage = 5;
+                int skip = (page - 1) * itemsPerPage;
+                var pagedCategories = sortedCategories.Skip(skip).Take(itemsPerPage).ToList();
+
+                // Total number of categories to calculate total pages
+                int totalCategories = sortedCategories.Count();
+                int totalPages = (int)Math.Ceiling(totalCategories / (double)itemsPerPage);
+
+                // Pass pagination information to the view
+                ViewBag.CurrentPage = page;
+                ViewBag.TotalPages = totalPages;
+
+                return View(pagedCategories);
             }
             catch (Exception ex)
             {
@@ -52,6 +66,7 @@ namespace webCore.Controllers
                 return View("Error");
             }
         }
+
 
         public IActionResult Create()
         {

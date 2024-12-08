@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using webCore.Models;
 using webCore.MongoHelper;
@@ -18,16 +19,29 @@ namespace webCore.Controllers
         {
             _voucherService = voucherService;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
+            // Number of items per page
+            const int pageSize = 5;
+
             // Fetch admin name from session
             var adminName = HttpContext.Session.GetString("AdminName");
             ViewBag.AdminName = adminName;
-            // Fetch accounts asynchronously from MongoDB
-            var vouchers = await _voucherService.GetVouchers();
-            return View(vouchers); // Pass the accounts to the view
-          
+
+            // Fetch total number of vouchers
+            var totalVouchers = await _voucherService.GetVouchers();
+            var totalPages = (int)Math.Ceiling(totalVouchers.Count / (double)pageSize);
+
+            // Fetch vouchers for the current page
+            var vouchers = totalVouchers.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            // Pass the vouchers and pagination info to the view
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+
+            return View(vouchers);
         }
+
 
         // GET: VoucherController/Create - Giao diện tạo voucher cho Admin
         public IActionResult Create()
