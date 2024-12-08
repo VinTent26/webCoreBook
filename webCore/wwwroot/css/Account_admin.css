@@ -1,0 +1,121 @@
+/* Container cho nút Add Account */
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+/* Nút thêm */
+.add-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px; /* Thêm padding bên trái và bên phải */
+    background-color: #28a745; /* Màu xanh lá cây Bootstrap */
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s; /* Thêm hiệu ứng chuyển động */
+}
+
+    .add-btn:hover {
+        background-color: #218838; /* Màu xanh đậm hơn khi hover */
+        transform: scale(1.05); /* Tăng kích thước khi hover */
+    }
+
+.icon {
+    font-size: 1.2em;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-top: 20px;
+    margin-bottom: 20px; /* Khoảng cách dưới tiêu đề */
+}
+
+/* Bảng danh sách tài khoản */
+.account-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    border-radius: 8px; /* Làm tròn các góc bảng */
+    overflow: hidden; /* Ẩn các cạnh để có góc tròn */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Đổ bóng cho bảng */
+}
+
+    .account-table thead {
+        background-color: #007bff; /* Màu xanh Bootstrap */
+        color: #ffffff;
+    }
+
+    .account-table th,
+    .account-table td {
+        padding: 15px; /* Thay đổi padding cho ô */
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        transition: background-color 0.3s; /* Thêm hiệu ứng chuyển động */
+    }
+
+    .account-table th {
+        font-weight: bold;
+    }
+
+    .account-table tbody tr:hover {
+        background-color: #f8f9fa; /* Màu nền khi hover lên hàng */
+    }
+
+/* Canh phải tiêu đề và ô chứa các nút */
+.actions-header,
+.actions-cell {
+    text-align: right;
+}
+
+/* Nút chỉnh sửa và xóa */
+.icon-btn {
+    background: none;
+    border: none;
+    color: #555;
+    font-size: 18px;
+    cursor: pointer;
+    margin-left: 5px;
+    transition: color 0.3s;
+}
+
+    .icon-btn:hover {
+        color: #000; /* Đổi màu chữ khi hover */
+    }
+
+.edit-btn {
+    color: #ffa500; /* Màu cam cho nút sửa */
+}
+
+.delete-btn {
+    color: #e74c3c; /* Màu đỏ cho nút xóa */
+}
+
+.edit-btn:hover {
+    color: #ff8c00; /* Màu cam đậm hơn khi hover */
+}
+
+.delete-btn:hover {
+    color: #c0392b; /* Màu đỏ đậm hơn khi hover */
+}
+
+/* Styles for the status cell */
+.status-active {
+    color: #28a745; /* Green for active status */
+    font-weight: bold;
+}
+
+.status-inactive {
+    color: #dc3545; /* Red for inactive status */
+    font-weight: bold;
+}
+
+.status-pending {
+    color: #ffc107; /* Yellow for pending status */
+    font-weight: bold;
+}

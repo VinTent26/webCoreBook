@@ -50,7 +50,8 @@ namespace webCore.Models
 
         public string CategoryTitle { get; set; }
 
-        public FeaturedStatus Featured { get; set; } = FeaturedStatus.None;
+        public int Featured { get; set; }
+
 
         [MaxLength(50)]
         public string Status { get; set; }
