@@ -27,7 +27,8 @@ namespace webCore
             services.AddSingleton<CloudinaryService>();
             services.AddSingleton<MongoDBService>();
             services.AddSingleton<VoucherService>();
-            services.AddScoped<AccountService>();
+            services.AddSingleton<AccountService>();
+            services.AddSingleton<CategoryProduct_adminService>();
 
             // Cấu hình Session với các tùy chọn
             services.AddSession(options =>
