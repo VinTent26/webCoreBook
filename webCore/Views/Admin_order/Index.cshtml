@@ -1,69 +1,75 @@
-﻿
+﻿@model List<webCore.Models.Order>
 
 @{
     ViewData["Title"] = "Index";
     Layout = "Admin";
 }
+
 <link rel="stylesheet" href="/css/Account_admin.css" />
 
 <div class="container">
     <h1>Đơn hàng cần xác nhận</h1>
 
-    <table class="account-table">
-        <thead>
-            <tr>
-                <th>Khách hàng</th>
-                <th>Ngày đặt hàng</th>
-                <th>Đơn hàng</th>
-                <th>Trạng thái</th>
-                <th class="actions-header">Thao tác</th>
-            </tr>
-        </thead>
-        <tbody>
-
+        <table class="account-table">
+            <thead>
                 <tr>
-                    <td>Khách hàng</td>
-                    <td>Ngày đặt</td>
-                    <td>Đơn hàng</td>
-
-                    <td class="status-Status.ToLower()">
-                    </td>
-                    <td class="actions-cell">
-                        <button class="btn btn-warning btn-sm">
-                            <i class="fa-regular fa-eye"></i>
-                        </button>
-                        <button class="btn btn-primary btn-sm">
-                            <i class="fa-solid fa-check"></i>
-                        </button>
-                        <button class="btn btn-danger btn-sm">
-                            <i class="fa-solid fa-times"></i> 
-                        </button>
-                    </td>
+                    <th>Khách hàng</th>
+                    <th>Ngày đặt hàng</th>
+                    <th>Tổng sản phẩm</th>
+                    <th>Trạng thái</th>
+                    <th class="actions-header">Thao tác</th>
                 </tr>
-            
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td>@order.FullName</td>
+                        <td>@order.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                        <td>
+                            @if (order.Items != null && order.Items.Any())
+                            {
+                                var totalQuantity = order.Items.Sum(item => item.Quantity); // Tính tổng số lượng sản phẩm
+                                @totalQuantity
+                            }
+                            else
+                            {
+                                <span>0</span> <!-- Nếu không có sản phẩm, hiển thị số 0 -->
+                            }
+                        </td>
+                    <td>
+                        <span style="color: @(order.Status == "Đang chờ duyệt" ? "orange" :
+                         order.Status == "Đã duyệt" ? "red" :
+                         order.Status == "Đã hủy" ? "green" : "black");">
+                            @order.Status
+                        </span>
+                    </td>
 
+                        <td class="actions-cell">
+                            <button class="btn btn-warning btn-sm" onclick="window.location.href='@Url.Action("Detail", "Admin_order", new { id = order.Id })'">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
 
+                        <form asp-action="UpdateStatus" method="post" style="display:inline-block;">
+                            <input type="hidden" name="orderId" value="@order.Id" />
+                            <input type="hidden" name="newStatus" value="Đã duyệt" />
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="fa-solid fa-check"></i> 
+                            </button>
+                        </form>
 
-    <!-- Pagination -->
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-            <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1">Trước</a>
-            </li>
-            <li class="page-item active" aria-current="page">
-                <a class="page-link" href="#">1</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">2</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">3</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">Tiếp theo</a>
-            </li>
-        </ul>
-    </nav>
+                        <form asp-action="UpdateStatus" method="post" style="display:inline-block;">
+                            <input type="hidden" name="orderId" value="@order.Id" />
+                            <input type="hidden" name="newStatus" value="Đã hủy" /> 
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="fa-solid fa-times"></i>
+                            </button>
+                        </form>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    
 </div>

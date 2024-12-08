@@ -3,6 +3,7 @@
     ViewData["Title"] = "Create";
     Layout = "Admin";
 }
+<script src="https://cdn.tiny.cloud/1/YOUR_API_KEY/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 <link rel="stylesheet" href="/css/create_account.css" />
 
 <div class="form-container">
@@ -29,7 +30,8 @@
         </div>
 
         <label for="Description">Mô tả</label>
-        <input type="text" id="Description" name="Description" />
+        <!-- Thay textarea này bằng TinyMCE -->
+        <textarea id="Description" name="Description" rows="5" cols="90"></textarea>
 
         <div class="status">
             <label>Đặc trưng</label>
@@ -79,4 +81,13 @@
 </div>
 
 <script src="/js/upload_img.js"></script>
+<!-- Khởi tạo TinyMCE cho textarea -->
+<script>
+    tinymce.init({
+        selector: '#Description', // Thay bằng id của textarea
+        plugins: 'advlist autolink lists link image charmap print preview anchor',
+        toolbar: 'undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist outdent indent | removeformat | help',
+        menubar: false
+    });
+</script>
 

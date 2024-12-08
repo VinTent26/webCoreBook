@@ -68,7 +68,17 @@ namespace webCore.Controllers
             }
 
             decimal totalAmount = cart.Items.Sum(item => item.Price * item.Quantity);
-            decimal finalAmount = totalAmount;
+            // Lấy voucher giảm giá
+            var voucherDiscount = HttpContext.Session.GetString("SelectedVoucher");
+            decimal discountAmount = 0;
+
+            if (!string.IsNullOrEmpty(voucherDiscount))
+            {
+                decimal discountValue = decimal.Parse(voucherDiscount);
+                discountAmount = totalAmount * (discountValue / 100);
+            }
+
+            decimal finalAmount = totalAmount - discountAmount;
 
             // Lưu đơn hàng vào MongoDB với trạng thái "pending"
             var order = new Order
@@ -80,7 +90,7 @@ namespace webCore.Controllers
                 Items = cart.Items,
                 TotalAmount = totalAmount,
                 FinalAmount = finalAmount,
-                Status = "pending",
+                Status = "Đang chờ duyệt",
                 CreatedAt = DateTime.UtcNow
             };
 

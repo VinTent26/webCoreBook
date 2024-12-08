@@ -103,7 +103,7 @@ namespace webCore.Controllers
 
                 product.Id = Guid.NewGuid().ToString();
                 product.CategoryId = categoryid;
-
+                product.Description = product.Description;
                 // Lấy CategoryTitle từ danh mục
                 var category = await _CategoryProductCollection.GetCategoryByIdAsync(categoryid);
                 if (category != null)

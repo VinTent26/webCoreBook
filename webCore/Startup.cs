@@ -65,6 +65,7 @@ namespace webCore
             services.AddScoped<VoucherService>();
             services.AddScoped<AccountService>();
             services.AddScoped<CategoryProduct_adminService>();
+            services.AddScoped<Order_adminService>();
 
             // Add session management
             services.AddDistributedMemoryCache();

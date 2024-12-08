@@ -27,7 +27,8 @@
         @Html.EditorFor(m => m.Title, new { htmlAttributes = new { @id = "editTitle", @required = "required" } })
 
         <label for="Description">Mô tả</label>
-        @Html.EditorFor(m => m.Description, new { htmlAttributes = new { @id = "editDescription" } })
+        @Html.TextAreaFor(m => m.Description, new { @id = "editDescription", @rows = 4, @cols = 90 })
+
 
         <label for="ParentId">Danh mục cha</label>
         @Html.DropDownListFor(m => m.ParentId, new SelectList(ViewBag.Categories, "Id", "Title"), "Không có", new { @id = "ParentId", @class = "form-control" })

@@ -39,7 +39,8 @@
         <img id="preview" alt="Image Preview" style="max-width: 200px; max-height: 200px; display: none;" />
 
         <label for="Description">Mô tả</label>
-        @Html.EditorFor(m => m.Description, new { htmlAttributes = new { @id = "editDescription" } })
+        @Html.TextAreaFor(m => m.Description, new { @id = "editDescription", @rows = 4, @cols = 50 })
+
 
         <div class="status">
             <label>Đặc trưng</label>
