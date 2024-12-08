@@ -267,6 +267,24 @@ footer {
     padding-right: 0;
 }
 
+.form-group-wrapper {
+    float: right;
+}
+
+.total-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    max-width: 300px;
+    margin-bottom: 20px;
+}
+
+.short-input {
+    width: 100%; /* Đảm bảo input nằm gọn trong .total-container */
+    text-align: right;
+}
+
+
 /* Footer Logo */
 .footer-logo a {
     font-size: 44px;

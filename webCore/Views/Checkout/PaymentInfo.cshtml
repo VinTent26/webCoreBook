@@ -62,13 +62,15 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="form-group">
-                    <label for="TotalAmount">Tổng Tiền</label>
-                    <input type="text" class="form-control" id="TotalAmount" value="@Model.TotalAmount" disabled />
-                </div>
-                <div class="form-group">
-                    <label for="FinalAmount">Số Tiền Cần Thanh Toán</label>
-                    <input type="text" class="form-control" id="FinalAmount" value="@Model.FinalAmount" disabled />
+                <div class="form-group-wrapper">
+                    <div class="form-group total-container text-right">
+                        <label for="TotalAmount">Tổng Tiền</label>
+                        <input type="text" class="form-control short-input text-right" id="TotalAmount" value="@Model.TotalAmount" disabled />
+                    </div>
+                    <div class="form-group total-container text-right">
+                        <label for="FinalAmount">Số Tiền Cần Thanh Toán</label>
+                        <input type="text" class="form-control short-input text-right" id="FinalAmount" value="@Model.FinalAmount" disabled />
+                    </div>
                 </div>
             </div>
             <div class="col-md-4 section_2">
@@ -86,7 +88,9 @@
                             <label for="Address">Địa chỉ</label>
                             <input type="text" class="form-control" id="Address" name="Address" required />
                         </div>
-                        <button type="submit" class="btn btn-success btn-lg">Xác Nhận Thanh Toán</button>
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-success btn-lg">Xác Nhận Thanh Toán</button>
+                        </div>
                     </form>
                 </div>
             </div>
