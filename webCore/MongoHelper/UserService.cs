@@ -99,5 +99,15 @@ namespace webCore.MongoHelper
             var user = await _userCollection.Find(u => u.Id == guid).FirstOrDefaultAsync();
             return user;
         }
+        // Save user
+        public async Task<bool> UpdatePasswordAsync(string email, string newPassword)
+        {
+            var filter = Builders<User>.Filter.Eq(u => u.Email, email);
+            var update = Builders<User>.Update.Set(u => u.Password, newPassword);
+
+            var result = await _userCollection.UpdateOneAsync(filter, update);
+
+            return result.ModifiedCount > 0;
+        }
     }
 }

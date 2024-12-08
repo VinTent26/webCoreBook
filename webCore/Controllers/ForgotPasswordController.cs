@@ -12,12 +12,12 @@ namespace webCore.Controllers
     public class ForgotPasswordController : Controller
     {
         private readonly ForgotPasswordService _forgotPasswordService;
-        private readonly MongoDBService _mongoDBService;
+        private readonly UserService _userService;
 
-        public ForgotPasswordController(ForgotPasswordService forgotPasswordService, MongoDBService mongoDBService)
+        public ForgotPasswordController(ForgotPasswordService forgotPasswordService, UserService userService)
         {
             _forgotPasswordService = forgotPasswordService;
-            _mongoDBService = mongoDBService;
+            _userService = userService;
         }
 
         // Giao diện gửi OTP
@@ -39,7 +39,7 @@ namespace webCore.Controllers
 
             try
             {
-                var user = await _mongoDBService.GetAccountByEmailAsync(email);
+                var user = await _userService.GetAccountByEmailAsync(email);
                 if (user == null)
                 {
                     ViewBag.Error = "Email không tồn tại trong hệ thống.";
@@ -132,7 +132,7 @@ namespace webCore.Controllers
 
             try
             {
-                var user = await _mongoDBService.GetAccountByEmailAsync(email);
+                var user = await _userService.GetAccountByEmailAsync(email);
                 if (user == null)
                 {
                     ViewBag.Error = "Không tìm thấy tài khoản với email này.";
@@ -140,7 +140,7 @@ namespace webCore.Controllers
                     return View("ResetPassword");
                 }
 
-                var isUpdated = await _mongoDBService.UpdatePasswordAsync(email, newPassword);
+                var isUpdated = await _userService.UpdatePasswordAsync(email, newPassword);
                 if (!isUpdated)
                 {
                     ViewBag.Error = "Không thể cập nhật mật khẩu. Vui lòng thử lại.";
@@ -149,7 +149,7 @@ namespace webCore.Controllers
                 }
 
                 ViewBag.Message = "Mật khẩu của bạn đã được đặt lại thành công!";
-                return View("~/Views/Home/Index.cshtml");
+                return RedirectToAction("Sign_in","User");
             }
             catch (Exception ex)
             {
