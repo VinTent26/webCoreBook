@@ -59,18 +59,16 @@
                                     <td>@((item.Price * (1 - item.DiscountPercentage / 100)) * item.Quantity)</td>
                                 </tr>
                             }
+                            <tr>
+                                <td colspan="4" class="text-right"><strong>Tổng Tiền</strong></td>
+                                <td><strong>@Model.TotalAmount</strong></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="text-right"><strong>Số Tiền Cần Thanh Toán</strong></td>
+                                <td><strong>@Model.FinalAmount</strong></td>
+                            </tr>
                         </tbody>
                     </table>
-                </div>
-                <div class="form-group-wrapper">
-                    <div class="form-group total-container text-right">
-                        <label for="TotalAmount">Tổng Tiền</label>
-                        <input type="text" class="form-control short-input text-right" id="TotalAmount" value="@Model.TotalAmount" disabled />
-                    </div>
-                    <div class="form-group total-container text-right">
-                        <label for="FinalAmount">Số Tiền Cần Thanh Toán</label>
-                        <input type="text" class="form-control short-input text-right" id="FinalAmount" value="@Model.FinalAmount" disabled />
-                    </div>
                 </div>
             </div>
             <div class="col-md-4 section_2">
