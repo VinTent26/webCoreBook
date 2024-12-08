@@ -68,24 +68,21 @@
                             $(document).ready(function () {
                                 // Hàm để cập nhật số lượng trên giỏ hàng
                                 function updateCartCount(itemCount) {
-                                    if (itemCount > 0) {
-                                        $('#cart-item-1').text(itemCount).show(); // Hiển thị số lượng
-                                    } else {
-                                        $('#cart-item-1').hide(); // Ẩn nếu không có sản phẩm
-                                    }
-                                }
 
-                                // Lấy số lượng giỏ hàng khi tải trang
-                                $.ajax({
-                                    url: '@Url.Action("GetCartItemCount", "Cart")',
-                                    type: 'GET',
-                                    success: function (response) {
-                                        updateCartCount(response.itemCount); // Cập nhật số lượng giỏ hàng
-                                    },
-                                    error: function () {
-                                        console.error('Không thể lấy số lượng giỏ hàng.');
-                                    }
-                                });
+                                        $('#cart-item-1').text(itemCount).show(); // Hiển thị số lượng
+
+                                }
+                            // Lấy số lượng giỏ hàng khi tải trang
+                            $.ajax({
+                                url: '@Url.Action("GetCartItemCount", "Cart")',
+                                type: 'GET',
+                                success: function (response) {
+                                    updateCartCount(response.itemCount); // Cập nhật số lượng giỏ hàng
+                                },
+                                error: function () {
+                                    console.error('Không thể lấy số lượng giỏ hàng.');
+                                }
+                            });
 
                                 // Lắng nghe sự kiện cập nhật từ trang chi tiết sản phẩm
                                 $(document).on('cartUpdated', function (event, itemCount) {

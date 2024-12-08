@@ -71,16 +71,25 @@ namespace webCore.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCartItemCount()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Lấy userId từ User hiện tại
+            // Lấy userId từ session hoặc claim
+            var userId = HttpContext.Session.GetString("UserToken");  // Giả sử bạn lưu token trong Session sau khi đăng nhập
 
+            // Nếu userId không tồn tại (người dùng chưa đăng nhập)
             if (string.IsNullOrEmpty(userId))
+            {
                 return Json(new { itemCount = 0 });
+            }
 
+            // Lấy giỏ hàng của người dùng từ database
             var cart = await _cartService.GetCartByUserIdAsync(userId);
-            int itemCount = cart?.Items.Count ?? 0; // Đếm số lượng sản phẩm trong giỏ
+
+            // Kiểm tra giỏ hàng và lấy số lượng sản phẩm
+            int itemCount = cart?.Items.Count ?? 0; // Nếu không có giỏ hàng thì trả về 0
 
             return Json(new { itemCount = itemCount });
         }
+
+
 
         [ServiceFilter(typeof(SetLoginStatusFilter))]
         // Hiển thị giỏ hàng của người dùng
