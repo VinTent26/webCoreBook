@@ -356,7 +356,7 @@ header {
 }
 
 #logoutForm{
-    padding:10px 20px;
+    padding:10px 13px;
 }
 #logoutButton {
     border: none;
@@ -364,7 +364,7 @@ header {
 }
 
 .cart-item-1 {
-    display:none;
+
     position: absolute;
     top: 17px;
     margin-left: 35px;

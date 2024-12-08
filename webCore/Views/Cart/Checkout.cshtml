@@ -53,9 +53,9 @@
                                             <span>Không có hình ảnh</span>
                                         }
                                     </td>
-                                    <td>@(item.Price * (1 - item.DiscountPercentage / 100))</td>
+                                    <td class="price-column2">@((item.Price * (1 - item.DiscountPercentage / 100)).ToString("C"))</td>
                                     <td>@item.Quantity</td>
-                                    <td>@((item.Price * (1 - item.DiscountPercentage / 100)) * item.Quantity)</td>
+                                    <td class="price-column2">@(((item.Price * (1 - item.DiscountPercentage / 100)) * item.Quantity).ToString("C"))</td>
                                 </tr>
                             }
                         </tbody>
