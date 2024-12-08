@@ -1,0 +1,50 @@
+﻿@{
+    ViewData["Title"] = "Create";
+    Layout = "Admin";
+}
+<link rel="stylesheet" href="/css/create_account.css" />
+
+<div class="form-container">
+    <h2>Thêm mới danh mục</h2>
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            <ul>
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            </ul>
+        </div>
+    }
+
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <label for="Title">Tên danh mục *</label>
+        <input type="text" id="Title" name="Title" required />
+
+        <label for="Description">Mô tả</label>
+        <input type="text" id="Description" name="Description" />
+
+        <label for="ParentId">Danh mục cha</label>
+        <select id="ParentId" name="ParentId" class="form-control">
+            <option value="">Không có</option> <!-- Tùy chọn không có danh mục cha -->
+            @foreach (var parentCategory in ViewBag.Categories) // Lấy danh sách danh mục cha từ ViewBag
+            {
+                <option value="@parentCategory.Id">@parentCategory.Title</option>
+            }
+        </select>
+
+        <div class="status">
+            <label>Trạng thái</label>
+            <input type="radio" id="active" name="Status" value="Hoạt động" checked />
+            <label for="active" class="active">Hoạt động</label>
+            <input type="radio" id="inactive" name="Status" value="Không hoạt động" />
+            <label for="inactive" class="inactive">Dừng hoạt động</label>
+        </div>
+
+        <button type="submit">Tạo mới</button>
+    </form>
+</div>
+
+<script src="/js/upload_img.js"></script>
+

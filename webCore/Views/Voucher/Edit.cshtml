@@ -1,0 +1,50 @@
+﻿@{
+    ViewData["Title"] = "Chỉnh Sửa Voucher";
+    Layout = "Admin";
+}
+<link rel="stylesheet" href="/css/CreateVoucher.css" />
+
+<div class="form-container">
+    <h2>Chỉnh Sửa Voucher</h2>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            <ul>
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            </ul>
+        </div>
+    }
+
+    <form asp-action="Edit" method="post" asp-route-id="@Model.Id.ToString()" enctype="multipart/form-data">
+        <label for="code">Mã Voucher *</label>
+        <input type="text" id="code" name="Code" value="@Model.Code" required />
+
+        <label for="discountValue">Giá Trị Giảm Giá (%) *</label>
+        <input type="number" id="discountValue" name="DiscountValue" value="@Model.DiscountValue" step="0.01" required />
+
+        <label for="startDate">Ngày Bắt Đầu *</label>
+        <input type="date" id="startDate" name="StartDate" value="@Model.StartDate.ToString("yyyy-MM-dd")" required />
+
+        <label for="endDate">Ngày Kết Thúc *</label>
+        <input type="date" id="endDate" name="EndDate" value="@Model.EndDate.ToString("yyyy-MM-dd")" required />
+
+        <label for="usageLimit">Giới Hạn Sử Dụng *</label>
+        <input type="number" id="usageLimit" name="UsageLimit" value="@Model.UsageLimit" required />
+
+        <div class="status">
+            <label>Trạng Thái *</label>
+            <input type="radio" id="active" name="IsActive" value="true" @(Model.IsActive ? "checked" : "") />
+            <label for="active" class="active">Hoạt động</label>
+            <input type="radio" id="inactive" name="IsActive" value="false" @(!Model.IsActive ? "checked" : "") />
+            <label for="inactive" class="inactive">Dừng hoạt động</label>
+        </div>
+
+        <button type="submit" style="width:150px;">Lưu Thay Đổi</button>
+        <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+    </form>
+
+</div>

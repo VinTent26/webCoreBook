@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -9,6 +8,8 @@ using MongoDB.Driver;
 using System;
 using webCore.MongoHelper;
 using webCore.Services;
+using webCore.MongoHelper;
+using System;
 using Microsoft.AspNetCore.Http;
 
 namespace webCore
@@ -27,6 +28,8 @@ namespace webCore
         {
             // Add controllers and views
             services.AddControllersWithViews();
+            services.AddHttpContextAccessor();
+            // Đăng ký các service
 
             // Add MongoDB Client (singleton because it is thread-safe)
             services.AddSingleton<IMongoClient>(sp =>
@@ -96,7 +99,17 @@ namespace webCore
                 opts.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
             });
             services.AddSingleton<MongoDBService>();
+            services.AddSingleton<VoucherService>();
+            services.AddSingleton<AccountService>();
+            services.AddSingleton<CategoryProduct_adminService>();
 
+            // Cấu hình Session với các tùy chọn
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30); // Thời gian hết hạn của session
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true; // Cần thiết để Session hoạt động
+            });
             // Cấu hình các dịch vụ liên quan đến tài khoản người dùng và dữ liệu của ứng dụng
             services.AddScoped<MongoDBService>();  // Thêm MongoDB service cho dự án
             // Cấu hình Session với các tùy chọn
@@ -122,14 +135,17 @@ namespace webCore
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             // Routing configuration
             app.UseRouting();
+
+            // Sử dụng Session trước khi Authorization
+            app.UseSession();
 
             // Authorization middleware (if needed)
             // Sử dụng Session trước khi Authorization
