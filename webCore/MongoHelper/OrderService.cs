@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,11 @@ namespace webCore.MongoHelper
             return await _orders
                 .Find(order => order.UserId == userId)
                 .ToListAsync();
+        }
+        // Lấy đơn hàng theo ID
+        public async Task<Order> GetOrderByIdAsync(string id)
+        {
+            return await _orders.Find(order => order.Id == ObjectId.Parse(id)).FirstOrDefaultAsync();
         }
     }
 }

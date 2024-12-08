@@ -51,6 +51,11 @@
                                 </td>
                                 <td>@order.FinalAmount.ToString("C")</td>
                                 <td>@order.Status</td>
+                                <td>
+                                    <a href="@Url.Action("OrderDetails", "Checkout", new { orderId = order.Id })" class="btn btn-primary btn-sm">
+                                        Xem Chi Tiết
+                                    </a>
+                                </td>
                             </tr>
                         }
                     </tbody>

@@ -137,6 +137,28 @@ namespace webCore.Controllers
             // Truyền dữ liệu vào View
             return View(orders);
         }
+        [HttpGet]
+        public async Task<IActionResult> OrderDetails(string orderId)
+        {
+            var isLoggedIn = HttpContext.Session.GetString("UserToken") != null;
+
+            // Kiểm tra đăng nhập
+            if (!isLoggedIn)
+            {
+                return RedirectToAction("Sign_in", "User");
+            }
+
+            // Tìm đơn hàng theo ID
+            var order = await _orderService.GetOrderByIdAsync(orderId);
+
+            if (order == null)
+            {
+                // Xử lý nếu không tìm thấy đơn hàng
+                return NotFound("Không tìm thấy đơn hàng");
+            }
+
+            return View(order);
+        }
 
     }
 }
