@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,25 @@ namespace webCore.MongoHelper
         {
             _orders = mongoDBService._orders;
         }
+       
+        public async Task<Order> GetOrderByIdAsync(string id)
+        {
+            return await _orders.Find(order => order.Id == ObjectId.Parse(id)).FirstOrDefaultAsync();
+        }
+        public async Task<int> GetTotalOrdersAsync()
+        {
+            var filter = Builders<Order>.Filter.Empty; // Không áp dụng filter
+            return (int)await _orders.CountDocumentsAsync(filter);
+        }
+
+        public async Task<decimal> GetTotalRevenueAsync()
+        {
+            var filter = Builders<Order>.Filter.Empty;
+            var orders = await _orders.Find(filter).ToListAsync();
+            return orders.Sum(order => order.FinalAmount);
+        }
+
+
 
         public async Task SaveOrderAsync(Order order)
         {

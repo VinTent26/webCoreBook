@@ -10,7 +10,7 @@
                 <div class="card-body text-center">
                     <i class="fas fa-shopping-cart card-icon fa-3x"></i>
                     <h3>Đơn Hàng</h3>
-                    <p>31</p>
+                    <p>@ViewBag.TotalOrders</p>
                 </div>
             </div>
         </div>
@@ -19,16 +19,16 @@
                 <div class="card-body text-center">
                     <i class="fas fa-dollar-sign card-icon fa-3x"></i>
                     <h3>Tổng Doanh Thu</h3>
-                    <p>11,565,200đ</p>
+                    <p>@ViewBag.TotalRevenue.ToString("C")</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+          <div class="col-md-3">
             <div class="card text-white bg-info mb-4">
                 <div class="card-body text-center">
                     <i class="fas fa-box card-icon fa-3x"></i>
                     <h3>Sản Phẩm</h3>
-                    <p>1,149</p>
+                    <p>@ViewBag.TotalProducts</p> <!-- Display total products here -->
                 </div>
             </div>
         </div>
