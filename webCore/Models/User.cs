@@ -8,10 +8,9 @@ namespace webCore.Models
 {
     public class User
     {
-        // Sử dụng Guid thay vì ObjectId
         [BsonId]
-        [BsonRepresentation(BsonType.String)]  // Đảm bảo kiểu dữ liệu là String (UUID)
-        public Guid Id { get; set; } = Guid.NewGuid();  // Khởi tạo giá trị UUID mới cho Id
+        [BsonRepresentation(BsonType.String)]
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         public string Name { get; set; } = GenerateRandomString(10);
 
@@ -28,10 +27,10 @@ namespace webCore.Models
 
         public string Token { get; set; } = GenerateRandomString(20);
 
-        public int Status { get; set; }
+        public int? Status { get; set; }
 
         public bool Deleted { get; set; }
-        public DateTime Birthday { get; set; }
+        public DateTime? Birthday { get; set; }
         public string Phone { get; set; }
         public string Gender { get; set; }
         public string Address { get; set; }

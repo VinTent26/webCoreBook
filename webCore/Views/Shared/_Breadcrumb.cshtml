@@ -1,0 +1,19 @@
+﻿@model List<webCore.Models.Category>
+
+<nav aria-label="breadcrumb" class="my-3">
+    <ol class="breadcrumb">
+        @foreach (var category in Model)
+        {
+            if (category.Equals(Model.Last()))
+            {
+                <li class="breadcrumb-item active" aria-current="page">@category.Title</li>
+            }
+            else
+            {
+                <li class="breadcrumb-item">
+                    <a href="/products?categoryId=@category._id">@category.Title</a>
+                </li>
+            }
+        }
+    </ol>
+</nav>

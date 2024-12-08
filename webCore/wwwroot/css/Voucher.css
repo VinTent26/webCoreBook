@@ -1,0 +1,157 @@
+﻿/* General Layout */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+    font-size: 28px;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+/* Button Container */
+.button-container {
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+.add-btn {
+    background-color: #28a745;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+    .add-btn:hover {
+        background-color: #218838;
+    }
+
+.icon {
+    margin-right: 8px;
+}
+
+/* Table */
+.voucher-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+    .voucher-table th, .voucher-table td {
+        padding: 12px 15px;
+        text-align: center;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .voucher-table th {
+        background-color: #007bff; /* Blue background for headers */
+        color: #fff;
+        border-bottom: 2px solid #ddd;
+    }
+
+    .voucher-table td {
+        border-bottom: 1px solid #f1f1f1;
+    }
+
+    .voucher-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .voucher-table tr:hover {
+        background-color: #f1f8ff;
+    }
+
+/* Status Styles */
+    .voucher-table td.status-active {
+        color: #4caf50; /* Green for active status */
+        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+
+/* Action Buttons */
+.actions-cell {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.icon-btn {
+    font-size: 18px;
+    color: #333;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+    .icon-btn:hover {
+        color: #007bff;
+    }
+
+.edit-btn {
+    color: #ffc107; /* Yellow for edit button */
+}
+
+    .edit-btn:hover {
+        color: #e0a800;
+    }
+
+.delete-btn {
+    color: #dc3545; /* Red for delete button */
+}
+
+    .delete-btn:hover {
+        color: #d9534f;
+    }
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+}
+
+.page-item {
+    margin: 0 5px;
+}
+
+    .page-item a {
+        padding: 8px 12px;
+        font-size: 14px;
+        border-radius: 5px;
+        text-decoration: none;
+        color: #007bff;
+        transition: background-color 0.3s ease;
+    }
+
+        .page-item a:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+    .page-item.active a {
+        background-color: #007bff;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .page-item.disabled a {
+        color: #ddd;
+        pointer-events: none;
+    }

@@ -1,0 +1,69 @@
+﻿
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "Admin";
+}
+<link rel="stylesheet" href="/css/Account_admin.css" />
+
+<div class="container">
+    <h1>Đơn hàng cần xác nhận</h1>
+
+    <table class="account-table">
+        <thead>
+            <tr>
+                <th>Khách hàng</th>
+                <th>Ngày đặt hàng</th>
+                <th>Đơn hàng</th>
+                <th>Trạng thái</th>
+                <th class="actions-header">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+
+                <tr>
+                    <td>Khách hàng</td>
+                    <td>Ngày đặt</td>
+                    <td>Đơn hàng</td>
+
+                    <td class="status-Status.ToLower()">
+                    </td>
+                    <td class="actions-cell">
+                        <button class="btn btn-warning btn-sm">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                        <button class="btn btn-primary btn-sm">
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm">
+                            <i class="fa-solid fa-times"></i> 
+                        </button>
+                    </td>
+                </tr>
+            
+        </tbody>
+    </table>
+
+
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">Trước</a>
+            </li>
+            <li class="page-item active" aria-current="page">
+                <a class="page-link" href="#">1</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#">2</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#">3</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="#">Tiếp theo</a>
+            </li>
+        </ul>
+    </nav>
+</div>
