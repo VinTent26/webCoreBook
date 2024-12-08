@@ -14,12 +14,12 @@ namespace webCore.Controllers
     [AuthenticateHelper]
     public class Admin_categoryController : Controller
     {
-        private readonly MongoDBService _mongoDBService;
+        private readonly CategoryProduct_adminService _CategoryProductCollection;
         private readonly ILogger<Admin_categoryController> _logger;
 
-        public Admin_categoryController(MongoDBService mongoDBService, ILogger<Admin_categoryController> logger)
+        public Admin_categoryController(CategoryProduct_adminService Category_adminService, ILogger<Admin_categoryController> logger)
         {
-            _mongoDBService = mongoDBService;
+            _CategoryProductCollection = Category_adminService;
             _logger = logger;
         }
 
@@ -32,7 +32,7 @@ namespace webCore.Controllers
 
             try
             {
-                var categories = await _mongoDBService.GetCategory();
+                var categories = await _CategoryProductCollection.GetCategory();
 
                 foreach (var category in categories)
                 {
@@ -59,7 +59,7 @@ namespace webCore.Controllers
             ViewBag.AdminName = adminName;
             var categoryName = HttpContext.Session.GetString("CategoryName");
             ViewBag.CategoryName = categoryName;
-            ViewBag.Categories = _mongoDBService.GetCategory().Result;
+            ViewBag.Categories = _CategoryProductCollection.GetCategory().Result;
             var hierarchicalCategories = GetHierarchicalCategories(ViewBag.Categories);
             ViewBag.Categories = hierarchicalCategories;
             return View();
@@ -71,7 +71,7 @@ namespace webCore.Controllers
         {
             if (ModelState.IsValid)
             {
-                var existingCategory = (await _mongoDBService.GetCategory())
+                var existingCategory = (await _CategoryProductCollection.GetCategory())
                     .FirstOrDefault(a => a.Title == category.Title);
 
                 if (existingCategory != null)
@@ -83,14 +83,14 @@ namespace webCore.Controllers
                 category.Id = Guid.NewGuid().ToString();
                 category.ParentId = parentId;
 
-                var categories = await _mongoDBService.GetCategory();
+                var categories = await _CategoryProductCollection.GetCategory();
                 int maxPosition = categories.Any() ? categories.Max(c => c.Position) : 0;
                 category.Position = maxPosition + 1;
 
                 try
                 {
                     // Lưu danh mục vào cơ sở dữ liệu
-                    await _mongoDBService.SaveCatelogyAsync(category);
+                    await _CategoryProductCollection.SaveCatelogyAsync(category);
 
                     // Cập nhật ParentTitle
                     if (!string.IsNullOrEmpty(parentId))
@@ -99,7 +99,7 @@ namespace webCore.Controllers
                         category.ParentTitle = parentCategory?.Title;
 
                         // Cập nhật lại danh mục đã lưu với ParentTitle
-                        await _mongoDBService.UpdateCategoryAsync(category); 
+                        await _CategoryProductCollection.UpdateCategoryAsync(category); 
                     }
                 }
                 catch (Exception ex)
@@ -112,7 +112,7 @@ namespace webCore.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Categories = await _mongoDBService.GetCategory();
+            ViewBag.Categories = await _CategoryProductCollection.GetCategory();
             return View(category);
         }
 
@@ -120,7 +120,7 @@ namespace webCore.Controllers
         {
             var adminName = HttpContext.Session.GetString("AdminName");
             ViewBag.AdminName = adminName;
-            var category = await _mongoDBService.GetCategoryByIdAsync(id);
+            var category = await _CategoryProductCollection.GetCategoryByIdAsync(id);
             if (category == null)
             {
                 return NotFound();
@@ -128,7 +128,7 @@ namespace webCore.Controllers
 
             var categoryName = HttpContext.Session.GetString("CategoryName");
             ViewBag.CategoryName = categoryName;
-            ViewBag.Categories = await _mongoDBService.GetCategory();
+            ViewBag.Categories = await _CategoryProductCollection.GetCategory();
             var hierarchicalCategories = GetHierarchicalCategories(ViewBag.Categories);
             ViewBag.Categories = hierarchicalCategories;
             return View(category);
@@ -143,7 +143,7 @@ namespace webCore.Controllers
                 try
                 {
                     // Fetch the existing category from the database to retain its Position
-                    var existingCategory = await _mongoDBService.GetCategoryByIdAsync(category.Id);
+                    var existingCategory = await _CategoryProductCollection.GetCategoryByIdAsync(category.Id);
                     if (existingCategory == null)
                     {
                         return NotFound(); // If the category doesn't exist, return 404
@@ -153,7 +153,7 @@ namespace webCore.Controllers
                     category.Position = existingCategory.Position;
 
                     // Update the category in the database
-                    await _mongoDBService.UpdateCategoryAsync(category);
+                    await _CategoryProductCollection.UpdateCategoryAsync(category);
                 }
                 catch (Exception ex)
                 {
@@ -165,7 +165,7 @@ namespace webCore.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Categories = await _mongoDBService.GetCategory();
+            ViewBag.Categories = await _CategoryProductCollection.GetCategory();
             return View(category);
         }
         // POST: Admin_category/DeleteConfirmed/{id}
@@ -182,23 +182,23 @@ namespace webCore.Controllers
             try
             {
                 // Get the category to be deleted
-                var categoryToDelete = await _mongoDBService.GetCategoryByIdAsync(id);
+                var categoryToDelete = await _CategoryProductCollection.GetCategoryByIdAsync(id);
                 if (categoryToDelete == null)
                 {
                     return NotFound(); // If the category doesn't exist, return 404
                 }
 
                 // Call the method to delete the category
-                await _mongoDBService.DeleteCategoryAsync(id);
+                await _CategoryProductCollection.DeleteCategoryAsync(id);
 
                 // Get all remaining categories
-                var remainingCategories = await _mongoDBService.GetCategory();
+                var remainingCategories = await _CategoryProductCollection.GetCategory();
 
                 // Update positions of remaining categories
                 for (int i = 0; i < remainingCategories.Count; i++)
                 {
                     remainingCategories[i].Position = i + 1; // Set position starting from 1
-                    await _mongoDBService.UpdateCategoryAsync(remainingCategories[i]); // Ensure this method updates the category
+                    await _CategoryProductCollection.UpdateCategoryAsync(remainingCategories[i]); // Ensure this method updates the category
                 }
             }
             catch (InvalidOperationException ex)

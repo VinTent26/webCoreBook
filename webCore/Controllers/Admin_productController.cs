@@ -15,13 +15,13 @@ namespace webCore.Controllers
     [AuthenticateHelper]
     public class Admin_productController : Controller
     {
-        private readonly MongoDBService _mongoDBService;
+        private readonly CategoryProduct_adminService _CategoryProductCollection;
         private readonly CloudinaryService _cloudinaryService;
         private readonly ILogger<Admin_productController> _logger;
 
-        public Admin_productController(MongoDBService mongoDBService, CloudinaryService cloudinaryService, ILogger<Admin_productController> logger)
+        public Admin_productController(CategoryProduct_adminService Category_adminService, CloudinaryService cloudinaryService, ILogger<Admin_productController> logger)
         {
-            _mongoDBService = mongoDBService;
+            _CategoryProductCollection = Category_adminService;
             _cloudinaryService = cloudinaryService;
             _logger = logger;
         }
@@ -35,8 +35,8 @@ namespace webCore.Controllers
 
             try
             {
-                var products = await _mongoDBService.GetProduct();
-                var categories = await _mongoDBService.GetCategory(); // Lấy danh sách danh mục
+                var products = await _CategoryProductCollection.GetProduct();
+                var categories = await _CategoryProductCollection.GetCategory(); // Lấy danh sách danh mục
 
                 // Tạo một từ điển để ánh xạ CategoryId đến CategoryTitle
                 var categoryDictionary = categories.ToDictionary(c => c.Id, c => c.Title);
@@ -69,8 +69,8 @@ namespace webCore.Controllers
             ViewBag.AdminName = adminName;
             var productName = HttpContext.Session.GetString("ProductName");
             ViewBag.ProductName = productName;
-            ViewBag.Products = _mongoDBService.GetProduct().Result;
-            ViewBag.Categories = _mongoDBService.GetCategory().Result;
+            ViewBag.Products = _CategoryProductCollection.GetProduct().Result;
+            ViewBag.Categories = _CategoryProductCollection.GetCategory().Result;
             var hierarchicalCategories = GetHierarchicalCategories(ViewBag.Categories);
             ViewBag.Categories = hierarchicalCategories;
             return View();
@@ -82,13 +82,13 @@ namespace webCore.Controllers
             if (ModelState.IsValid)
             {
                 // Kiểm tra xem có sản phẩm nào đã tồn tại với tiêu đề này không
-                var existingProduct = (await _mongoDBService.GetProduct())
+                var existingProduct = (await _CategoryProductCollection.GetProduct())
                     .FirstOrDefault(a => a.Title == product.Title);
 
                 if (existingProduct != null)
                 {
                     ModelState.AddModelError("Tên sản phẩm", "Đã có sản phẩm này.");
-                    ViewBag.Categories = await _mongoDBService.GetCategory();
+                    ViewBag.Categories = await _CategoryProductCollection.GetCategory();
                     return View(product);
                 }
 
@@ -96,7 +96,7 @@ namespace webCore.Controllers
                 product.CategoryId = categoryid;
 
                 // Lấy CategoryTitle từ danh mục
-                var category = await _mongoDBService.GetCategoryByIdAsync(categoryid);
+                var category = await _CategoryProductCollection.GetCategoryByIdAsync(categoryid);
                 if (category != null)
                 {
                     product.CategoryTitle = category.Title; // Gán CategoryTitle
@@ -106,7 +106,7 @@ namespace webCore.Controllers
                     ModelState.AddModelError("CategoryId", "Danh mục không hợp lệ.");
                 }
 
-                var products = await _mongoDBService.GetProduct();
+                var products = await _CategoryProductCollection.GetProduct();
                 int maxPosition = products.Any() ? products.Max(c => c.Position) : 0;
                 product.Position = maxPosition + 1;
 
@@ -119,7 +119,7 @@ namespace webCore.Controllers
                     catch (Exception ex)
                     {
                         _logger.LogError(ex, "Error uploading image to Cloudinary.");
-                        ViewBag.Categories = await _mongoDBService.GetCategory();
+                        ViewBag.Categories = await _CategoryProductCollection.GetCategory();
                         ModelState.AddModelError("", "Failed to upload image. Please try again.");
                         return View(product);
                     }
@@ -127,7 +127,7 @@ namespace webCore.Controllers
 
                 try
                 {
-                    await _mongoDBService.SaveProductAsync(product);
+                    await _CategoryProductCollection.SaveProductAsync(product);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
@@ -138,13 +138,13 @@ namespace webCore.Controllers
             }
 
             // Gán lại danh sách danh mục vào ViewBag nếu ModelState không hợp lệ
-            ViewBag.Categories = await _mongoDBService.GetCategory();
+            ViewBag.Categories = await _CategoryProductCollection.GetCategory();
             return View(product);
         }
         public async Task<IActionResult> Update(string id)
         {
 
-            var product = await _mongoDBService.GetProductByIdAsync(id);
+            var product = await _CategoryProductCollection.GetProductByIdAsync(id);
             if (product == null)
             {
                 return NotFound();
@@ -153,8 +153,8 @@ namespace webCore.Controllers
             ViewBag.AdminName = adminName;
             var productName = HttpContext.Session.GetString("ProductName");
             ViewBag.ProductName = productName;
-            ViewBag.Products = await _mongoDBService.GetProduct();
-            ViewBag.Categories = await _mongoDBService.GetCategory();
+            ViewBag.Products = await _CategoryProductCollection.GetProduct();
+            ViewBag.Categories = await _CategoryProductCollection.GetCategory();
             var hierarchicalCategories = GetHierarchicalCategories(ViewBag.Categories);
             ViewBag.Categories = hierarchicalCategories;
             return View(product);
@@ -169,7 +169,7 @@ namespace webCore.Controllers
                 try
                 {
                     // Fetch the existing category from the database to retain its Position
-                    var existingProduct = await _mongoDBService.GetProductByIdAsync(product.Id);
+                    var existingProduct = await _CategoryProductCollection.GetProductByIdAsync(product.Id);
                     if (existingProduct == null)
                     {
                         return NotFound(); // If the category doesn't exist, return 404
@@ -177,11 +177,11 @@ namespace webCore.Controllers
 
                     // Preserve the Position from the existing category
                     product.Position = existingProduct.Position;
-                    var category = await _mongoDBService.GetCategoryByIdAsync(product.CategoryId);
+                    var category = await _CategoryProductCollection.GetCategoryByIdAsync(product.CategoryId);
                     product.CategoryTitle = category?.Title;
 
                     // Update the category in the database
-                    await _mongoDBService.UpdateProductAsync(product);
+                    await _CategoryProductCollection.UpdateProductAsync(product);
 
                     if (Image != null && Image.Length > 0)
                     {
@@ -193,7 +193,7 @@ namespace webCore.Controllers
                         {
                             _logger.LogError(ex, "Error uploading image to Cloudinary.");
                             ModelState.AddModelError("", "Failed to upload image. Please try again.");
-                            ViewBag.Products = await _mongoDBService.GetProduct();
+                            ViewBag.Products = await _CategoryProductCollection.GetProduct();
                             return View(product);
                         }
                     }
@@ -204,7 +204,7 @@ namespace webCore.Controllers
                     }
 
                     // Cập nhật sản phẩm trong cơ sở dữ liệu
-                    await _mongoDBService.UpdateProductAsync(product);
+                    await _CategoryProductCollection.UpdateProductAsync(product);
                 }
                 catch (Exception ex)
                 {
@@ -216,8 +216,8 @@ namespace webCore.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Products = await _mongoDBService.GetProduct();
-            ViewBag.Categories = await _mongoDBService.GetCategory();
+            ViewBag.Products = await _CategoryProductCollection.GetProduct();
+            ViewBag.Categories = await _CategoryProductCollection.GetCategory();
             return View(product);
         }
         // POST: Admin_category/DeleteConfirmed/{id}
@@ -234,20 +234,20 @@ namespace webCore.Controllers
             try
             {
 
-                var productToDelete = await _mongoDBService.GetProductByIdAsync(id);
+                var productToDelete = await _CategoryProductCollection.GetProductByIdAsync(id);
                 if (productToDelete == null)
                 {
                     return NotFound(); 
                 }
 
-                await _mongoDBService.DeleteProductAsync(id);
+                await _CategoryProductCollection.DeleteProductAsync(id);
 
-                var remainingProducts = await _mongoDBService.GetProduct();
+                var remainingProducts = await _CategoryProductCollection.GetProduct();
 
                 for (int i = 0; i < remainingProducts.Count; i++)
                 {
                     remainingProducts[i].Position = i + 1; // Set position starting from 1
-                    await _mongoDBService.UpdateProductAsync(remainingProducts[i]); 
+                    await _CategoryProductCollection.UpdateProductAsync(remainingProducts[i]); 
                 }
             }
             catch (InvalidOperationException ex)

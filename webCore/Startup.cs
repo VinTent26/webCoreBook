@@ -28,6 +28,7 @@ namespace webCore
             services.AddSingleton<MongoDBService>();
             services.AddSingleton<VoucherService>();
             services.AddSingleton<AccountService>();
+            services.AddSingleton<CategoryProduct_adminService>();
 
             // Cấu hình Session với các tùy chọn
             services.AddSession(options =>
