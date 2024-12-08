@@ -24,12 +24,13 @@ namespace webCore.MongoHelper
             var groupedProducts = products
                 .GroupBy(p => p.Featured)
                 .ToDictionary(
-                    g => GetFeaturedStatusName(g.Key),
+                    g => GetFeaturedStatusName((FeaturedStatus)g.Key),  // Cast g.Key to FeaturedStatus
                     g => g.ToList()
                 );
 
             return groupedProducts;
         }
+
         private string GetFeaturedStatusName(FeaturedStatus status)
         {
             switch (status)

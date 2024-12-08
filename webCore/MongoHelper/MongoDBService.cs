@@ -19,14 +19,15 @@ namespace webCore.Services
         internal readonly IMongoCollection<Category> _categoryCollection;
         internal readonly IMongoCollection<Order> _orders;
         private readonly IMongoDatabase _mongoDatabase;
-     
+        internal readonly IMongoCollection<Account_admin> _accountCollection;
+
 
 
         public MongoDBService(IConfiguration configuration)
         {
             var mongoClient = new MongoClient(configuration["MongoDB:ConnectionString"]);
             var mongoDatabase = mongoClient.GetDatabase(configuration["MongoDB:DatabaseName"]);
-
+            _accountCollection = mongoDatabase.GetCollection<Account_admin>("Accounts");
             _productCollection = mongoDatabase.GetCollection<Product_admin>("Product");
             _userCollection = mongoDatabase.GetCollection<User>("Users");
             _categoryCollection = mongoDatabase.GetCollection<Category>("Category");
