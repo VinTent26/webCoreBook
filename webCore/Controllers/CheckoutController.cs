@@ -68,9 +68,15 @@ namespace webCore.Controllers
         [HttpPost]
         public async Task<IActionResult> ConfirmPayment(PaymentInfoViewModel model)
         {
+            var isLoggedIn = HttpContext.Session.GetString("UserToken") != null;
+
+            // Truyền thông tin vào ViewBag hoặc Model để sử dụng trong View
+            ViewBag.IsLoggedIn = isLoggedIn;
+            // Lấy UserId từ session
             var userId = HttpContext.Session.GetString("UserToken");
             if (string.IsNullOrEmpty(userId))
             {
+                // Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập
                 return RedirectToAction("Sign_in", "User");
             }
 
@@ -108,7 +114,28 @@ namespace webCore.Controllers
             await _orderService.SaveOrderAsync(order);
 
             // Chuyển hướng đến trang đơn hàng chờ vận chuyển
-            return RedirectToAction("OrderPending", "Order");
+            return RedirectToAction("PaymentHistory", "Checkout");
+        }
+        [HttpGet]
+        public async Task<IActionResult> PaymentHistory()
+        {
+            var isLoggedIn = HttpContext.Session.GetString("UserToken") != null;
+
+            // Truyền thông tin vào ViewBag hoặc Model để sử dụng trong View
+            ViewBag.IsLoggedIn = isLoggedIn;
+            // Lấy UserId từ session
+            var userId = HttpContext.Session.GetString("UserToken");
+            if (string.IsNullOrEmpty(userId))
+            {
+                // Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập
+                return RedirectToAction("Sign_in", "User");
+            }
+
+            // Lấy danh sách đơn hàng từ MongoDB theo UserId
+            var orders = await _orderService.GetOrdersByUserIdAsync(userId);
+
+            // Truyền dữ liệu vào View
+            return View(orders);
         }
 
     }
