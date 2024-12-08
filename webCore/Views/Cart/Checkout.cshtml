@@ -11,14 +11,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Thanh Toán</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/cart.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/checkout.css" asp-append-version="true" />
 </head>
 <body>
     <div class="container">
         <div class="row">
             <div class="col">
                 <div class="cart-title">
-                    <h2 class="title">Thông Tin Thanh Toán</h2>
+                    <h2 class="title">THÔNG TIN THANH TOÁN</h2>
                 </div>
             </div>
         </div>
@@ -64,30 +64,32 @@
             </div>
 
             <!-- Cột 2: Khuyến mãi và tổng tiền -->
-            <div class="col-md-4">
-                <!-- Voucher Section -->
-                @if (!string.IsNullOrEmpty(Model.VoucherDiscount))
-                {
-                    <div class="alert alert-info">
-                        <strong>Khuyến mãi:</strong> Giảm @Model.VoucherDiscount %
-                    </div>
-                }
-                else
-                {
-                    <div class="alert alert-warning">
-                        <strong>Khuyến mãi:</strong> Không có khuyến mãi.
-                    </div>
-                }
+            <div class="col-md-4 section_2">
+                <div class="cart-summary">
+                    <!-- Voucher Section -->
+                    @if (!string.IsNullOrEmpty(Model.VoucherDiscount))
+                    {
+                        <div class="alert alert-info">
+                            <strong>Khuyến mãi:</strong> Giảm @Model.VoucherDiscount %
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            <strong>Khuyến mãi:</strong> Không có khuyến mãi.
+                        </div>
+                    }
 
-                <!-- Price Summary -->
-                <div class="price-summary mt-3">
-                    <p><strong>Tổng tiền:</strong> @Model.TotalAmount.ToString("C")</p>
-                    <p><strong>Giảm giá:</strong> @Model.DiscountAmount.ToString("C")</p>
-                    <p><strong>Tổng tiền sau giảm:</strong> @Model.FinalAmount.ToString("C")</p>
-                </div>
-                <!-- Nút thanh toán -->
-                <div class="text-center mt-4">
-                    <a href="@Url.Action("PaymentInfo", "Checkout")" class="btn btn-success btn-lg">Tiến Hành Thanh Toán</a>
+                    <!-- Price Summary -->
+                    <div class="price-summary mt-3">
+                        <p><strong>Tổng tiền:</strong> @Model.TotalAmount.ToString("C")</p>
+                        <p><strong>Giảm giá:</strong> @Model.DiscountAmount.ToString("C")</p>
+                        <p><strong>Tổng tiền sau giảm:</strong> @Model.FinalAmount.ToString("C")</p>
+                    </div>
+                    <!-- Nút thanh toán -->
+                    <div class="text-center mt-4">
+                        <a href="@Url.Action("PaymentInfo", "Checkout")" class="btn btn-success btn-lg">Tiến Hành Thanh Toán</a>
+                    </div>
                 </div>
             </div>
         </div>
