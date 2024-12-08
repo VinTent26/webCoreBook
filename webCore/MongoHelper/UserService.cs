@@ -88,5 +88,16 @@ namespace webCore.MongoHelper
 
             await _userCollection.UpdateOneAsync(filter, update);
         }
+
+        public async Task<User> GetUserByIdAsync(string userId)
+        {
+            if (!Guid.TryParse(userId, out var guid))
+            {
+                return null; // Trả về null nếu userId không hợp lệ
+            }
+
+            var user = await _userCollection.Find(u => u.Id == guid).FirstOrDefaultAsync();
+            return user;
+        }
     }
 }
