@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using webCore.Models;
@@ -25,9 +27,15 @@ namespace webCore.Controllers
         [HttpGet]
         public async Task<IActionResult> PaymentInfo()
         {
+            var isLoggedIn = HttpContext.Session.GetString("UserToken") != null;
+
+            // Truyền thông tin vào ViewBag hoặc Model để sử dụng trong View
+            ViewBag.IsLoggedIn = isLoggedIn;
+            // Lấy UserId từ session
             var userId = HttpContext.Session.GetString("UserToken");
             if (string.IsNullOrEmpty(userId))
             {
+                // Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập
                 return RedirectToAction("Sign_in", "User");
             }
 
@@ -37,14 +45,20 @@ namespace webCore.Controllers
             {
                 return RedirectToAction("Cart");
             }
+            // Lấy danh sách các sản phẩm đã chọn từ session
+            var selectedProductIds = JsonConvert.DeserializeObject<List<string>>(HttpContext.Session.GetString("SelectedProductIds") ?? "[]");
+
+            // Lọc các sản phẩm đã chọn trong giỏ hàng
+            var selectedItems = cart.Items.Where(item => selectedProductIds.Contains(item.ProductId)).ToList();
 
             // Tính tổng tiền
-            decimal totalAmount = cart.Items.Sum(item => item.Price * item.Quantity);
+            decimal totalAmount = selectedItems.Sum(item => (item.Price * (1 - item.DiscountPercentage / 100)) * item.Quantity);
             decimal finalAmount = totalAmount;
 
             // Truyền dữ liệu vào View
             return View(new PaymentInfoViewModel
             {
+                Items = selectedItems,
                 TotalAmount = totalAmount,
                 FinalAmount = finalAmount,
             });
@@ -67,8 +81,15 @@ namespace webCore.Controllers
                 return RedirectToAction("Cart");
             }
 
-            decimal totalAmount = cart.Items.Sum(item => item.Price * item.Quantity);
+            var selectedProductIds = JsonConvert.DeserializeObject<List<string>>(HttpContext.Session.GetString("SelectedProductIds") ?? "[]");
+
+            // Lọc các sản phẩm đã chọn trong giỏ hàng
+            var selectedItems = cart.Items.Where(item => selectedProductIds.Contains(item.ProductId)).ToList();
+
+            // Tính toán lại tổng tiền
+            decimal totalAmount = selectedItems.Sum(item => (item.Price * (1 - item.DiscountPercentage / 100)) * item.Quantity);
             decimal finalAmount = totalAmount;
+
 
             // Lưu đơn hàng vào MongoDB với trạng thái "pending"
             var order = new Order
@@ -77,7 +98,7 @@ namespace webCore.Controllers
                 FullName = model.FullName,
                 PhoneNumber = model.PhoneNumber,
                 Address = model.Address,
-                Items = cart.Items,
+                Items = selectedItems,
                 TotalAmount = totalAmount,
                 FinalAmount = finalAmount,
                 Status = "pending",
