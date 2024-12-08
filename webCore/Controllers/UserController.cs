@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using webCore.Models;
+using webCore.MongoHelper;
 using webCore.Services;
 
 namespace webCore.Controllers
@@ -12,12 +13,14 @@ namespace webCore.Controllers
     {
         private readonly MongoDBService _mongoDBService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly UserService _userService;
 
 
-        public UserController(MongoDBService mongoDBService, IHttpContextAccessor httpContextAccessor)
+        public UserController(MongoDBService mongoDBService, IHttpContextAccessor httpContextAccessor, UserService userService)
         {
             _mongoDBService = mongoDBService;
             _httpContextAccessor = httpContextAccessor;
+            _userService = userService;
         }
         [ServiceFilter(typeof(SetLoginStatusFilter))]
         // Action để hiển thị form đăng ký
@@ -28,13 +31,15 @@ namespace webCore.Controllers
         }
 
         // Action xử lý đăng ký
+        [ServiceFilter(typeof(SetLoginStatusFilter))]
         [HttpPost]
         public async Task<IActionResult> Sign_up(User user)
         {
+           
             if (ModelState.IsValid)
             {
                 // Kiểm tra xem email đã tồn tại chưa
-                var existingUser = await _mongoDBService.GetAccountByEmailAsync(user.Email);
+                var existingUser = await _userService.GetAccountByEmailAsync(user.Email);
                 if (existingUser != null)
                 {
                     ModelState.AddModelError("Email", "Tài khoản đã tồn tại.");
@@ -56,10 +61,11 @@ namespace webCore.Controllers
                 }
 
                 // Lưu tài khoản vào MongoDB
-                await _mongoDBService.SaveUserAsync(user);
+                await _userService.SaveUserAsync(user);
 
                 // Thiết lập session cho tên người dùng
                 HttpContext.Session.SetString("UserName", user.Name);
+                HttpContext.Session.SetString("UserToken", user.Token);
 
                 return RedirectToAction("Index", "Home");
             }
@@ -84,7 +90,7 @@ namespace webCore.Controllers
             }
 
             // Lấy tài khoản từ MongoDB dựa vào email
-            var user = await _mongoDBService.GetAccountByEmailAsync(loginUser.Email);
+            var user = await _userService.GetAccountByEmailAsync(loginUser.Email);
 
             if (user == null)
             {

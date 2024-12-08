@@ -66,6 +66,7 @@ namespace webCore
             services.AddScoped<DetailProductService>();
             services.AddScoped<CartService>();
             services.AddScoped<VoucherClientService>();
+            services.AddScoped<UserService>();
             services.AddControllersWithViews(options =>
             {
                 // Đăng ký Action Filter toàn cục

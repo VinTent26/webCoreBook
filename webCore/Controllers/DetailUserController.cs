@@ -5,15 +5,19 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using webCore.Models;
+using webCore.MongoHelper;
 using webCore.Services;
 
 public class DetailUserController : Controller
 {
     private readonly MongoDBService _mongoDBService;
+    private readonly UserService _userService;
 
-    public DetailUserController(MongoDBService mongoDBService)
+
+    public DetailUserController(MongoDBService mongoDBService, UserService userService)
     {
         _mongoDBService = mongoDBService;
+        _userService = userService;
     }
 
     // GET: DetailUser/Index
@@ -26,7 +30,7 @@ public class DetailUserController : Controller
             return RedirectToAction("SignIn", "User");
         }
 
-        var user = await _mongoDBService.GetUserByUsernameAsync(userName); // Lấy thông tin người dùng qua Username
+        var user = await _userService.GetUserByUsernameAsync(userName); // Lấy thông tin người dùng qua Username
         if (user == null)
         {
             TempData["Message"] = "Không tìm thấy thông tin người dùng.";
@@ -53,7 +57,7 @@ public class DetailUserController : Controller
             }
 
             // Lấy thông tin người dùng hiện tại từ MongoDB
-            var currentUser = await _mongoDBService.GetUserByUsernameAsync(currentUserName);
+            var currentUser = await _userService.GetUserByUsernameAsync(currentUserName);
             if (currentUser == null)
             {
                 TempData["Message"] = "Không tìm thấy thông tin người dùng.";
@@ -95,7 +99,7 @@ public class DetailUserController : Controller
             }
 
             // Thực hiện cập nhật thông tin người dùng trong MongoDB
-            var updateResult = await _mongoDBService.UpdateUserAsync(currentUser);
+            var updateResult = await _userService.UpdateUserAsync(currentUser);
             if (updateResult)
             {
                 TempData["Message"] = "Cập nhật thông tin thành công!";

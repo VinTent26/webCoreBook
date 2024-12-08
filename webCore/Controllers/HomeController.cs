@@ -17,11 +17,13 @@ namespace webCore.Controllers
         private readonly MongoDBService _mongoDBService;
         private readonly ProductService _productService;
         private readonly CategoryService _categoryService;
-        public HomeController(MongoDBService mongoDBService, ProductService productService, CategoryService categoryService)
+        private readonly UserService _userService;
+        public HomeController(MongoDBService mongoDBService, ProductService productService, CategoryService categoryService, UserService userService)
         {
             _mongoDBService = mongoDBService;
             _productService = productService;
             _categoryService = categoryService;
+            _userService = userService;
         }
         // Action Index, trả về trang chủ và lấy dữ liệu từ MongoDB
         [ServiceFilter(typeof(SetLoginStatusFilter))]
@@ -81,7 +83,7 @@ namespace webCore.Controllers
             }
 
             // Lấy tài khoản từ MongoDB dựa trên email
-            var user = await _mongoDBService.GetAccountByEmailAsync(loginUser.Email);
+            var user = await _userService.GetAccountByEmailAsync(loginUser.Email);
             if (user == null)
             {
                 ModelState.AddModelError("", "Tài khoản không tồn tại.");
