@@ -11,6 +11,7 @@ namespace webCore.Models
         public string PhoneNumber { get; set; }
         public string Address { get; set; }
         public decimal TotalAmount { get; set; }
+        public decimal DiscountAmount { get; set; }
         public decimal FinalAmount { get; set; }
         public List<CartItem> Items { get; set; }
     }
