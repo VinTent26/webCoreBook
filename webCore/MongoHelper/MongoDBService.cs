@@ -13,7 +13,10 @@ namespace webCore.Services
         private readonly IMongoCollection<User> _userCollection;
         internal readonly IMongoCollection<Account_admin> _accountCollection;
         internal readonly IMongoCollection<Voucher> _voucherCollection;
-       
+
+
+        private readonly IMongoCollection<Account_admin> _AccountCollection;
+
 
         public MongoDBService(IConfiguration configuration)
         {
@@ -23,7 +26,25 @@ namespace webCore.Services
             _userCollection = mongoDatabase.GetCollection<User>("Users");
             _accountCollection = mongoDatabase.GetCollection<Account_admin>("Accounts");
             _voucherCollection = mongoDatabase.GetCollection<Voucher>("Vouchers");
+            _AccountCollection = mongoDatabase.GetCollection<Account_admin>("Accounts");
+
         }
-       
+        public async Task<List<Account_admin>> GetAccounts()
+        {
+            return await _AccountCollection.Find(_ => true).ToListAsync();
+        }
+
+
+        public async Task SaveUserAsync(User user)
+        {
+            await _userCollection.InsertOneAsync(user);
+        }
+
+
+        internal async Task SaveAccountAsync(Account_admin account)
+        {
+            await _AccountCollection.InsertOneAsync(account);
+        }
     }
+     
 }
