@@ -21,8 +21,7 @@
                     <thead>
                         <tr>
                             <th>Ngày Đặt</th>
-                            <th>Họ và tên</th>
-                            <th>Địa chỉ</th>
+                            <th>Sản phẩm</th>
                             <th>Tổng Tiền</th>
                             <th>Trạng Thái</th>
                         </tr>
@@ -32,8 +31,24 @@
                         {
                             <tr>
                                 <td>@order.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
-                                <td>@order.FullName</td>
-                                <td>@order.Address</td>
+                                <td>
+                                    <ul class="list-unstyled">
+                                        @foreach (var item in order.Items)
+                                        {
+                                            <li class="d-flex align-items-center mb-2">
+                                                <!-- Hình ảnh -->
+                                                <img src="@item.Image" alt="Hình sản phẩm" style="width: 50px; height: 50px; margin-right: 10px;" />
+
+                                                <!-- Thông tin sản phẩm -->
+                                                <div>
+                                                    <strong>@item.Title</strong><br />
+                                                    Giá: @item.Price.ToString("C")<br />
+                                                    Số lượng: @item.Quantity<br />
+                                                </div>
+                                            </li>
+                                        }
+                                    </ul>
+                                </td>
                                 <td>@order.FinalAmount.ToString("C")</td>
                                 <td>@order.Status</td>
                             </tr>
