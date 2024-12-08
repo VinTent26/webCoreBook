@@ -1,0 +1,185 @@
+﻿@model webCore.Models.Account_admin
+
+@{
+    ViewData["Title"] = "Chỉnh sửa tài khoản";
+    Layout = "Admin";
+}
+
+<style>
+    /* General container for the form */
+    .form-container {
+        width: 100%;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Heading */
+    h2 {
+        text-align: center;
+        font-size: 24px;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    /* Alert messages */
+    .alert-danger {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+    }
+
+        .alert-danger ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+
+        .alert-danger li {
+            font-size: 14px;
+        }
+
+    /* Form fields */
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    input[type="text"], input[type="email"], input[type="password"], select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    input[type="file"] {
+        margin-bottom: 15px;
+    }
+
+    /* Image preview */
+    .image-preview-container {
+        text-align: start;
+        margin-bottom: 15px;
+    }
+
+    #imagePreview {
+        width: 200px;
+        height: 150px;
+        border-radius: 4px;
+        margin-top: 10px;
+        display: block;
+        object-fit:cover;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Radio buttons */
+    .status {
+        margin-bottom: 20px;
+    }
+
+        .status label {
+            margin-right: 10px;
+            font-size: 14px;
+        }
+
+    input[type="radio"] {
+        margin-right: 5px;
+    }
+
+    /* Submit button */
+    button[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        width: 100%;
+        transition: background-color 0.3s;
+    }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+    /* Styling for disabled inputs */
+    input[disabled], select[disabled] {
+        background-color: #f1f1f1;
+        cursor: not-allowed;
+    }
+</style>
+
+<div class="form-container">
+    <h2>Chỉnh sửa tài khoản</h2>
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            <ul>
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            </ul>
+        </div>
+    }
+
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <!-- ID của tài khoản (ẩn) -->
+        <input type="hidden" asp-for="Id" />
+
+        <label for="name">Họ tên *</label>
+        <input type="text" id="name" name="FullName" value="@Model.FullName" required />
+
+        <label for="email">Email *</label>
+        <input type="email" id="email" name="Email" value="@Model.Email" required />
+
+        <label for="phone">Điện thoại *</label>
+        <input type="text" id="phone" name="Phone" value="@Model.Phone" required style="width:100%" />
+
+        <label for="password">Mật Khẩu (Chỉ nhập nếu muốn thay đổi)</label>
+        <input type="password" id="password" name="Password" placeholder="Không thay đổi nếu để trống" />
+
+        <label for="image">Ảnh đại diện</label>
+        <input type="file" id="image" name="Avatar" accept="image/*" onchange="previewImage(event)" />
+
+        <div class="image-preview-container">
+            @if (!string.IsNullOrEmpty(Model.Avatar))
+            {
+                <img id="imagePreview" src="@Model.Avatar" alt="Ảnh hiện tại" />
+            }
+            else
+            {
+                <img id="imagePreview" alt="Ảnh xem trước" />
+            }
+        </div>
+
+        <label for="role">Phân quyền</label>
+        <select id="role" name="RoleId">
+            <option value="Quản trị viên" >Quản trị viên</option>
+            <option value="Quản lý nội dung">Quản lý nội dung</option>
+        </select>
+
+        <div class="status">
+            <label>Trạng thái</label>
+            <input type="radio" id="active" name="Status" value="Hoạt động" @(Model.Status == "Hoạt động" ? "checked" : "") />
+            <label for="active" class="active">Hoạt động</label>
+            <input type="radio" id="inactive" name="Status" value="Không hoạt động" @(Model.Status == "Không hoạt động" ? "checked" : "") />
+            <label for="inactive" class="inactive">Dừng hoạt động</label>
+        </div>
+
+        <button type="submit">Cập nhật</button>
+    </form>
+</div>
+
+<script src="/js/upload_img.js"></script>

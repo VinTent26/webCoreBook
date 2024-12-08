@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -48,53 +48,55 @@ namespace webCore
                 return new MongoClient(mongoConnection);
             });
 
-            // Add Cloudinary service for image upload (singleton)
-            services.AddSingleton<CloudinaryService>();
-
             // Register MongoDBService with DI container
             services.AddScoped<MongoDBService>();
 
-            // Access HTTP context for session management
-            services.AddHttpContextAccessor();
+            // Register Cloudinary service for image upload
+            services.AddSingleton<CloudinaryService>();
+
+            // Register services that will be used for the application
             services.AddScoped<ProductService>();
             services.AddScoped<CategoryService>();
-            // Session configuration
-
-            services.AddSingleton<CloudinaryService>();  // Dịch vụ Cloudinary cho việc upload ảnh
-            services.AddSingleton<MongoDBService>();     // Dịch vụ MongoDB để làm việc với cơ sở dữ liệu
-            services.AddHttpContextAccessor();          // Truy cập thông tin từ HttpContext
             services.AddScoped<DetailProductService>();
             services.AddScoped<CartService>();
             services.AddScoped<OrderService>();
             services.AddScoped<VoucherClientService>();
             services.AddScoped<UserService>();
-            services.AddControllersWithViews(options =>
-            {
-                // Đăng ký Action Filter toàn cục
-                options.Filters.Add<SetLoginStatusFilter>();
-            });
-            services.AddScoped<SetLoginStatusFilter>();
-            // Cấu hình session
+            services.AddScoped<VoucherService>();
+            services.AddScoped<AccountService>();
+            services.AddScoped<CategoryProduct_adminService>();
+            services.AddSingleton<CloudinaryService>();
+            services.AddSingleton<MongoDBService>();
+            services.AddScoped<ForgotPasswordService>();
+            services.AddHttpContextAccessor();
+
+            // Add session management
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
                 options.Cookie.Name = ".AspBookCore.Session"; // Session cookie name
                 options.IdleTimeout = TimeSpan.FromMinutes(30); // Session expiration time
                 options.Cookie.IsEssential = true; // Cookie is required for the session
-                options.Cookie.Name = ".AspBookCore.Session";  // Tên cookie session
-                options.IdleTimeout = TimeSpan.FromMinutes(30);  // Thời gian hết hạn session
                 options.Cookie.HttpOnly = true;
                 options.Cookie.SameSite = SameSiteMode.Lax;
-                options.Cookie.IsEssential = true;  // Cookie bắt buộc
             });
-            // Cấu hình JSON options trong ConfigureServices
+
+            // Register a global action filter
+            services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add<SetLoginStatusFilter>();
+            });
+
+            services.AddScoped<SetLoginStatusFilter>();
+
+            // Configure JSON options
             services.AddControllers().AddJsonOptions(opts =>
             {
                 opts.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
             });
 
-            // Cấu hình các dịch vụ liên quan đến tài khoản người dùng và dữ liệu của ứng dụng
-            services.AddScoped<MongoDBService>();  // Thêm MongoDB service cho dự án
+            // Access HTTP context for session management
+            services.AddHttpContextAccessor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

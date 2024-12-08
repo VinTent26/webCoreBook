@@ -22,5 +22,11 @@ namespace webCore.MongoHelper
         {
             await _orders.InsertOneAsync(order);
         }
+        public async Task<List<Order>> GetOrdersByUserIdAsync(string userId)
+        {
+            return await _orders
+                .Find(order => order.UserId == userId)
+                .ToListAsync();
+        }
     }
 }
