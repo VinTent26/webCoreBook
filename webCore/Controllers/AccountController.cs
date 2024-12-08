@@ -86,7 +86,7 @@ namespace webCore.Controllers
                 }
 
                 account.Id = Guid.NewGuid().ToString();
-
+                account.RoleId = account.RoleId;
                 // Handle avatar upload if provided
                 if (Avatar != null && Avatar.Length > 0)
                 {
@@ -260,7 +260,24 @@ namespace webCore.Controllers
                 return View("Error");
             }
         }
+        //role
+       
+        public async Task<IActionResult> Dashboard()
+        {
+            var userId = HttpContext.User.Identity.Name;
 
+            // Lấy thông tin người dùng từ MongoDB
+            var user = (await _accountService.GetAccounts())
+                       .FirstOrDefault(u => u.Email == userId);
+
+            if (user == null)
+            {
+                return Unauthorized(); // Trả về Unauthorized nếu người dùng không tồn tại
+            }
+
+            ViewBag.UserRole = user.RoleId; // Lưu vai trò của người dùng vào ViewBag
+            return View(user); // Trả về view với thông tin người dùng
+        }
     }
 }
 

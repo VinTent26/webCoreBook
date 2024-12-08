@@ -36,6 +36,7 @@ namespace webCore.Controllers
                 // Lưu token vào session
                 HttpContext.Session.SetString("AdminToken", account.Token);
                 HttpContext.Session.SetString("AdminName", account.FullName);
+                HttpContext.Session.SetString("RoleId", account.RoleId);
 
                 // Điều hướng đến trang dashboard
                 return RedirectToAction("Index", "Dashboard");
