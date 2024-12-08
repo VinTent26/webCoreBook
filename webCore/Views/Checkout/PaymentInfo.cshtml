@@ -1,0 +1,46 @@
+﻿@model webCore.Models.PaymentInfoViewModel
+
+@{
+    Layout = "_Layout";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nhập Thông Tin Thanh Toán</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Thông Tin Thanh Toán</h2>
+
+        <form method="post" action="@Url.Action("ConfirmPayment", "Checkout")">
+            <div class="form-group">
+                <label for="FullName">Họ và tên</label>
+                <input type="text" class="form-control" id="FullName" name="FullName" required />
+            </div>
+            <div class="form-group">
+                <label for="PhoneNumber">Số điện thoại</label>
+                <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" required />
+            </div>
+            <div class="form-group">
+                <label for="Address">Địa chỉ</label>
+                <input type="text" class="form-control" id="Address" name="Address" required />
+            </div>
+
+            <div class="form-group">
+                <label for="TotalAmount">Tổng Tiền</label>
+                <input type="text" class="form-control" id="TotalAmount" value="@Model.TotalAmount" disabled />
+            </div>
+            <div class="form-group">
+                <label for="FinalAmount">Số Tiền Cần Thanh Toán</label>
+                <input type="text" class="form-control" id="FinalAmount" value="@Model.FinalAmount" disabled />
+            </div>
+
+            <button type="submit" class="btn btn-success btn-lg">Xác Nhận Thanh Toán</button>
+        </form>
+    </div>
+</body>
+</html>

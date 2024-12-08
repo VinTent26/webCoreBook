@@ -75,9 +75,8 @@
 
         <!-- Payment Button -->
         <div class="text-center mt-3">
-            <form action="@Url.Action("ConfirmOrder", "Checkout")" method="post">
-                <button type="submit" class="btn btn-success btn-lg">Thanh Toán</button>
-            </form>
+            <!-- Chuyển qua trang nhập thông tin thanh toán -->
+            <a href="@Url.Action("PaymentInfo", "Checkout")" class="btn btn-success btn-lg">Tiến Hành Thanh Toán</a>
         </div>
     </div>
 </body>
