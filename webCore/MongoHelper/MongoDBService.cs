@@ -11,6 +11,7 @@ namespace webCore.Services
     {
         private readonly IMongoCollection<Product> _productCollection;
         private readonly IMongoCollection<User> _userCollection;
+
         internal readonly IMongoCollection<Account_admin> _accountCollection;
         internal readonly IMongoCollection<Voucher> _voucherCollection;
 
