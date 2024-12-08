@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
+=======
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+>>>>>>> origin/admin_client_v1_thanh
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +22,7 @@ namespace webCore.Models
         public string Address { get; set; }
         public List<CartItem> Items { get; set; }
         public decimal TotalAmount { get; set; }
+        public decimal DiscountAmount { get; set; }
         public decimal FinalAmount { get; set; }
         public decimal DiscountAmount { get; set; }
         public string Status { get; set; }  // "pending"
