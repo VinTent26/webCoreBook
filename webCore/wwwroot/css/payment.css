@@ -1,0 +1,224 @@
+﻿/* ===== HEADER STYLES ===== */
+header {
+    background-color: #66C5FF;
+    padding: 15px 0;
+}
+
+    header .container .row {
+        display: flex;
+        align-items: center;
+    }
+
+/* Logo Styles */
+.inner-logo a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.inner-img img {
+    width: 150px; /* Kích thước logo 150px */
+    height: auto;
+}
+
+.inner-title {
+    margin-left: 10px;
+}
+
+.title-first, .title-second {
+    font-size: 24px;
+    line-height: 1;
+}
+
+.title-first {
+    color: #fff;
+}
+
+.title-second {
+    font-weight: bold;
+    color: #333;
+}
+
+/* Search Form Styles */
+.inner-search {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+    .inner-search form {
+        display: flex;
+        width: 100%;
+    }
+
+    .inner-search input {
+        flex-grow: 1;
+        margin-right: 10px;
+        height: 40px;
+    }
+
+    .inner-search button {
+        height: 40px;
+    }
+
+/* Icon Container Styles */
+.items-icon {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100%;
+}
+
+.inner-cart,
+.inner-user {
+    margin-right: 20px;
+    background-color: #f9f1f5;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    transform: rotate(45deg);
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+    .inner-cart a,
+    .inner-user a {
+        font-size: 1.5em;
+        color: #333;
+        transform: rotate(-45deg);
+    }
+
+    .inner-cart:hover,
+    .inner-user:hover {
+        background-color: #c5c6c6;
+    }
+
+    .inner-cart a:hover,
+    .inner-user a:hover {
+        color: #28a745;
+    }
+/* sectio-one */
+.section-one .inner-info {
+    width: 190px;
+    border-radius: 15px;
+    background-color: #66c5ff;
+}
+
+    .section-one .inner-info .mb-3 {
+        padding: 10px;
+        color: #e7f0ff;
+    }
+
+.section-one {
+    background-color: #e7f0ff;
+    padding: 40px 0;
+}
+
+    .section-one .container .inner-input .lb {
+        font-weight: bold;
+    }
+
+.personal-info-section {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+}
+/* sectio-one */
+/* Footer background */
+footer {
+    background-color: #66C5FF; /* Màu nền đen */
+}
+
+/* Logo trong footer */
+.footer-logo a {
+    font-size: 44px;
+    font-weight: bold;
+    color: #fff;
+    text-decoration: none;
+}
+
+.footer-logo .title-second {
+    font-size: 44px;
+}
+/* Icon Mạng xã hội */
+.social-icons a {
+    font-size: 35px;
+}
+
+    .social-icons a:hover {
+        color: #28a745; /* Màu khi hover */
+    }
+
+.contact-info p:nth-child(1) {
+    font-weight: bold;
+    font-size: 20px;
+}
+/* Liên hệ */
+.contact-info p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* Dòng chữ bản quyền */
+footer p {
+    font-size: 14px;
+    color: #333;
+}
+/* payment */
+.section-two {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+    .section-two .inner-img {
+        width: auto;
+        height: auto;
+    }
+
+    .section-two .inner-title {
+        margin-left: 0px;
+        margin-bottom: 15px;
+    }
+
+        .section-two .inner-title .inner-name {
+            display: inline-block;
+        }
+
+    .section-two .inner-items {
+        background-color: #DBECF7;
+        border-radius: 10px;
+    }
+
+        .section-two .inner-items ul li {
+            margin-bottom: 10px;
+        }
+
+.payment .inner-info {
+    background-color: #DBECF7;
+    border-radius: 10px;
+}
+
+.section-two .payment-total .inner-content {
+    margin: 10px;
+    padding: 15px;
+}
+
+.section-two .payment-total .btn {
+    margin-right: 10px;
+}
+
+.section-two .payment-total {
+    border-radius: 10px;
+    background-color: #DBECF7;
+}
+/* payment */

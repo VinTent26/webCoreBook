@@ -17,7 +17,9 @@ namespace webCore.Services
         internal readonly IMongoCollection<Cart> _cartCollection;
         internal readonly IMongoCollection<Voucher> _voucherCollection;
         internal readonly IMongoCollection<Category> _categoryCollection;
+        internal readonly IMongoCollection<Order> _orders;
         private readonly IMongoDatabase _mongoDatabase;
+     
 
 
         public MongoDBService(IConfiguration configuration)
@@ -30,8 +32,10 @@ namespace webCore.Services
             _categoryCollection = mongoDatabase.GetCollection<Category>("Category");
             _detailProductCollection= mongoDatabase.GetCollection<Product_admin>("Product");
             _cartCollection= mongoDatabase.GetCollection<Cart>("Cart");
+            _orders = mongoDatabase.GetCollection<Order>("Orders");
             _voucherCollection = mongoDatabase.GetCollection<Voucher>("Vouchers");
-
+    
+           
         }
 
     }
