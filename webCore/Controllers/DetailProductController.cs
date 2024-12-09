@@ -89,7 +89,7 @@ namespace webCore.Controllers
                 var category = await _categoryService.GetCategoryBreadcrumbByIdAsync(currentCategoryId);
                 if (category != null)
                 {
-                    breadcrumbs.Add(category); // Thêm vào danh sách
+                    breadcrumbs.Insert(1, category); // Thêm vào **sau "Trang chủ"**
                     currentCategoryId = category.ParentId; // Lấy danh mục cha
                 }
                 else
@@ -123,14 +123,16 @@ namespace webCore.Controllers
 
             // Truy vấn danh mục breadcrumb từ categoryId của sản phẩm
             var breadcrumbs = new List<Category>();
+
             string currentCategoryId = product.CategoryId;
 
+            // Lấy breadcrumb của các danh mục cha
             while (!string.IsNullOrEmpty(currentCategoryId))
             {
                 var category = await _categoryService.GetCategoryBreadcrumbByIdAsync(currentCategoryId);
                 if (category != null)
                 {
-                    breadcrumbs.Insert(0, category); // Thêm vào đầu danh sách
+                    breadcrumbs.Insert(0, category); // Thêm vào **đầu danh sách**
                     currentCategoryId = category.ParentId; // Lấy danh mục cha
                 }
                 else

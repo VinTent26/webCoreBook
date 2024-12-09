@@ -38,5 +38,16 @@ namespace webCore.MongoHelper
                 await _cartCollection.ReplaceOneAsync(c => c.Id == existingCart.Id, cart);
             }
         }
+        public async Task RemoveItemsFromCartAsync(string userId, List<string> productIds)
+        {
+            if (!string.IsNullOrEmpty(userId) && productIds != null && productIds.Any())
+            {
+                var filter = Builders<Cart>.Filter.Eq(cart => cart.UserId, userId);
+                var update = Builders<Cart>.Update.PullFilter(cart => cart.Items, item => productIds.Contains(item.ProductId));
+
+                await _cartCollection.UpdateOneAsync(filter, update);
+            }
+        }
+
     }
 }
