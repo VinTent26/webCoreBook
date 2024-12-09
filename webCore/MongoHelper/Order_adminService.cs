@@ -25,6 +25,28 @@ namespace webCore.Services
         {
             return await _orderCollection.Find(order => true).ToListAsync();
         }
+        // Lấy top 3 đơn hàng gần đây nhất
+        public async Task<List<Order>> GetRecentOrdersAsync()
+        {
+            try
+            {
+                // Tìm tất cả đơn hàng, sắp xếp giảm dần theo CreatedAt và giới hạn 3 đơn hàng
+                var recentOrders = await _orderCollection
+                    .Find(order => true) // Lọc tất cả đơn hàng
+                    .Sort(Builders<Order>.Sort.Descending(order => order.CreatedAt)) // Sắp xếp giảm dần theo CreatedAt
+                    .Limit(3) // Lấy tối đa 3 đơn hàng
+                    .ToListAsync();
+
+                return recentOrders; // Trả về danh sách
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi nếu có
+                Console.WriteLine($"Error fetching recent orders: {ex.Message}");
+                return new List<Order>(); // Trả về danh sách trống nếu lỗi
+            }
+        }
+
 
         // Lấy đơn hàng theo ID
         public async Task<Order> GetOrderByIdAsync(string id)

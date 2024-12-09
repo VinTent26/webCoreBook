@@ -4,6 +4,7 @@ using webCore.Models;
 using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 
 namespace webCore.Controllers
 {
@@ -22,6 +23,8 @@ namespace webCore.Controllers
         {
             try
             {
+                var adminName = HttpContext.Session.GetString("AdminName");
+                ViewBag.AdminName = adminName;
                 // Lấy tất cả đơn hàng từ service
                 var orders = await _orderService.GetAllOrdersAsync();
 
@@ -55,6 +58,8 @@ namespace webCore.Controllers
 
             try
             {
+                var adminName = HttpContext.Session.GetString("AdminName");
+                ViewBag.AdminName = adminName;
                 var order = await _orderService.GetOrderByIdAsync(id); // Gọi service để lấy thông tin đơn hàng
                 if (order == null)
                 {

@@ -34,29 +34,57 @@
         </div>
     </div>
 
-    <div class="order-table mt-4">
+<div class="order-table mt-4">
         <h3>Đơn Hàng Cần Xác Nhận</h3>
         <table class="table table-bordered">
-            <thead class="thead-light">
+            <thead>
                 <tr>
                     <th>Khách Hàng</th>
                     <th>Ngày Đặt Hàng</th>
                     <th>Giỏ Hàng</th>
                     <th>Trạng Thái</th>
-                    <th>Thao Tác</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Đỗ Cảnh</td>
-                    <td>22:23:25 25-05-2024</td>
-                    <td>1 Sản Phẩm</td>
-                    <td><span class="badge badge-warning">Chờ Xác Nhận</span></td>
-                   
-                </tr>
-                <!-- Additional rows omitted for brevity -->
+                @if (ViewBag.RecentOrders != null && ViewBag.RecentOrders.Count > 0)
+                {
+                    foreach (var order in ViewBag.RecentOrders)
+                    {
+                        <tr>
+                            <td>@order.FullName</td>
+                            <td>@order.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                            <td>
+                                @if (order.Items != null)
+                                {
+                                    var items = order.Items as List<CartItem>;
+                                    var totalQuantity = items?.Sum(item => item.Quantity) ?? 0; // Tính tổng hoặc trả về 0 nếu null
+                                    @totalQuantity
+                                }
+                                else
+                                {
+                                    <span>0</span> <!-- Nếu không có sản phẩm -->
+                                }
+                            </td>
+
+
+                            <td>
+                                <span style="color: @(order.Status == "Đang chờ duyệt" ? "orange" :
+                             order.Status == "Đã duyệt" ? "green" :
+                             order.Status == "Đã hủy" ? "red" : "black");">
+                                    @order.Status
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-center">Không có đơn hàng gần đây.</td>
+                    </tr>
+                }
             </tbody>
         </table>
-        <a href="#" class="btn btn-link">Xem tất cả đơn hàng →</a>
+        <a href="/Admin_order" class="btn btn-link">Xem tất cả đơn hàng →</a>
     </div>
 </div>
