@@ -143,8 +143,9 @@
                 <!-- Section three -->
                 <div class="p-4 rounded-box mb-4">
                     <h6 class="font-weight-bold mb-3">Mô tả sản phẩm</h6>
-                    <p>@Model.Description</p>
+                    <p>@Html.Raw(Model.Description.Replace(Environment.NewLine, "<br />"))</p>
                 </div>
+
                 <!-- End section three -->
             </div>
 
