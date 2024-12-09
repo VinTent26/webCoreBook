@@ -11,6 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lịch sử Thanh Toán</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/PaymentHistory.css" asp-append-version="true" />
 </head>
 <body>
 
@@ -28,18 +29,19 @@
             <div class="col-md-12">
                 <table class="table table-striped">
                     <thead>
-                        <tr>
+                        <tr class="tbheader">
                             <th>Ngày Đặt</th>
                             <th>Sản phẩm</th>
                             <th>Tổng Tiền</th>
                             <th>Trạng Thái</th>
+                            <th>Hành động</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var order in Model)
                         {
                             <tr>
-                                <td>@order.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td class="col-content">@order.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
                                 <td>
                                     <ul class="list-unstyled">
                                         @foreach (var item in order.Items)
@@ -58,9 +60,15 @@
                                         }
                                     </ul>
                                 </td>
-                                <td>@order.FinalAmount.ToString("C")</td>
-                                <td>@order.Status</td>
-                                <td>
+                                <td class="col-content">@order.FinalAmount.ToString("C")</td>
+                                <td class="col-content">
+                                    <span style="color: @(order.Status == "Đang chờ duyệt" ? "orange" :
+                                             order.Status == "Đã duyệt" ? "red" :
+                                             order.Status == "Đã hủy" ? "green" : "black");">
+                                        @order.Status
+                                    </span>
+                                </td>
+                                <td class= "btn_select">
                                     <a href="@Url.Action("OrderDetails", "Checkout", new { orderId = order.Id })" class="btn btn-primary btn-sm">
                                         Xem Chi Tiết
                                     </a>
