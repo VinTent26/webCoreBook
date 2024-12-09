@@ -24,6 +24,29 @@
             </div>
         </div>
     </div>
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col-md-12 d-flex" style="margin-left :-9px">
+                <!-- Nút Tất cả -->
+                <a href="@Url.Action("PaymentHistory", "Checkout")"
+                   class="btn btn-secondary btn-sm mx-2 @(ViewBag.CurrentStatus == "All" ? "active" : "")">Tất cả</a>
+
+                <!-- Nút Chờ duyệt -->
+                <a href="@Url.Action("PaymentHistory", "Checkout", new { status = "Đang chờ duyệt" })"
+                   class="btn btn-warning btn-sm mx-2 @(ViewBag.CurrentStatus == "Đang chờ duyệt" ? "active" : "")">Chờ duyệt</a>
+
+                <!-- Nút Đã duyệt -->
+                <a href="@Url.Action("PaymentHistory", "Checkout", new { status = "Đã duyệt" })"
+                   class="btn btn-danger btn-sm mx-2 @(ViewBag.CurrentStatus == "Đã duyệt" ? "active" : "")">Đã duyệt</a>
+
+                <!-- Nút Đã hủy -->
+                <a href="@Url.Action("PaymentHistory", "Checkout", new { status = "Đã hủy" })"
+                   class="btn btn-success btn-sm mx-2 @(ViewBag.CurrentStatus == "Đã hủy" ? "active" : "")">Đã hủy</a>
+            </div>
+        </div>
+    </div>
+
+
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-12">
@@ -68,7 +91,7 @@
                                         @order.Status
                                     </span>
                                 </td>
-                                <td class= "btn_select">
+                                <td class="btn_select">
                                     <a href="@Url.Action("OrderDetails", "Checkout", new { orderId = order.Id })" class="btn btn-primary btn-sm">
                                         Xem Chi Tiết
                                     </a>
