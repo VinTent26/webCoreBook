@@ -60,14 +60,42 @@ namespace webCore.Controllers
             return View(); // Trả về view Index.cshtml
         }
         // Action này sẽ nhận yêu cầu AJAX để lấy danh sách sản phẩm đã sắp xếp
-        public async Task<IActionResult> GetProductsByCategoryId(string categoryId)
+        public async Task<IActionResult> GetProductsByCategoryId(string categoryId, bool filterByDiscount = false, string sortOrder = "none")
         {
-            // Gọi hàm lấy sản phẩm
+            // Lấy danh sách sản phẩm từ service theo categoryId
             var products = await _productService.GetProductsByCategoryIdAsync(categoryId);
+
+            // Lọc theo khuyến mãi nếu filterByDiscount là true
+            if (filterByDiscount)
+            {
+                products = products.Where(p => p.DiscountPercentage > 0).ToList();
+            }
+
+            // Sắp xếp theo yêu cầu
+            switch (sortOrder)
+            {
+                case "asc":
+                    products = products.OrderBy(p => p.Price).ToList(); // Sắp xếp theo giá tăng dần
+                    break;
+                case "desc":
+                    products = products.OrderByDescending(p => p.Price).ToList(); // Sắp xếp theo giá giảm dần
+                    break;
+                case "discountAsc":
+                    products = products.OrderBy(p => p.DiscountPercentage).ToList(); // Sắp xếp theo khuyến mãi tăng dần
+                    break;
+                case "discountDesc":
+                    products = products.OrderByDescending(p => p.DiscountPercentage).ToList(); // Sắp xếp theo khuyến mãi giảm dần
+                    break;
+            }
+
+            // Truyền CategoryId cho view
+            ViewBag.CategoryId = categoryId;
 
             // Trả về partial view với danh sách sản phẩm đã sắp xếp
             return PartialView("_BookListPartial", products);
         }
+
+
 
         // Phương thức tìm kiếm sản phẩm
         public async Task<IActionResult> Search(string searchQuery)
@@ -157,5 +185,7 @@ namespace webCore.Controllers
 
             return Ok(breadcrumbs);
         }
+
+
     }
 }

@@ -5,16 +5,16 @@
     var featuredProducts = ViewBag.FeaturedProducts as List<webCore.Models.Product_admin>;
     var bestsellerProducts = ViewBag.BestsellerProducts as List<webCore.Models.Product_admin>; // Dữ liệu sách bán chạy
     var sortedProducts = ViewBag.SortedProducts as List<webCore.Models.Product_admin>;
-                var orderedGroupedProducts = groupedProducts
-                    .OrderBy(group =>
-                        group.Key == "Gợi ý" ? 1 :
-                        group.Key == "Mới" ? 2 :
-                        group.Key == "Nổi bật" ? 3 : 4)
-                    .ToList(); }
+    var orderedGroupedProducts = groupedProducts
+        .OrderBy(group =>
+            group.Key == "Gợi ý" ? 1 :
+            group.Key == "Mới" ? 2 :
+            group.Key == "Nổi bật" ? 3 : 4)
+        .ToList(); }
 
-                <div class="container">
-                    <div class="row">
-                        <!-- Sidebar - Danh mục sản phẩm -->
+<div class="container">
+    <div class="row">
+        <!-- Sidebar - Danh mục sản phẩm -->
         <aside class="list col-md-4">
             <ul class="list-group">
                 <li class="inner-title list-group-item">
@@ -172,6 +172,7 @@
                     <p>Không có sản phẩm nào để hiển thị.</p>
                 }
             </div>
+
         </main>
     </div>
 </div>
@@ -200,23 +201,23 @@
             })
             .catch(error => console.error('Error loading products:', error));
     }
-                function scrollProducts(button, distance) {
-                const row = button.parentElement.querySelector('.product-row');
-                row.scrollBy({
-                    left: distance,
-                    behavior: 'smooth'
-                });
-            }
+    function scrollProducts(button, distance) {
+        const row = button.parentElement.querySelector('.product-row');
+        row.scrollBy({
+            left: distance,
+            behavior: 'smooth'
+        });
+    }
 </script>
 
 @functions { // Get the correct label based on the FeaturedStatus enum
-            public string GetFeaturedLabel(string featured)
-            {
-                switch (featured)
-                {
-                    case "Nổi bật": return "Nổi bật";
-                    case "Mới": return "Mới";
-                    case "Gợi ý": return "Gợi ý";
-                    default: return ""; // Trả về chuỗi rỗng thay vì "Không nổi bật"
-                }
-            } }
+    public string GetFeaturedLabel(string featured)
+    {
+        switch (featured)
+        {
+            case "Nổi bật": return "Nổi bật";
+            case "Mới": return "Mới";
+            case "Gợi ý": return "Gợi ý";
+            default: return ""; // Trả về chuỗi rỗng thay vì "Không nổi bật"
+        }
+    } }
