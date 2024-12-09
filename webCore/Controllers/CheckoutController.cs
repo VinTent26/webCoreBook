@@ -195,12 +195,12 @@ namespace webCore.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> PaymentHistory()
+        public async Task<IActionResult> PaymentHistory(string ? status = null)
         {
+            // Kiểm tra xem người dùng đã đăng nhập hay chưa
             var isLoggedIn = HttpContext.Session.GetString("UserToken") != null;
-
-            // Truyền thông tin vào ViewBag hoặc Model để sử dụng trong View
             ViewBag.IsLoggedIn = isLoggedIn;
+
             // Lấy UserId từ session
             var userId = HttpContext.Session.GetString("UserToken");
             if (string.IsNullOrEmpty(userId))
@@ -212,8 +212,50 @@ namespace webCore.Controllers
             // Lấy danh sách đơn hàng từ MongoDB theo UserId
             var orders = await _orderService.GetOrdersByUserIdAsync(userId);
 
-            // Truyền dữ liệu vào View
+            // Lọc danh sách đơn hàng theo trạng thái nếu trạng thái không null
+            if (!string.IsNullOrEmpty(status))
+            {
+                if (status == "Đang chờ duyệt")
+                {
+                    orders = orders.Where(o => o.Status == "Đang chờ duyệt").ToList();
+                }
+                else if (status == "Đã duyệt")
+                {
+                    orders = orders.Where(o => o.Status == "Đã duyệt").ToList();
+                }
+                else if (status == "Đã hủy")
+                {
+                    orders = orders.Where(o => o.Status == "Đã hủy").ToList();
+                }
+            }
+
+            // Truyền trạng thái hiện tại và danh sách đơn hàng vào View
+            ViewBag.CurrentStatus = status ?? "All";
             return View(orders);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> OrderDetails(string orderId)
+        {
+            var isLoggedIn = HttpContext.Session.GetString("UserToken") != null;
+
+            // Kiểm tra đăng nhập
+            if (!isLoggedIn)
+            {
+                return RedirectToAction("Sign_in", "User");
+            }
+
+            // Tìm đơn hàng theo ID
+            var order = await _orderService.GetOrderByIdAsync(orderId);
+
+            if (order == null)
+            {
+                // Xử lý nếu không tìm thấy đơn hàng
+                return NotFound("Không tìm thấy đơn hàng");
+            }
+
+            return View(order);
         }
 
     }
