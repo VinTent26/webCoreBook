@@ -21,16 +21,16 @@ namespace webCore.Controllers
             _cartService = cartService;
             _orderService = orderService;
         }
-        [HttpGet]
        
+
         // Action để hiển thị form nhập thông tin thanh toán
         [HttpGet]
         public async Task<IActionResult> PaymentInfo()
         {
+            // Kiểm tra trạng thái đăng nhập từ session
             var isLoggedIn = HttpContext.Session.GetString("UserToken") != null;
-
-            // Truyền thông tin vào ViewBag hoặc Model để sử dụng trong View
             ViewBag.IsLoggedIn = isLoggedIn;
+
             // Lấy UserId từ session
             var userId = HttpContext.Session.GetString("UserToken");
             if (string.IsNullOrEmpty(userId))
@@ -39,30 +39,52 @@ namespace webCore.Controllers
                 return RedirectToAction("Sign_in", "User");
             }
 
-            // Lấy thông tin giỏ hàng của người dùng
-            var cart = await _cartService.GetCartByUserIdAsync(userId);
-            if (cart == null || cart.Items.Count == 0)
+            // Kiểm tra xem có CartItem được lưu trong session (dành cho BuyNow)
+            var cartItemSession = HttpContext.Session.GetString("CartItem");
+
+            if (!string.IsNullOrEmpty(cartItemSession))
             {
+                // Trường hợp BuyNow: xử lý với một sản phẩm cụ thể
+                var cartItem = JsonConvert.DeserializeObject<CartItem>(cartItemSession);
+
+                // Tính toán giá trị
+                decimal totalAmount = cartItem.Price * cartItem.Quantity * (1 - cartItem.DiscountPercentage / 100);
+                decimal finalAmount = totalAmount;
+
+                // Trả về View với dữ liệu cho sản phẩm BuyNow
+                return View(new PaymentInfoViewModel
+                {
+                    Items = new List<CartItem> { cartItem },
+                    TotalAmount = totalAmount,
+                    FinalAmount = finalAmount
+                });
+            }
+
+            // Nếu không có CartItem trong session, xử lý như Checkout (toàn bộ giỏ hàng)
+            var cart = await _cartService.GetCartByUserIdAsync(userId);
+            if (cart == null || cart.Items == null || cart.Items.Count == 0)
+            {
+                // Nếu giỏ hàng rỗng, chuyển về trang giỏ hàng
                 return RedirectToAction("Cart");
             }
+
             // Lấy danh sách các sản phẩm đã chọn từ session
             var selectedProductIds = JsonConvert.DeserializeObject<List<string>>(HttpContext.Session.GetString("SelectedProductIds") ?? "[]");
-
-            // Lọc các sản phẩm đã chọn trong giỏ hàng
             var selectedItems = cart.Items.Where(item => selectedProductIds.Contains(item.ProductId)).ToList();
 
-            // Tính tổng tiền
-            decimal totalAmount = selectedItems.Sum(item => (item.Price * (1 - item.DiscountPercentage / 100)) * item.Quantity);
-            decimal finalAmount = totalAmount;
+            // Tính toán tổng tiền
+            decimal totalAmountCheckout = selectedItems.Sum(item => (item.Price * (1 - item.DiscountPercentage / 100)) * item.Quantity);
+            decimal finalAmountCheckout = totalAmountCheckout;
 
-            // Truyền dữ liệu vào View
+            // Trả về View với dữ liệu cho giỏ hàng
             return View(new PaymentInfoViewModel
             {
                 Items = selectedItems,
-                TotalAmount = totalAmount,
-                FinalAmount = finalAmount,
+                TotalAmount = totalAmountCheckout,
+                FinalAmount = finalAmountCheckout
             });
         }
+
 
         // Action để xử lý thông tin thanh toán và lưu vào MongoDB
         [HttpPost]
