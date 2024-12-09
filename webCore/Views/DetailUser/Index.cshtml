@@ -22,7 +22,7 @@
             </a>
         </div>
 
-        <h2 class="text-center mt-3">Cập nhật thông tin cá nhân</h2>
+        <h2 class="text text-center mt-3">Cập nhật thông tin cá nhân</h2>
 
         <!-- Hiển thị thông báo -->
         @if (TempData["Message"] != null)
@@ -137,35 +137,5 @@
             reader.readAsDataURL(event.target.files[0]);
         });
     </script>
-    <style>
-        /* CSS cho nút Quay lại */
-        .back-button {
-            margin-bottom: 20px;
-            display: inline-block;
-        }
-
-            .back-button a {
-                text-decoration: none;
-                font-weight: bold;
-                display: inline-flex;
-                align-items: center;
-                padding: 10px 15px;
-                color: #fff; /* Màu chữ */
-                background-color: #007bff; /* Màu nền */
-                border-radius: 8px;
-                cursor: pointer;
-                transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu nền */
-            }
-
-                .back-button a:hover {
-                    background-color: #0056b3; /* Màu nền khi hover */
-                }
-
-            .back-button i {
-                margin-right: 8px;
-                font-size: 16px;
-            }
-
-    </style>
 </body>
 </html>

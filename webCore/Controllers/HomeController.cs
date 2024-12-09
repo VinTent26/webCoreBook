@@ -13,11 +13,11 @@ namespace webCore.Controllers
 {
     public class HomeController : Controller
     {
- 
         private readonly MongoDBService _mongoDBService;
         private readonly ProductService _productService;
         private readonly CategoryService _categoryService;
         private readonly UserService _userService;
+
         public HomeController(MongoDBService mongoDBService, ProductService productService, CategoryService categoryService, UserService userService)
         {
             _mongoDBService = mongoDBService;
@@ -25,9 +25,10 @@ namespace webCore.Controllers
             _categoryService = categoryService;
             _userService = userService;
         }
+
         // Action Index, trả về trang chủ và lấy dữ liệu từ MongoDB
         [ServiceFilter(typeof(SetLoginStatusFilter))]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOption = "default")
         {
             // Kiểm tra trạng thái đăng nhập từ session
             var isLoggedIn = HttpContext.Session.GetString("UserToken") != null;
@@ -43,19 +44,32 @@ namespace webCore.Controllers
             var groupedProducts = await _productService.GetProductsGroupedByFeaturedAsync();
             ViewBag.GroupedProducts = groupedProducts;
 
+            // Get and sort products by the given sort option
+            var allProducts = await _productService.GetProductsAsync();
+            var sortedProducts = _productService.SortProducts(allProducts, sortOption);
+            ViewBag.SortedProducts = sortedProducts;
+
+            // Lấy danh sách sản phẩm nổi bật
+            var featuredProducts = await _productService.GetFeaturedProductsAsync();
+            ViewBag.FeaturedProducts = featuredProducts;
+
+            // Lấy danh sách sản phẩm bán chạy
+            var bestsellerProducts = await _productService.GetBestsellerProductsAsync();
+            ViewBag.BestsellerProducts = bestsellerProducts;
+
             return View(); // Trả về view Index.cshtml
         }
-        // Trả về danh sách sách theo Position
-        public async Task<IActionResult> GetProductsByPosition(int position)
+        // Action này sẽ nhận yêu cầu AJAX để lấy danh sách sản phẩm đã sắp xếp
+        public async Task<IActionResult> GetProductsByCategoryId(string categoryId)
         {
-            // Lấy danh sách sách theo Position từ MongoDB
-            var products = await _productService.GetProductsByCategoryPositionAsync(position);
+            // Gọi hàm lấy sản phẩm
+            var products = await _productService.GetProductsByCategoryIdAsync(categoryId);
 
-            // Trả về Partial View
+            // Trả về partial view với danh sách sản phẩm đã sắp xếp
             return PartialView("_BookListPartial", products);
         }
-        // Lấy danh sách sản phẩm theo trạng thái Featured
-        // Phương thức tìm kiếm
+
+        // Phương thức tìm kiếm sản phẩm
         public async Task<IActionResult> Search(string searchQuery)
         {
             if (string.IsNullOrEmpty(searchQuery))
