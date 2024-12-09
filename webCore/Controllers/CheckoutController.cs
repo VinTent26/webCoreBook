@@ -116,7 +116,17 @@ namespace webCore.Controllers
 
             // Tính toán lại tổng tiền
             decimal totalAmount = selectedItems.Sum(item => (item.Price * (1 - item.DiscountPercentage / 100)) * item.Quantity);
-            decimal finalAmount = totalAmount;
+            // Lấy voucher giảm giá
+            var voucherDiscount = HttpContext.Session.GetString("SelectedVoucher");
+            decimal discountAmount = 0;
+
+            if (!string.IsNullOrEmpty(voucherDiscount))
+            {
+                decimal discountValue = decimal.Parse(voucherDiscount);
+                discountAmount = totalAmount * (discountValue / 100);
+            }
+
+            decimal finalAmount = totalAmount - discountAmount;
 
 
             // Lưu đơn hàng vào MongoDB với trạng thái "pending"
@@ -128,12 +138,14 @@ namespace webCore.Controllers
                 Address = model.Address,
                 Items = selectedItems,
                 TotalAmount = totalAmount,
+                DiscountAmount = discountAmount,
                 FinalAmount = finalAmount,
-                Status = "pending",
+                Status = "Đang chờ duyệt",
                 CreatedAt = DateTime.UtcNow
             };
 
             await _orderService.SaveOrderAsync(order);
+            await _cartService.RemoveItemsFromCartAsync(userId, selectedProductIds);
 
             // Chuyển hướng đến trang đơn hàng chờ vận chuyển
             return RedirectToAction("PaymentHistory", "Checkout");
