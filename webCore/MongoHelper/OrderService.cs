@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿
+using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using webCore.Services;
 namespace webCore.MongoHelper
 {
     public class OrderService
-        
+
     {
         private readonly IMongoCollection<Order> _orders;
 
