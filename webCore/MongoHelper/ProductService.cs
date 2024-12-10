@@ -58,5 +58,43 @@ namespace webCore.MongoHelper
         {
             return await _productCollection.Find(p => p.Id == productId).FirstOrDefaultAsync();
         }
+        public async Task<List<Product_admin>> GetFeaturedProductsAsync()
+        {
+            var filter = Builders<Product_admin>.Filter.Eq(p => p.Deleted, false) &
+                         Builders<Product_admin>.Filter.In(p => p.Featured, new[]
+                         {
+                     (int)FeaturedStatus.Highlighted,
+                     (int)FeaturedStatus.New,
+                     (int)FeaturedStatus.Suggested
+                         });
+
+            return await _productCollection.Find(filter).ToListAsync();
+        }
+
+        // Lấy danh sách sản phẩm bán chạy (dựa trên ngày tạo, giả định là các sản phẩm mới nhất sẽ được bán chạy)
+        public async Task<List<Product_admin>> GetBestsellerProductsAsync()
+        {
+            var filter = Builders<Product_admin>.Filter.Eq(p => p.Deleted, false);
+
+            // Sắp xếp theo ngày tạo, giả sử các sản phẩm mới nhất là bán chạy
+            var sort = Builders<Product_admin>.Sort.Descending(p => p.CreatedAt);
+
+            // Lấy 10 sản phẩm mới nhất
+            return await _productCollection.Find(filter).Sort(sort).Limit(10).ToListAsync();
+        }
+        public async Task<List<Product_admin>> GetProductsByCategoryIdAsync(string categoryId)
+        {
+            if (string.IsNullOrEmpty(categoryId))
+            {
+                return new List<Product_admin>(); // Return empty list if CategoryId is invalid
+            }
+
+            // Lọc sản phẩm theo CategoryId và Deleted là false
+            var filter = Builders<Product_admin>.Filter.Eq(p => p.CategoryId, categoryId) &
+                         Builders<Product_admin>.Filter.Eq(p => p.Deleted, false);
+
+            // Truy vấn sản phẩm từ MongoDB theo filter
+            return await _productCollection.Find(filter).ToListAsync();
+        }
     }
 }
