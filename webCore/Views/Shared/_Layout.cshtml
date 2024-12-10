@@ -44,7 +44,7 @@
                         </form>
                     </div>
                 </div>
-                <div class="col-3">
+                <div class="col-2">
 
                     <div class="items-icon">
                         <!-- Icon Cart -->
@@ -89,10 +89,25 @@
                             });
                         </script>
                         <!-- Icon User -->
-                        <div class="inner-user" id="userIcon">
-                            <a href="#" class="user-dropdown-toggle">
-                                <i class="fa-regular fa-user"></i>
-                            </a>
+                        <div>
+                            <div class="inner-user" id="userIcon">
+                                <a href="#" class="user-dropdown-toggle">
+                                    <i class="fa-regular fa-user"></i>
+                                </a>
+                            </div>
+                            <div class="user-name">
+                                @{
+                                    var userName = HttpContextAccessor.HttpContext.Session.GetString("UserName");
+                                    if (!string.IsNullOrEmpty(userName))
+                                    {
+                                        <span class="username">@userName</span> <!-- Hiển thị tên người dùng -->
+                                    }
+                                    else
+                                    {
+                                        <p class="login-text">Đăng nhập</p>
+                                    }
+                                }
+                            </div>
                         </div>
                     </div>
 
@@ -143,34 +158,23 @@
                         });
                     </script>
                     <!-- Username -->
-                    <div class="user-name">
-                        @{
-                            var userName = HttpContextAccessor.HttpContext.Session.GetString("UserName");
-                            if (!string.IsNullOrEmpty(userName))
-                            {
-                                <span class="username">@userName</span> <!-- Hiển thị tên người dùng -->
-                            }
-                            else
-                            {
-                                <p class="login-text">Đăng nhập</p>
-                            }
-                        }
-                    </div>
+
+
+
                     <style>
                         /* Áp dụng margin-right cho tên người dùng */
                         .username {
                             margin-right: 15px;
-                            display: inline-block; 
+                            display: inline-block;
                             text-align: center;
-                            white-space: nowrap; 
-                            word-wrap: break-word; 
+                            white-space: nowrap;
+                            word-wrap: break-word;
                         }
 
                         /* Đảm bảo không có margin-right khi là "Đăng nhập" */
                         .login-text {
                             margin-right: 0;
                         }
-
                     </style>
                 </div>
             </div>

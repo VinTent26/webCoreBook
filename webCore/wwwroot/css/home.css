@@ -133,21 +133,6 @@ header {
         color: #28a745;
     }
 
-/* Căn chỉnh tên người dùng hoặc "Đăng nhập" dưới icon */
-.user-name {
-    margin-top: 10px; /* Khoảng cách giữa icon và tên người dùng */
-    text-align: center; /* Căn giữa tên người dùng */
-    font-size: 0.9rem;
-    color: #000;
-    margin-right: 12px
-}
-
-    /* Nếu không muốn hiển thị khoảng cách giữa icon và tên người dùng khi không đăng nhập */
-    .user-name p {
-        margin: 0;
-        font-size: 1rem;
-        color: #333;
-    }
 
 /* Dropdown Styles */
 .user-dropdown {
@@ -281,6 +266,7 @@ header {
     height: 100%;
     gap: 20px;
     margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 .inner-cart,
@@ -317,10 +303,11 @@ header {
 
 .user-name {
     margin-top: 10px;
-    text-align: right;
     font-size: 0.9rem;
     color: #000;
-    margin-right: 55px;
+   /* margin-right: 55px;*/
+   margin-left: -13px;
+   position:absolute;
 }
 
 /* Dropdown Styles */
