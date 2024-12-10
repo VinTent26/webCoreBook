@@ -56,7 +56,18 @@ else
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="status">Trạng thái</label>
-                                <p>@Model.Status</p>
+                                <p>
+                                    <strong>
+                                    @if (Model.Status == 1)
+                                    {
+                                        <span style="color: green;">Hoạt động</span>
+                                    }
+                                    else if (Model.Status == 0)
+                                    {
+                                        <span style="color: red;">Bị khóa</span>
+                                        }
+                                    </strong>
+                                </p>
                             </div>
                         </div>
 

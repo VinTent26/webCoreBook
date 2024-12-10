@@ -74,6 +74,13 @@ h1 {
     text-align: right;
 }
 
+.button-group {
+    display: flex;
+    justify-content: flex-start; /* Hoặc 'center' nếu bạn muốn căn giữa các nút */
+    gap: 10px; /* Khoảng cách giữa các nút */
+}
+
+
 /* Nút chỉnh sửa và xóa */
 .icon-btn {
     background: none;
