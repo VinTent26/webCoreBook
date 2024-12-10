@@ -96,7 +96,6 @@ namespace webCore.Controllers
         }
 
 
-
         // Phương thức tìm kiếm sản phẩm
         public async Task<IActionResult> Search(string searchQuery)
         {
