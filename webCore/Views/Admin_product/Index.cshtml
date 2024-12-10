@@ -61,7 +61,7 @@
                         <button class="icon-btn edit-btn" title="Edit" onclick="window.location.href='@Url.Action("Update", "Admin_product", new { id = product.Id })'">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <form action="@Url.Action("DeleteConfirmed", "Account", new { id = product.Id })" method="post" style="display: inline-block;">
+                        <form action="@Url.Action("DeleteConfirmed", "Admin_product", new { id = product.Id })" method="post" style="display: inline-block;">
                             @Html.AntiForgeryToken()
                             <button type="submit" class="icon-btn delete-btn" title="Delete">
                                 <i class="fas fa-trash-alt"></i>
@@ -74,59 +74,6 @@
         </tbody>
     </table>
 
-    <!-- Modal Xác nhận Xóa -->
-<div id="deleteModal" class="modal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Xác nhận xóa</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Bạn có chắc chắn muốn xóa sản phẩm <strong id="deleteProductTitle"></strong>?</p>
-            </div>
-            <div class="modal-footer">
-                <!-- Form xóa -->
-                <form id="deleteForm" method="post" style="display:inline-block;" action="">
-                    @Html.AntiForgeryToken()
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                    <button type="submit" class="btn btn-danger">Xóa</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-    <script>
-        function showDeleteModal(id, title) {
-            document.getElementById('productTitle').textContent = title;
-            document.getElementById('productId').value = id;
-
-            var formAction = '/Admin_product/DeleteConfirmed/' + id;
-            document.getElementById('confirmDeleteForm').action = formAction;
-
-            var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-            deleteModal.show();
-        }
-        //đóng modal
-        function closeModal() {
-            var modalElement = document.getElementById('deleteModal');
-            var modal = bootstrap.Modal.getInstance(modalElement);
-            if (modal) {
-                modal.hide();
-            } else {
-                // Nếu không tìm thấy instance, có thể khởi tạo lại modal
-                var newModal = new bootstrap.Modal(modalElement);
-                newModal.hide();
-            }
-        }
-
-    </script>
-
-    <!-- Pagination -->
     <!-- Pagination -->
     <nav aria-label="Page navigation">
         <ul class="pagination justify-content-center">

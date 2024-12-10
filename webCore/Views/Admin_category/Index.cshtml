@@ -47,68 +47,18 @@
                         <button class="icon-btn edit-btn" title="Edit" onclick="window.location.href='@Url.Action("Update", "Admin_category", new { id = category.Id })'">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="icon-btn delete-btn" title="Delete" onclick="showDeleteModal('@category.Id', '@category.Title')">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
+                        <form action="@Url.Action("DeleteConfirmed", "Admin_category", new { id = category.Id })" method="post" style="display: inline-block;">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="icon-btn delete-btn" title="Delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 
-    <!-- Modal Xác Nhận Xóa -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">Xác nhận xóa</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Bạn có chắc chắn muốn xóa danh mục <strong id="categoryTitle"></strong>?</p>
-                </div>
-                <div class="modal-footer">
-                    <!-- Khi nhấn "Hủy", modal sẽ tự động đóng -->
-                    <button type="button" class="btn btn-secondary" onclick="window.location.href='@Url.Action("Index", "Admin_category")'">Hủy</button>
-                    <form id="confirmDeleteForm" method="post" style="display:inline;">
-                        <!-- Dynamic URL for Delete -->
-                        <input type="hidden" id="categoryId" name="id" />
-                        <button type="submit" class="btn btn-danger">Xóa</button> <!-- Đóng thẻ button đúng -->
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script>
-        function showDeleteModal(id, title) {
-            // Gán thông tin danh mục vào modal
-            document.getElementById('categoryTitle').textContent = title;
-            document.getElementById('categoryId').value = id;
-
-            // Cập nhật action của form để gửi yêu cầu xóa đúng danh mục
-            var formAction = '/Admin_category/DeleteConfirmed/' + id;
-            document.getElementById('confirmDeleteForm').action = formAction;
-
-            // Hiển thị modal
-            var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-            deleteModal.show();
-
-            //đóng modal
-            function closeModal() {
-                var modalElement = document.getElementById('deleteModal');
-                var modal = bootstrap.Modal.getInstance(modalElement);
-                if (modal) {
-                    modal.hide();
-                } else {
-                    // Nếu không tìm thấy instance, có thể khởi tạo lại modal
-                    var newModal = new bootstrap.Modal(modalElement);
-                    newModal.hide();
-                }
-            }
-        }
-    </script>
-
-    <!-- Pagination -->
     <!-- Pagination -->
     <nav aria-label="Page navigation">
         <ul class="pagination justify-content-center">

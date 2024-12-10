@@ -1,0 +1,82 @@
+﻿@model List<webCore.Models.User>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "Admin";
+}
+
+<link rel="stylesheet" href="/css/Account_admin.css" />
+
+<div class="container">
+    <h1>Danh sách người dùng</h1>
+    <table class="account-table">
+        <thead>
+            <tr>
+                <th>Họ tên </th>
+                <th>Ảnh đại diện</th>
+                <th>Email</th>
+                <th>Số điện thoại</th>
+                <th>Địa chỉ</th>
+                <th>Trạng thái</th>
+                <th class="actions-header">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.Name</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(user.ProfileImage))
+                        {
+                            <img src="@user.ProfileImage" alt="Image" style="width: 50px; height: 50px" />
+                        }
+                        else
+                        {
+                            <span>No Image</span>
+                        }
+                    </td>
+                    <td>@user.Email</td>
+                    <td>@user.Phone</td>
+                    <td>@user.Address</td>
+                    <td>@user.Status</td>
+                    <td class="actions-cell">
+                        <div class="button-group">
+                            <button class="btn btn-warning btn-sm" onclick="window.location.href='@Url.Action("Detail", "Admin_user", new { id = user.Id })'">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                            <button id="status-btn-@user.Id"
+                                    class="btn btn-warning btn-sm"
+                                    onclick="toggleStatus('@user.Id')">
+                                <i class="fa-solid @(user.Status == 1 ? "fa-unlock" : "fa-lock")"></i>
+                            </button>
+                        </div>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
+<script>
+                 function toggleStatus(id) {
+        fetch(`/Admin_user/ToggleStatus/${id}`, {
+            method: 'POST'
+        })
+        .then(response => {
+            // Kiểm tra nếu phản hồi từ server thành công (HTTP status 200)
+            if (response.ok) {
+                location.reload(); // Tải lại trang sau khi cập nhật trạng thái
+            } else {
+                alert('Đã xảy ra lỗi khi cập nhật trạng thái.');
+            }
+        })
+        .catch(error => {
+            console.error('Lỗi:', error);
+            alert('Đã xảy ra lỗi khi cập nhật trạng thái.');
+        });
+    }
+
+
+</script>

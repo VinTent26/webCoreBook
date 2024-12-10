@@ -59,7 +59,7 @@ namespace webCore.Controllers
                     ModelState.AddModelError("Password", "Mật khẩu không được để trống.");
                     return View(user);
                 }
-
+                user.Status = 1;
                 // Lưu tài khoản vào MongoDB
                 await _userService.SaveUserAsync(user);
 

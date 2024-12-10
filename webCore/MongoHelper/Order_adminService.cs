@@ -53,16 +53,6 @@ namespace webCore.Services
         {
             return await _orderCollection.Find(order => order.Id == ObjectId.Parse(id)).FirstOrDefaultAsync();
         }
-        // Lấy đơn hàng theo trạng thái
-        public async Task<List<Order>> GetOrdersByStatusAsync(string status)
-        {
-            if (string.IsNullOrEmpty(status))
-            {
-                return new List<Order>();
-            }
-
-            return await _orderCollection.Find(order => order.Status == status).ToListAsync();
-        }
 
         public async Task<bool> UpdateOrderStatusAsync(string orderId, string newStatus)
         {
