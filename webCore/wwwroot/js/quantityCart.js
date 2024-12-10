@@ -169,9 +169,13 @@ $(document).ready(function () {
     // Kiểm tra xem có sản phẩm nào được chọn không
     function checkIfProductSelected() {
         if ($(".select-item:checked").length === 0) {
-            alert("Vui lòng chọn ít nhất một sản phẩm để áp dụng khuyến mãi.");
+            // Hiển thị thông báo lỗi trong View
+            $("#error-message").text("Vui lòng chọn ít nhất một sản phẩm để áp dụng khuyến mãi.");
+            $("#error-message").show(); // Hiển thị lỗi
             return false;
         }
+        // Ẩn thông báo lỗi nếu có sản phẩm được chọn
+        $("#error-message").hide();
         return true;
     }
 
@@ -179,7 +183,7 @@ $(document).ready(function () {
     $(".apply-discount").click(function (e) {
         // Kiểm tra xem người dùng đã chọn sản phẩm chưa
         if (!checkIfProductSelected()) {
-            e.preventDefault();  // Ngừng chuyển trang nếu chưa chọn sản phẩm
+            e.preventDefault(); // Ngừng chuyển trang nếu chưa chọn sản phẩm
         }
     });
 
@@ -191,13 +195,24 @@ $(document).ready(function () {
         } else {
             $(".select-all").prop("checked", false);
         }
+
+        // Ẩn thông báo lỗi nếu đã chọn ít nhất một sản phẩm
+        if ($(".select-item:checked").length > 0) {
+            $("#error-message").hide();
+        }
     });
 
     // Khi chọn "Chọn tất cả"
     $(".select-all").change(function () {
         $(".select-item").prop("checked", $(this).prop("checked"));
+
+        // Ẩn thông báo lỗi nếu đã chọn ít nhất một sản phẩm
+        if ($(this).prop("checked")) {
+            $("#error-message").hide();
+        }
     });
 });
+
 
 
 

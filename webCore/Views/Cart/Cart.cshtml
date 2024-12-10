@@ -122,8 +122,10 @@
     
             <div class="col-md-4 section_2">
                 <div class="cart-summary">
+                    
                     <!-- Discount Section -->
                     <div class="discount-box">
+                        <div id="error-message" class="alert alert-danger" role="alert" style="display: none;"></div>
                         <h4>Khuyến mãi</h4>
                         @if (ViewData["VoucherDiscount"] != null)
                         {
@@ -144,7 +146,7 @@
                         Thành tiền:
                         @if (ViewData["TotalAmount"] != null)
                         {
-                        <span class="summary-amount">@ViewData["TotalAmount"]đ</span>
+                            <span class="summary-amount">@ViewData["TotalAmount"]đ</span>
                         }
                         else
                         {
@@ -167,7 +169,7 @@
                         if (ViewData["VoucherDiscount"] != null)
                         {
                             voucherDiscount = decimal.Parse(ViewData["VoucherDiscount"].ToString());
-                          
+
                         }
 
                         decimal discountAmount = totalAmount * voucherDiscount / 100;  // Khuyến mãi tính từ VoucherDiscount
