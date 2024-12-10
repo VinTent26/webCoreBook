@@ -9,7 +9,27 @@
 
 <div class="container">
     <h1>Đơn hàng cần xác nhận</h1>
+    <div class="container mt-3 mb-3">
+        <div class="row">
+            <div class="col-md-12 d-flex" style="margin-left: -9px;">
+                <!-- Nút Tất cả -->
+                <a href="@Url.Action("Index", "Admin_order")"
+                   class="btn btn-secondary btn-sm mx-2 @(ViewBag.CurrentStatus == "All" ? "active" : "")">Tất cả</a>
 
+                <!-- Nút Chờ duyệt -->
+                <a href="@Url.Action("Index", "Admin_order", new { status = "Đang chờ duyệt" })"
+                   class="btn btn-warning btn-sm mx-2 @(ViewBag.CurrentStatus == "Đang chờ duyệt" ? "active" : "")">Chờ duyệt</a>
+
+                <!-- Nút Đã duyệt -->
+                <a href="@Url.Action("Index", "Admin_order", new { status = "Đã duyệt" })"
+                   class="btn btn-danger btn-sm mx-2 @(ViewBag.CurrentStatus == "Đã duyệt" ? "active" : "")">Đã duyệt</a>
+
+                <!-- Nút Đã hủy -->
+                <a href="@Url.Action("Index", "Admin_order", new { status = "Đã hủy" })"
+                   class="btn btn-success btn-sm mx-2 @(ViewBag.CurrentStatus == "Đã hủy" ? "active" : "")">Đã hủy</a>
+            </div>
+        </div>
+    </div>
         <table class="account-table">
             <thead>
                 <tr>
