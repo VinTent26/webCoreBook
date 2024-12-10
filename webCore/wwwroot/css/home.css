@@ -469,7 +469,7 @@ header {
 
 .card-text {
     font-weight: bold;
-    color: #FF6347;
+    color: #28a745;
     margin-bottom: 5px; /* Giảm khoảng cách với title */
 }
 
@@ -624,44 +624,4 @@ footer p {
 .product-group-name {
     color: red; /* Thay màu theo nhu cầu */
 }
-.product-row {
-    display: flex; /* Xếp các phần tử con theo hàng ngang */
-    overflow-x: hidden; /* Ẩn cuộn ngang */
-    scroll-behavior: smooth; /* Cuộn mượt */
-    gap: 1rem; /* Khoảng cách giữa các sản phẩm */
-}
 
-.product-item {
-    flex: 0 0 auto; /* Đảm bảo sản phẩm không bị co lại */
-    width: 250px; /* Đặt chiều rộng cố định cho mỗi sản phẩm */
-}
-
-.position-relative {
-    position: relative;
-}
-
-.scroll-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-.scroll-left {
-    left: -20px;
-}
-
-.scroll-right {
-    right: -20px;
-}
-
-.scroll-btn:hover {
-    background-color: rgba(0, 0, 0, 0.8);
-}
