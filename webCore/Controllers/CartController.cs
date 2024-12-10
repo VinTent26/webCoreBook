@@ -240,6 +240,11 @@ namespace webCore.Controllers
         public async Task<IActionResult> Checkout()
         {
             // Kiểm tra trạng thái đăng nhập từ session
+            var isLoggedIn = HttpContext.Session.GetString("UserToken") != null;
+
+            // Truyền thông tin vào ViewBag hoặc Model để sử dụng trong View
+            ViewBag.IsLoggedIn = isLoggedIn;
+            // Lấy UserId từ session
             var userId = HttpContext.Session.GetString("UserToken");
             if (string.IsNullOrEmpty(userId))
             {

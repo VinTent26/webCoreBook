@@ -65,6 +65,10 @@ namespace webCore
             services.AddScoped<VoucherService>();
             services.AddScoped<AccountService>();
             services.AddScoped<CategoryProduct_adminService>();
+            services.AddSingleton<CloudinaryService>();
+            services.AddSingleton<MongoDBService>();
+            services.AddScoped<ForgotPasswordService>();
+            services.AddHttpContextAccessor();
 
             // Add session management
             services.AddDistributedMemoryCache();
