@@ -15,11 +15,13 @@ namespace webCore.Controllers
     {
         private readonly CartService _cartService;
         private readonly OrderService _orderService;
+        private readonly VoucherClientService _voucherClientService;
 
-        public CheckoutController(CartService cartService, OrderService orderService)
+        public CheckoutController(CartService cartService, OrderService orderService, VoucherClientService voucherClientService)
         {
             _cartService = cartService;
             _orderService = orderService;
+            _voucherClientService = voucherClientService;
         }
         [HttpGet]
        
@@ -83,6 +85,7 @@ namespace webCore.Controllers
 
             // Truyền thông tin vào ViewBag hoặc Model để sử dụng trong View
             ViewBag.IsLoggedIn = isLoggedIn;
+
             // Lấy UserId từ session
             var userId = HttpContext.Session.GetString("UserToken");
             if (string.IsNullOrEmpty(userId))
@@ -105,18 +108,27 @@ namespace webCore.Controllers
 
             // Tính toán lại tổng tiền
             decimal totalAmount = selectedItems.Sum(item => (item.Price * (1 - item.DiscountPercentage / 100)) * item.Quantity);
+
             // Lấy voucher giảm giá
             var voucherDiscount = HttpContext.Session.GetString("SelectedVoucher");
             decimal discountAmount = 0;
 
-            if (!string.IsNullOrEmpty(voucherDiscount))
+            string voucherId = HttpContext.Session.GetString("SelectedVoucherId"); // Lấy voucherId từ session
+            if (!string.IsNullOrEmpty(voucherDiscount) && !string.IsNullOrEmpty(voucherId))
             {
                 decimal discountValue = decimal.Parse(voucherDiscount);
                 discountAmount = totalAmount * (discountValue / 100);
+
+                // Tìm voucher trong cơ sở dữ liệu và cập nhật UsageCount
+                var voucher = await _voucherClientService.GetVoucherByIdAsync(voucherId); // Giả sử có phương thức GetVoucherByIdAsync
+                if (voucher != null)
+                {
+                    voucher.UsageCount += 1;  // Tăng UsageCount lên 1
+                    await _voucherClientService.UpdateVoucherUsageCountAsync(voucher);  // Cập nhật voucher
+                }
             }
 
             decimal finalAmount = totalAmount - discountAmount;
-
 
             // Lưu đơn hàng vào MongoDB với trạng thái "pending"
             var order = new Order
@@ -139,6 +151,7 @@ namespace webCore.Controllers
             // Chuyển hướng đến trang đơn hàng chờ vận chuyển
             return RedirectToAction("PaymentHistory", "Checkout");
         }
+
         [HttpGet]
         public async Task<IActionResult> PaymentHistory()
         {
