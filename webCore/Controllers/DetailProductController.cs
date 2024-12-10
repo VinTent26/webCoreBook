@@ -26,6 +26,22 @@ namespace webCore.Controllers
             _productService = productService;
             _categoryService = categoryService;
         }
+        // Phương thức tìm kiếm sản phẩm
+        public async Task<IActionResult> Search(string searchQuery)
+        {
+            if (string.IsNullOrEmpty(searchQuery))
+            {
+                return PartialView("_ProductList", new List<Product_admin>());
+            }
+
+            // Tìm kiếm sản phẩm từ MongoDB
+            var allProducts = await _productService.GetProductsAsync();
+            var searchResults = allProducts
+                .Where(p => p.Title.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            return PartialView("_ProductList", searchResults);
+        }
 
         [ServiceFilter(typeof(SetLoginStatusFilter))]
         public async Task<IActionResult> DetailProduct(string id)

@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using webCore.Models;
 using webCore.MongoHelper;
@@ -12,14 +14,30 @@ public class DetailUserController : Controller
 {
     private readonly MongoDBService _mongoDBService;
     private readonly UserService _userService;
+    private readonly ProductService _productService;
 
-
-    public DetailUserController(MongoDBService mongoDBService, UserService userService)
+    public DetailUserController(MongoDBService mongoDBService, UserService userService, ProductService productService)
     {
         _mongoDBService = mongoDBService;
+        _productService = productService;
         _userService = userService;
     }
+    // Phương thức tìm kiếm sản phẩm
+    public async Task<IActionResult> Search(string searchQuery)
+    {
+        if (string.IsNullOrEmpty(searchQuery))
+        {
+            return PartialView("_ProductList", new List<Product_admin>());
+        }
 
+        // Tìm kiếm sản phẩm từ MongoDB
+        var allProducts = await _productService.GetProductsAsync();
+        var searchResults = allProducts
+            .Where(p => p.Title.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        return PartialView("_ProductList", searchResults);
+    }
     // GET: DetailUser/Index
     [HttpGet]
     [ServiceFilter(typeof(SetLoginStatusFilter))]

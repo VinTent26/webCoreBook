@@ -25,7 +25,22 @@ namespace webCore.Controllers
             _voucherService = voucherService;
             _productService = productService;
         }
+        // Phương thức tìm kiếm sản phẩm
+        public async Task<IActionResult> Search(string searchQuery)
+        {
+            if (string.IsNullOrEmpty(searchQuery))
+            {
+                return PartialView("_ProductList", new List<Product_admin>());
+            }
 
+            // Tìm kiếm sản phẩm từ MongoDB
+            var allProducts = await _productService.GetProductsAsync();
+            var searchResults = allProducts
+                .Where(p => p.Title.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            return PartialView("_ProductList", searchResults);
+        }
         // Thêm sản phẩm vào giỏ hàng
         [HttpPost]
         public async Task<IActionResult> AddToCart(string productId, string title, decimal price, decimal discountpercentage, int quantity, string image)

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using webCore.Models;
 using webCore.MongoHelper;
@@ -20,7 +22,22 @@ namespace webCore.Controllers
             _productService = productService;
             _categoryService = categoryService;
         }
+        // Phương thức tìm kiếm sản phẩm
+        public async Task<IActionResult> Search(string searchQuery)
+        {
+            if (string.IsNullOrEmpty(searchQuery))
+            {
+                return PartialView("_ProductList", new List<Product_admin>());
+            }
 
+            // Tìm kiếm sản phẩm từ MongoDB
+            var allProducts = await _productService.GetProductsAsync();
+            var searchResults = allProducts
+                .Where(p => p.Title.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            return PartialView("_ProductList", searchResults);
+        }
         public async Task<IActionResult> Index()
         {
             // Lấy danh sách danh mục từ MongoDB
