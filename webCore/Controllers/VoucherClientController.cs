@@ -40,32 +40,13 @@ namespace webCore.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ApplyVoucher(string code)
+        public IActionResult ApplyVoucher(string discount)
         {
-            // Validate user is logged in
-            var userId = HttpContext.Session.GetString("UserToken");
-            if (string.IsNullOrEmpty(userId))
-            {
-                return Json(new { success = false, message = "User not logged in" });
-            }
+            // Lưu thông tin voucher vào session
+            HttpContext.Session.SetString("SelectedVoucher", $"{discount}");
 
-            // Try to apply the voucher
-            bool isApplied = await _voucherService.ApplyVoucherAsync(code);
-
-            if (isApplied)
-            {
-                // Get the voucher to retrieve discount value
-                var voucher = await _voucherService.GetVoucherByCodeAsync(code);
-
-                // Save voucher details in session
-                HttpContext.Session.SetString("SelectedVoucher", voucher.DiscountValue.ToString());
-
-                return Json(new { success = true, discountValue = voucher.DiscountValue });
-            }
-            else
-            {
-                return Json(new { success = false, message = "Invalid or expired voucher" });
-            }
+            // Trả về JSON xác nhận thành công
+            return Json(new { success = true });
         }
 
     }

@@ -129,7 +129,7 @@ namespace webCore.Controllers
                 TotalAmount = totalAmount,
                 DiscountAmount = discountAmount,
                 FinalAmount = finalAmount,
-                Status = "Đang chờ duyệt",
+                Status = "pending",
                 CreatedAt = DateTime.UtcNow
             };
 
