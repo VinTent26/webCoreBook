@@ -38,11 +38,18 @@
                             }
                         </td>
                     <td>
-                        <span style="color: @(order.Status == "Đang chờ duyệt" ? "orange" :
-                         order.Status == "Đã duyệt" ? "red" :
-                         order.Status == "Đã hủy" ? "green" : "black");">
-                            @order.Status
-                        </span>
+                        @if (order.Status == "Đang chờ duyệt")
+                        {
+                            <span class="badge badge-warning">Chờ Xác Nhận</span>
+                        }
+                        else if (order.Status == "Đã duyệt")
+                        {
+                            <span class="badge badge-success">Đã duyệt</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-danger">Đã hủy</span>
+                        }
                     </td>
 
                         <td class="actions-cell">

@@ -3,6 +3,7 @@
     ViewData["Title"] = "Index";
     Layout = "Admin";
 }
+<link rel="stylesheet" href="/css/Account_admin.css" />
 <div class="flex-grow-1 p-4">
     <div class="row">
         <div class="col-md-4">
@@ -34,9 +35,9 @@
         </div>
     </div>
 
-<div class="order-table mt-4">
+    <div class="container">
         <h3>Đơn Hàng Cần Xác Nhận</h3>
-        <table class="table table-bordered">
+        <table class="account-table">
             <thead>
                 <tr>
                     <th>Khách Hàng</th>
@@ -65,14 +66,19 @@
                                     <span>0</span> <!-- Nếu không có sản phẩm -->
                                 }
                             </td>
-
-
                             <td>
-                                <span style="color: @(order.Status == "Đang chờ duyệt" ? "orange" :
-                             order.Status == "Đã duyệt" ? "green" :
-                             order.Status == "Đã hủy" ? "red" : "black");">
-                                    @order.Status
-                                </span>
+                                @if (order.Status == "Đang chờ duyệt")
+                                {
+                                    <span class="badge badge-warning">Chờ Xác Nhận</span>
+                                }
+                                else if (order.Status == "Đã duyệt")
+                                {
+                                    <span class="badge badge-success">Đã duyệt</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-danger">Đã hủy</span>
+                                }
                             </td>
                         </tr>
                     }

@@ -4,7 +4,7 @@
     ViewData["Title"] = "Chi tiết đơn hàng";
     Layout = "Admin";
 }
-
+<link rel="stylesheet" href="/css/Account_admin.css" />
 @if (Model == null)
 {
     <p>Không tìm thấy thông tin đơn hàng.</p>
@@ -27,14 +27,15 @@ else
                 </ul>
             </div>
         }
-
+        <div class="container">
         <div>
+            <h4>Thông tin người đặt:</h4>
             <p><strong>Họ và tên:</strong> @Model.FullName</p>
             <p><strong>Số điện thoại:</strong> @Model.PhoneNumber</p>
             <p><strong>Địa chỉ:</strong> @Model.Address</p>
 
             <h4>Danh sách sản phẩm:</h4>
-            <table class="table table-bordered">
+            <table class="account-table">
                 <thead>
                     <tr>
                         <th>Tên sản phẩm</th>
@@ -48,7 +49,7 @@ else
                     @foreach (var item in Model.Items)
                     {
                         <tr>
-                            <td>@item.Title</td>
+                                <td><strong>@item.Title</strong></td>
                             <td>
                                 @if (!string.IsNullOrEmpty(item.Image))
                                 {
@@ -72,16 +73,24 @@ else
             <p><strong>Số tiền sau giảm:</strong> @Model.FinalAmount.ToString("C", new System.Globalization.CultureInfo("vi-VN"))</p>
             <p>
                 <strong>Trạng thái:</strong>
-                <span style="color: @(Model.Status == "Đang chờ duyệt" ? "orange" :
-                          Model.Status == "Đã duyệt" ? "green" :
-                          Model.Status == "Đã hủy" ? "red" : "black");">
-                    @Model.Status
-                </span>
+                @if (@Model.Status == "Đang chờ duyệt")
+                {
+                    <span class="badge badge-warning">Chờ Xác Nhận</span>
+                }
+                else if (@Model.Status == "Đã duyệt")
+                {
+                    <span class="badge badge-success">Đã duyệt</span>
+                }
+                else
+                {
+                    <span class="badge badge-danger">Đã hủy</span>
+                }
             </p>
 
             <p><strong>Ngày tạo:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss")</p>
         </div>
 
         <a href="@Url.Action("Index", "Admin_order")" class="btn btn-secondary">Quay lại danh sách đơn hàng</a>
+    </div>
     </div>
 }
