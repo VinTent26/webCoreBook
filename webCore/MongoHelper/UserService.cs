@@ -28,11 +28,16 @@ namespace webCore.MongoHelper
             var user = await _userCollection.Find(filter).FirstOrDefaultAsync();
             return user;
         }
-
-        // Lấy thông tin người dùng theo Username
         public async Task<User> GetUserByUsernameAsync(string userName)
         {
             var user = await _userCollection.Find(u => u.Name == userName).FirstOrDefaultAsync();
+
+            // Kiểm tra nếu tài khoản bị khóa
+            if (user != null && user.Status == 0)
+            {
+                throw new InvalidOperationException("Tài khoản đã bị khóa");
+            }
+
             return user;
         }
 

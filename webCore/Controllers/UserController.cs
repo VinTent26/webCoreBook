@@ -99,6 +99,13 @@ namespace webCore.Controllers
                 return View(loginUser);
             }
 
+            // Kiểm tra nếu tài khoản bị khóa
+            if (user.Status == 0)
+            {
+                ModelState.AddModelError("", "Tài khoản đã bị khóa.");
+                return View(loginUser);
+            }
+
             // So sánh mật khẩu nhập vào với mật khẩu trong MongoDB
             if (loginUser.Password != user.Password)
             {
