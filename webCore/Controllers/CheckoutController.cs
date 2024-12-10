@@ -16,12 +16,14 @@ namespace webCore.Controllers
         private readonly CartService _cartService;
         private readonly OrderService _orderService;
         private readonly VoucherClientService _voucherClientService;
+        private readonly CategoryProduct_adminService _categoryProductAdminService;
 
-        public CheckoutController(CartService cartService, OrderService orderService, VoucherClientService voucherClientService)
+        public CheckoutController(CartService cartService, OrderService orderService, VoucherClientService voucherClientService, CategoryProduct_adminService categoryProduct_AdminService)
         {
             _cartService = cartService;
             _orderService = orderService;
             _voucherClientService = voucherClientService;
+            _categoryProductAdminService = categoryProduct_AdminService;
         }
         [HttpGet]
        
@@ -147,7 +149,15 @@ namespace webCore.Controllers
 
             await _orderService.SaveOrderAsync(order);
             await _cartService.RemoveItemsFromCartAsync(userId, selectedProductIds);
-
+            foreach (var item in selectedItems)
+            {
+                var product = await _categoryProductAdminService.GetProductByIdAsync(item.ProductId);
+                if (product != null)
+                {
+                    product.Stock -= item.Quantity;  // Trừ đi số lượng sản phẩm
+                    await _categoryProductAdminService.UpdateProductAsync(product);  // Cập nhật lại sản phẩm trong MongoDB
+                }
+            }
             // Chuyển hướng đến trang đơn hàng chờ vận chuyển
             return RedirectToAction("PaymentHistory", "Checkout");
         }
