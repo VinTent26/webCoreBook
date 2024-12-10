@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
+using System.Linq;
 
 namespace webCore.Controllers
 {
@@ -19,7 +20,7 @@ namespace webCore.Controllers
         }
 
         // Hiển thị danh sách tất cả đơn hàng
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? status = null)
         {
             try
             {
@@ -34,7 +35,25 @@ namespace webCore.Controllers
                     TempData["ErrorMessage"] = "Không có đơn hàng nào để hiển thị.";
                     return View(new List<Order>()); // Trả về danh sách trống nếu không có đơn hàng
                 }
+                // Lọc danh sách đơn hàng theo trạng thái nếu trạng thái không null
+                if (!string.IsNullOrEmpty(status))
+                {
+                    if (status == "Đang chờ duyệt")
+                    {
+                        orders = orders.Where(o => o.Status == "Đang chờ duyệt").ToList();
+                    }
+                    else if (status == "Đã duyệt")
+                    {
+                        orders = orders.Where(o => o.Status == "Đã duyệt").ToList();
+                    }
+                    else if (status == "Đã hủy")
+                    {
+                        orders = orders.Where(o => o.Status == "Đã hủy").ToList();
+                    }
+                }
 
+                // Truyền trạng thái hiện tại và danh sách đơn hàng vào View
+                ViewBag.CurrentStatus = status ?? "All";
                 // Nếu có đơn hàng, trả về view với danh sách đơn hàng
                 return View(orders);
             }
@@ -45,7 +64,6 @@ namespace webCore.Controllers
                 return RedirectToAction("Error"); // Chuyển hướng đến trang lỗi
             }
         }
-
 
 
         [HttpGet]

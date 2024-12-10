@@ -183,7 +183,6 @@ namespace webCore.Controllers
             ViewBag.Categories = await _CategoryProductCollection.GetCategory();
             return View(category);
         }
-        // POST: Admin_category/DeleteConfirmed/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
@@ -196,24 +195,37 @@ namespace webCore.Controllers
 
             try
             {
-                // Get the category to be deleted
+                // Lấy danh mục cần xóa
                 var categoryToDelete = await _CategoryProductCollection.GetCategoryByIdAsync(id);
                 if (categoryToDelete == null)
                 {
-                    return NotFound(); // If the category doesn't exist, return 404
+                    return NotFound(); // Nếu danh mục không tồn tại
                 }
 
-                // Call the method to delete the category
-                await _CategoryProductCollection.DeleteCategoryAsync(id);
+                // Lấy tất cả danh mục từ DB
+                var allCategories = await _CategoryProductCollection.GetCategory();
 
-                // Get all remaining categories
-                var remainingCategories = await _CategoryProductCollection.GetCategory();
+                // Tìm danh mục con của danh mục cần xóa
+                var categoriesToDelete = GetAllChildCategories(allCategories, id);
+                categoriesToDelete.Add(categoryToDelete); // Bao gồm danh mục cha cần xóa
 
-                // Update positions of remaining categories
+                // Xóa tất cả danh mục đã tìm được
+                foreach (var category in categoriesToDelete)
+                {
+                    await _CategoryProductCollection.DeleteCategoryAsync(category.Id);
+                }
+
+                // Lấy danh sách còn lại sau khi xóa
+                var remainingCategories = allCategories
+                    .Where(c => !categoriesToDelete.Any(d => d.Id == c.Id))
+                    .OrderBy(c => c.Position)
+                    .ToList();
+
+                // Cập nhật lại vị trí của các danh mục còn lại
                 for (int i = 0; i < remainingCategories.Count; i++)
                 {
-                    remainingCategories[i].Position = i + 1; // Set position starting from 1
-                    await _CategoryProductCollection.UpdateCategoryAsync(remainingCategories[i]); // Ensure this method updates the category
+                    remainingCategories[i].Position = i + 1; // Bắt đầu từ vị trí 1
+                    await _CategoryProductCollection.UpdateCategoryAsync(remainingCategories[i]);
                 }
             }
             catch (InvalidOperationException ex)
@@ -227,7 +239,22 @@ namespace webCore.Controllers
                 ModelState.AddModelError("", "Could not delete category from database. Please try again.");
             }
 
-            return RedirectToAction(nameof(Index)); // Redirect to the category list after processing
+            return RedirectToAction(nameof(Index)); // Trả về danh sách sau khi xử lý
+        }
+
+        // Hàm hỗ trợ lấy tất cả danh mục con của một danh mục
+        private List<Category_admin> GetAllChildCategories(List<Category_admin> categories, string parentId)
+        {
+            var result = new List<Category_admin>();
+
+            foreach (var category in categories.Where(c => c.ParentId == parentId))
+            {
+                result.Add(category);
+                // Đệ quy để lấy danh mục con của danh mục này
+                result.AddRange(GetAllChildCategories(categories, category.Id));
+            }
+
+            return result;
         }
 
         //phân cấp bậc

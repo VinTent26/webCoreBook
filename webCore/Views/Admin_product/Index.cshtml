@@ -61,36 +61,43 @@
                         <button class="icon-btn edit-btn" title="Edit" onclick="window.location.href='@Url.Action("Update", "Admin_product", new { id = product.Id })'">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="icon-btn delete-btn" title="Delete" onclick="showDeleteModal('@product.Id', '@product.Title')">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
+                        <form action="@Url.Action("DeleteConfirmed", "Account", new { id = product.Id })" method="post" style="display: inline-block;">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="icon-btn delete-btn" title="Delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 
-    <!-- Modal Xác Nhận Xóa -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">Xác nhận xóa</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Bạn có chắc chắn muốn xóa sản phẩm <strong id="productTitle"></strong>?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="window.location.href='@Url.Action("Index", "Admin_product")'">Hủy</button>
-                    <form id="confirmDeleteForm" method="post" style="display:inline;">
-                        <input type="hidden" id="productId" name="id" />
-                        <button type="submit" class="btn btn-danger">Xóa</button>
-                    </form>
-                </div>
+    <!-- Modal Xác nhận Xóa -->
+<div id="deleteModal" class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Xác nhận xóa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa sản phẩm <strong id="deleteProductTitle"></strong>?</p>
+            </div>
+            <div class="modal-footer">
+                <!-- Form xóa -->
+                <form id="deleteForm" method="post" style="display:inline-block;" action="">
+                    @Html.AntiForgeryToken()
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
 
     <script>
