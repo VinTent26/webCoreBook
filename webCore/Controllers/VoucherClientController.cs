@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -40,14 +41,38 @@ namespace webCore.Controllers
         }
 
         [HttpPost]
-        public IActionResult ApplyVoucher(string discount)
+        public async Task<IActionResult> ApplyVoucher(string discount, string voucherId)
         {
+            // Kiểm tra voucherId có hợp lệ không (đảm bảo nó là một ObjectId hợp lệ)
+            ObjectId parsedVoucherId;
+            if (!ObjectId.TryParse(voucherId, out parsedVoucherId))
+            {
+                // Nếu voucherId không hợp lệ, trả về thông báo lỗi
+                return Json(new { success = false, message = "Voucher ID không hợp lệ." });
+            }
+
+            // Lấy voucher từ cơ sở dữ liệu
+            var voucher = await _voucherService.GetVoucherByIdAsync(voucherId);  // Chú ý phương thức này là async
+
+            // Kiểm tra nếu voucher không tồn tại hoặc usageCount đã vượt quá usageLimit
+            if (voucher == null)
+            {
+                return Json(new { success = false, message = "Voucher không tồn tại." });
+            }
+
+            if (voucher.UsageCount >= voucher.UsageLimit)
+            {
+                return Json(new { success = false, message = "Voucher đã đạt giới hạn sử dụng." });
+            }
+
             // Lưu thông tin voucher vào session
-            HttpContext.Session.SetString("SelectedVoucher", $"{discount}");
+            HttpContext.Session.SetString("SelectedVoucher", discount);  // Lưu discount vào session
+            HttpContext.Session.SetString("SelectedVoucherId", voucherId);  // Lưu voucherId (dạng chuỗi) vào session
 
             // Trả về JSON xác nhận thành công
             return Json(new { success = true });
         }
+
 
     }
 }

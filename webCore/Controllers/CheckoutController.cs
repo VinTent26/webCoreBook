@@ -15,11 +15,15 @@ namespace webCore.Controllers
     {
         private readonly CartService _cartService;
         private readonly OrderService _orderService;
+        private readonly VoucherClientService _voucherClientService;
+        private readonly CategoryProduct_adminService _categoryProductAdminService;
 
-        public CheckoutController(CartService cartService, OrderService orderService)
+        public CheckoutController(CartService cartService, OrderService orderService, VoucherClientService voucherClientService, CategoryProduct_adminService categoryProduct_AdminService)
         {
             _cartService = cartService;
             _orderService = orderService;
+            _voucherClientService = voucherClientService;
+            _categoryProductAdminService = categoryProduct_AdminService;
         }
        
 
@@ -160,10 +164,19 @@ namespace webCore.Controllers
             var voucherDiscount = HttpContext.Session.GetString("SelectedVoucher");
             decimal discountAmount = 0;
 
-            if (!string.IsNullOrEmpty(voucherDiscount))
+            string voucherId = HttpContext.Session.GetString("SelectedVoucherId"); // Lấy voucherId từ session
+            if (!string.IsNullOrEmpty(voucherDiscount) && !string.IsNullOrEmpty(voucherId))
             {
                 decimal discountValue = decimal.Parse(voucherDiscount);
                 discountAmount = totalAmountCheckout * (discountValue / 100);
+
+                // Tìm voucher trong cơ sở dữ liệu và cập nhật UsageCount
+                var voucher = await _voucherClientService.GetVoucherByIdAsync(voucherId); // Giả sử có phương thức GetVoucherByIdAsync
+                if (voucher != null)
+                {
+                    voucher.UsageCount += 1;  // Tăng UsageCount lên 1
+                    await _voucherClientService.UpdateVoucherUsageCountAsync(voucher);  // Cập nhật voucher
+                }
             }
 
             decimal finalAmountCheckout = totalAmountCheckout - discountAmount;
@@ -185,6 +198,16 @@ namespace webCore.Controllers
 
             await _orderService.SaveOrderAsync(checkoutOrder);
             await _cartService.RemoveItemsFromCartAsync(userId, selectedProductIds);
+            foreach (var item in selectedItems)
+            {
+                var product = await _categoryProductAdminService.GetProductByIdAsync(item.ProductId);
+                if (product != null)
+                {
+                    product.Stock -= item.Quantity;  // Trừ đi số lượng sản phẩm
+                    await _categoryProductAdminService.UpdateProductAsync(product);  // Cập nhật lại sản phẩm trong MongoDB
+                }
+            }
+            // Chuyển hướng đến trang đơn hàng chờ vận chuyển
 
             // Xóa dữ liệu liên quan khỏi session
             HttpContext.Session.Remove("SelectedProductIds");
