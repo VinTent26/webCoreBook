@@ -41,7 +41,7 @@ namespace webCore.Controllers
         }
 
         [HttpPost]
-        public IActionResult ApplyVoucher(string discount, string voucherId)
+        public async Task<IActionResult> ApplyVoucher(string discount, string voucherId)
         {
             // Kiểm tra voucherId có hợp lệ không (đảm bảo nó là một ObjectId hợp lệ)
             ObjectId parsedVoucherId;
@@ -49,6 +49,20 @@ namespace webCore.Controllers
             {
                 // Nếu voucherId không hợp lệ, trả về thông báo lỗi
                 return Json(new { success = false, message = "Voucher ID không hợp lệ." });
+            }
+
+            // Lấy voucher từ cơ sở dữ liệu
+            var voucher = await _voucherService.GetVoucherByIdAsync(voucherId);  // Chú ý phương thức này là async
+
+            // Kiểm tra nếu voucher không tồn tại hoặc usageCount đã vượt quá usageLimit
+            if (voucher == null)
+            {
+                return Json(new { success = false, message = "Voucher không tồn tại." });
+            }
+
+            if (voucher.UsageCount >= voucher.UsageLimit)
+            {
+                return Json(new { success = false, message = "Voucher đã đạt giới hạn sử dụng." });
             }
 
             // Lưu thông tin voucher vào session
