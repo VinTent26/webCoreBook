@@ -92,7 +92,7 @@
                                     <i class="fa-regular fa-user"></i>
                                 </a>
                             </div>
-                            <div class="user-name">
+                            <div class="user-name" >
                                 @{
                                     var userName = HttpContextAccessor.HttpContext.Session.GetString("UserName");
                                     if (!string.IsNullOrEmpty(userName))
