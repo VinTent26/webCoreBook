@@ -49,14 +49,10 @@
 
                     <div class="items-icon">
                         <!-- Icon Cart -->
-
                         <div>
-
                             <div class="inner-cart">
-
                                 <a href="@Url.Action("Cart", "Cart")">
                                     <i class="fa-solid fa-cart-shopping"></i>
-
                                 </a>
                             </div>
                             <div id="cart-item-1" class="cart-item-1">
@@ -97,12 +93,6 @@
                         <div class="inner-user" id="userIcon">
                             <a href="#" class="user-dropdown-toggle">
                                 <i class="fa-regular fa-user"></i>
-                            </a>
-                        </div>
-                        <!-- New Chat Icon -->
-                        <div class="inner-chat">
-                            <a href="#">
-                                <i class="fa-solid fa-comment-dots"></i>
                             </a>
                         </div>
                     </div>
@@ -159,27 +149,29 @@
                             var userName = HttpContextAccessor.HttpContext.Session.GetString("UserName");
                             if (!string.IsNullOrEmpty(userName))
                             {
-                                <span>@userName</span> <!-- Hiển thị tên người dùng -->
+                                <span class="username">@userName</span> <!-- Hiển thị tên người dùng -->
                             }
                             else
                             {
-                                <p>Đăng nhập</p>
+                                <p class="login-text">Đăng nhập</p>
                             }
                         }
                     </div>
-                    <!-- Thêm CSS -->
                     <style>
-                        .user-name {
-                            margin-top: 10px; /* Khoảng cách giữa icon và phần chữ "Đăng nhập" */
+                        /* Áp dụng margin-right cho tên người dùng */
+                        .username {
+                            margin-right: 15px;
+                            display: inline-block; 
                             text-align: center;
-                            margin-right: 20px;
+                            white-space: nowrap; 
+                            word-wrap: break-word; 
                         }
 
-                            .user-name p {
-                                margin: 0;
-                                font-size: 1rem;
-                                color: #333;
-                            }
+                        /* Đảm bảo không có margin-right khi là "Đăng nhập" */
+                        .login-text {
+                            margin-right: 0;
+                        }
+
                     </style>
                 </div>
             </div>

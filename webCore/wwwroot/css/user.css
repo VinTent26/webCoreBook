@@ -1,4 +1,4 @@
-/* General Styles */
+﻿/* General Styles */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f4f7fc;
@@ -256,7 +256,7 @@ button[type="button"] {
 
 /* Custom Text */
 .text {
-    color: #66C5FF;
+    color: #3db6ff;
     font-weight: 600;
     font-size: 2rem;
     line-height: 1.6;

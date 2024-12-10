@@ -1,17 +1,5 @@
 ﻿@model List<webCore.Models.Product_admin>
 
-<!-- Bộ lọc và sắp xếp sản phẩm -->
-<div class="filter-sort-container mb-4">
-    <div class="sort-dropdown">
-        <select id="sortSelect" class="form-control">
-            <option value="default">Sắp xếp theo</option>
-            <option value="price-asc">Giá từ thấp đến cao</option>
-            <option value="price-desc">Giá từ cao đến thấp</option>
-            <option value="discount">Sản phẩm có khuyến mãi</option>
-        </select>
-    </div>
-</div>
-
 <!-- Danh sách sản phẩm -->
 <div class="row" id="productRow">
     @if (Model != null && Model.Any())
@@ -51,52 +39,3 @@
         </div>
     }
 </div>
-
-@section Scripts {
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const sortSelect = document.getElementById("sortSelect");
-
-            // Lắng nghe sự kiện thay đổi trong dropdown chọn sắp xếp
-            sortSelect.addEventListener("change", function () {
-                loadAndSortProducts();
-            });
-
-            function loadAndSortProducts() {
-                const sortOption = sortSelect.value;
-                const categoryId = '@ViewData["CategoryId"]'; // Assuming CategoryId is available in ViewData.
-
-                if (!categoryId || categoryId.trim() === "") {
-                    console.error("Category ID is not set correctly.");
-                    alert("Không tìm thấy danh mục sản phẩm.");
-                    return;
-                }
-
-                // Sử dụng XMLHttpRequest để gửi yêu cầu AJAX đến phương thức Index với tham số
-                const xhr = new XMLHttpRequest();
-                const url = `@Url.Action("Index", "Home")?categoryId=${categoryId}&sortOption=${sortOption}`;
-                xhr.open("GET", url, true);
-
-                xhr.onload = function () {
-                    if (xhr.status === 200) {
-                        // Cập nhật danh sách sản phẩm trong HTML khi nhận được dữ liệu
-                        document.getElementById("productRow").innerHTML = xhr.responseText;
-                    } else {
-                        console.error(`Request failed. Status: ${xhr.status}`);
-                        alert("Có lỗi xảy ra khi tải sản phẩm. Vui lòng thử lại.");
-                    }
-                };
-
-                xhr.onerror = function () {
-                    console.error("Request Error");
-                    alert("Có lỗi xảy ra khi tải sản phẩm. Vui lòng thử lại.");
-                };
-
-                xhr.send();
-            }
-
-            // Gọi ngay khi tải trang
-            loadAndSortProducts();
-        });
-    </script>
-}

@@ -102,8 +102,7 @@ header {
 
 /* Icon Cart, User, Chat */
 .inner-cart,
-.inner-user,
-.inner-chat {
+.inner-user {
     margin-right: 20px;
     background-color: #f9f1f5;
     width: 45px;
@@ -118,22 +117,19 @@ header {
 }
 
     .inner-cart a,
-    .inner-user a,
-    .inner-chat a {
+    .inner-user a {
         font-size: 1.5em;
         color: #333;
         transform: rotate(-45deg);
     }
 
     .inner-cart:hover,
-    .inner-user:hover,
-    .inner-chat:hover {
+    .inner-user:hover {
         background-color: #c5c6c6;
     }
 
     .inner-cart a:hover,
-    .inner-user a:hover,
-    .inner-chat a:hover {
+    .inner-user a:hover {
         color: #28a745;
     }
 
@@ -443,7 +439,7 @@ header {
 }
 
 .btn3 {
-    background-color: #AC5E68;
+    background-color: #db7d89;
     margin-left: 100px;
 }
 

@@ -69,9 +69,12 @@ public class DetailUserController : Controller
             HttpContext.Session.SetString("UserName", model.Name); // Cập nhật session với tên mới
             currentUser.Phone = model.Phone;
             currentUser.Gender = model.Gender;
+
+            // Đảm bảo ngày sinh được lưu với DateTimeKind.Unspecified
             currentUser.Birthday = model.Birthday.HasValue
                 ? DateTime.SpecifyKind(model.Birthday.Value.Date, DateTimeKind.Unspecified)
                 : currentUser.Birthday;
+
             currentUser.Address = model.Address;
 
             // Cập nhật mật khẩu nếu có thay đổi
@@ -100,14 +103,7 @@ public class DetailUserController : Controller
 
             // Thực hiện cập nhật thông tin người dùng trong MongoDB
             var updateResult = await _userService.UpdateUserAsync(currentUser);
-            if (updateResult)
-            {
-                TempData["Message"] = "Cập nhật thông tin thành công!";
-            }
-            else
-            {
-                TempData["Message"] = "Không có thay đổi nào được thực hiện.";
-            }
+            TempData["Message"] = updateResult ? "Cập nhật thông tin thành công!" : "Không có thay đổi nào được thực hiện.";
 
             // Đảm bảo ảnh đại diện hiển thị lại sau khi cập nhật
             ViewBag.ProfileImage = currentUser.ProfileImage;
