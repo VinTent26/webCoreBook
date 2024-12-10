@@ -22,8 +22,13 @@ public class DetailUserController : Controller
 
     // GET: DetailUser/Index
     [HttpGet]
+    [ServiceFilter(typeof(SetLoginStatusFilter))]
     public async Task<IActionResult> Index()
     {
+        var isLoggedIn = HttpContext.Session.GetString("UserToken") != null;
+
+        // Truyền thông tin vào ViewBag hoặc Model để sử dụng trong View
+        ViewBag.IsLoggedIn = isLoggedIn;
         var userName = HttpContext.Session.GetString("UserName"); // Lấy thông tin UserName từ Session
         if (string.IsNullOrEmpty(userName))
         {
