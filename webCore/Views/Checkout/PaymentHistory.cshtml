@@ -37,11 +37,11 @@
 
                 <!-- Nút Đã duyệt -->
                 <a href="@Url.Action("PaymentHistory", "Checkout", new { status = "Đã duyệt" })"
-                   class="btn btn-danger btn-sm mx-2 @(ViewBag.CurrentStatus == "Đã duyệt" ? "active" : "")">Đã duyệt</a>
+                   class="btn btn-success btn-sm mx-2 @(ViewBag.CurrentStatus == "Đã duyệt" ? "active" : "")">Đã duyệt</a>
 
                 <!-- Nút Đã hủy -->
                 <a href="@Url.Action("PaymentHistory", "Checkout", new { status = "Đã hủy" })"
-                   class="btn btn-success btn-sm mx-2 @(ViewBag.CurrentStatus == "Đã hủy" ? "active" : "")">Đã hủy</a>
+                   class="btn btn-danger btn-sm mx-2 @(ViewBag.CurrentStatus == "Đã hủy" ? "active" : "")">Đã hủy</a>
             </div>
         </div>
     </div>
@@ -86,8 +86,8 @@
                                 <td class="col-content">@order.FinalAmount.ToString("C")</td>
                                 <td class="col-content">
                                     <span style="color: @(order.Status == "Đang chờ duyệt" ? "orange" :
-                                             order.Status == "Đã duyệt" ? "red" :
-                                             order.Status == "Đã hủy" ? "green" : "black");">
+                                             order.Status == "Đã duyệt" ? "green" :
+                                             order.Status == "Đã hủy" ? "red" : "black");">
                                         @order.Status
                                     </span>
                                 </td>

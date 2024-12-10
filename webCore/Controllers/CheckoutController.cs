@@ -213,7 +213,8 @@ namespace webCore.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> PaymentHistory(string? status = null)
+        [ServiceFilter(typeof(SetLoginStatusFilter))]
+        public async Task<IActionResult> PaymentHistory(string ? status = null)
         {
             // Kiểm tra xem người dùng đã đăng nhập hay chưa
             var isLoggedIn = HttpContext.Session.GetString("UserToken") != null;
@@ -254,8 +255,10 @@ namespace webCore.Controllers
 
 
         [HttpGet]
+        [ServiceFilter(typeof(SetLoginStatusFilter))]
         public async Task<IActionResult> OrderDetails(string orderId)
         {
+
             var isLoggedIn = HttpContext.Session.GetString("UserToken") != null;
 
             // Kiểm tra đăng nhập
@@ -263,7 +266,10 @@ namespace webCore.Controllers
             {
                 return RedirectToAction("Sign_in", "User");
             }
+         
 
+            // Truyền thông tin vào ViewBag hoặc Model để sử dụng trong View
+            ViewBag.IsLoggedIn = isLoggedIn;
             // Tìm đơn hàng theo ID
             var order = await _orderService.GetOrderByIdAsync(orderId);
 
