@@ -16,4 +16,3 @@ namespace webCore.Models
         public List<CartItem> Items { get; set; }
     }
 }
-

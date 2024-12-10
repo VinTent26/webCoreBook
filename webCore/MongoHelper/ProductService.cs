@@ -58,6 +58,12 @@ namespace webCore.MongoHelper
         {
             return await _productCollection.Find(p => p.Id == productId).FirstOrDefaultAsync();
         }
+        public async Task<int> GetProductCountAsync()
+        {
+            var filter = Builders<Product_admin>.Filter.Eq(p => p.Deleted, false); // Only count non-deleted products
+            var productCount = await _productCollection.CountDocumentsAsync(filter);
+            return (int)productCount;
+        }
         public async Task<List<Product_admin>> GetFeaturedProductsAsync()
         {
             var filter = Builders<Product_admin>.Filter.Eq(p => p.Deleted, false) &

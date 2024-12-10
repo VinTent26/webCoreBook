@@ -49,7 +49,7 @@ namespace webCore
             });
 
             // Register MongoDBService with DI container
-            services.AddScoped<MongoDBService>();
+            services.AddSingleton<MongoDBService>();
 
             // Register Cloudinary service for image upload
             services.AddSingleton<CloudinaryService>();
@@ -65,12 +65,9 @@ namespace webCore
             services.AddScoped<VoucherService>();
             services.AddScoped<AccountService>();
             services.AddScoped<CategoryProduct_adminService>();
-            services.AddSingleton<CloudinaryService>();
-            services.AddSingleton<MongoDBService>();
-            services.AddScoped<ForgotPasswordService>();
-            services.AddHttpContextAccessor();
             services.AddScoped<Order_adminService>();
             services.AddScoped<User_adminService>();
+            services.AddScoped<ForgotPasswordService>();
 
             // Add session management
             services.AddDistributedMemoryCache();

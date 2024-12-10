@@ -19,7 +19,18 @@ namespace webCore.MongoHelper
         {
             _orders = mongoDBService._orders;
         }
-       
+
+        public async Task SaveOrderAsync(Order order)
+        {
+            await _orders.InsertOneAsync(order);
+        }
+        public async Task<List<Order>> GetOrdersByUserIdAsync(string userId)
+        {
+            return await _orders
+                .Find(order => order.UserId == userId)
+                .ToListAsync();
+        }
+        // Lấy đơn hàng theo ID
         public async Task<Order> GetOrderByIdAsync(string id)
         {
             return await _orders.Find(order => order.Id == ObjectId.Parse(id)).FirstOrDefaultAsync();
@@ -37,22 +48,5 @@ namespace webCore.MongoHelper
             return orders.Sum(order => order.FinalAmount);
         }
 
-
-
-        public async Task SaveOrderAsync(Order order)
-        {
-            await _orders.InsertOneAsync(order);
-        }
-        public async Task<List<Order>> GetOrdersByUserIdAsync(string userId)
-        {
-            return await _orders
-                .Find(order => order.UserId == userId)
-                .ToListAsync();
-        }
-        // Lấy đơn hàng theo ID
-        public async Task<Order> GetOrderByIdAsync(string id)
-        {
-            return await _orders.Find(order => order.Id == ObjectId.Parse(id)).FirstOrDefaultAsync();
-        }
     }
 }

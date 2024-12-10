@@ -25,7 +25,7 @@ namespace webCore.Controllers
             _voucherClientService = voucherClientService;
             _categoryProductAdminService = categoryProduct_AdminService;
         }
-       
+
 
         // Action để hiển thị form nhập thông tin thanh toán
         [HttpGet]
@@ -213,7 +213,7 @@ namespace webCore.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> PaymentHistory(string ? status = null)
+        public async Task<IActionResult> PaymentHistory(string? status = null)
         {
             // Kiểm tra xem người dùng đã đăng nhập hay chưa
             var isLoggedIn = HttpContext.Session.GetString("UserToken") != null;
