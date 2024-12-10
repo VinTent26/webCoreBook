@@ -1,23 +1,22 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using webCore.Models;
-using webCore.Services;
-using System.Linq;
 using webCore.MongoHelper;
+using webCore.Services;
 
 namespace webCore.Controllers
 {
     public class HomeController : Controller
     {
- 
         private readonly MongoDBService _mongoDBService;
         private readonly ProductService _productService;
         private readonly CategoryService _categoryService;
         private readonly UserService _userService;
+
         public HomeController(MongoDBService mongoDBService, ProductService productService, CategoryService categoryService, UserService userService)
         {
             _mongoDBService = mongoDBService;
@@ -25,17 +24,16 @@ namespace webCore.Controllers
             _categoryService = categoryService;
             _userService = userService;
         }
-        // Action Index, trả về trang chủ và lấy dữ liệu từ MongoDB
+
+        // Trang chủ
         [ServiceFilter(typeof(SetLoginStatusFilter))]
         public async Task<IActionResult> Index()
         {
-            // Kiểm tra trạng thái đăng nhập từ session
+            // Kiểm tra trạng thái đăng nhập
             var isLoggedIn = HttpContext.Session.GetString("UserToken") != null;
-
-            // Truyền thông tin vào ViewBag hoặc Model để sử dụng trong View
             ViewBag.IsLoggedIn = isLoggedIn;
 
-            // Lấy danh sách danh mục từ MongoDB
+            // Lấy danh mục hoạt động từ MongoDB
             var categories = await _categoryService.GetCategoriesAsync();
             ViewBag.Categories = categories;
 
@@ -43,19 +41,30 @@ namespace webCore.Controllers
             var groupedProducts = await _productService.GetProductsGroupedByFeaturedAsync();
             ViewBag.GroupedProducts = groupedProducts;
 
-            return View(); // Trả về view Index.cshtml
-        }
-        // Trả về danh sách sách theo Position
-        public async Task<IActionResult> GetProductsByPosition(int position)
-        {
-            // Lấy danh sách sách theo Position từ MongoDB
-            var products = await _productService.GetProductsByCategoryPositionAsync(position);
+            // Lấy danh sách sản phẩm nổi bật
+            var featuredProducts = await _productService.GetFeaturedProductsAsync();
+            ViewBag.FeaturedProducts = featuredProducts;
 
-            // Trả về Partial View
+            // Lấy danh sách sản phẩm bán chạy
+            var bestsellerProducts = await _productService.GetBestsellerProductsAsync();
+            ViewBag.BestsellerProducts = bestsellerProducts;
+
+            return View(); // Trả về View Index.cshtml
+        }
+
+        // Lấy danh sách sản phẩm theo danh mục (AJAX)
+        public async Task<IActionResult> GetProductsByCategoryId(string categoryId)
+        {
+            if (string.IsNullOrEmpty(categoryId))
+            {
+                return BadRequest("Category ID is required.");
+            }
+
+            var products = await _productService.GetProductsByCategoryIdAsync(categoryId);
             return PartialView("_BookListPartial", products);
         }
-        // Lấy danh sách sản phẩm theo trạng thái Featured
-        // Phương thức tìm kiếm
+
+        // Phương thức tìm kiếm sản phẩm
         public async Task<IActionResult> Search(string searchQuery)
         {
             if (string.IsNullOrEmpty(searchQuery))
@@ -64,16 +73,15 @@ namespace webCore.Controllers
             }
 
             // Tìm kiếm sản phẩm từ MongoDB
-            var allProducts = await _productService.GetProductsAsync(); // Lấy toàn bộ sản phẩm
+            var allProducts = await _productService.GetProductsAsync();
             var searchResults = allProducts
                 .Where(p => p.Title.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
-            // Trả về PartialView với kết quả
             return PartialView("_ProductList", searchResults);
         }
 
-        // Action để đăng nhập và lưu thông tin session
+        // Xử lý đăng nhập và lưu thông tin vào session
         [HttpPost]
         public async Task<IActionResult> Sign_in(User loginUser)
         {
@@ -82,7 +90,7 @@ namespace webCore.Controllers
                 return View(loginUser);
             }
 
-            // Lấy tài khoản từ MongoDB dựa trên email
+            // Kiểm tra tài khoản trong MongoDB
             var user = await _userService.GetAccountByEmailAsync(loginUser.Email);
             if (user == null)
             {
@@ -90,7 +98,7 @@ namespace webCore.Controllers
                 return View(loginUser);
             }
 
-            // So sánh mật khẩu
+            // Kiểm tra mật khẩu
             if (loginUser.Password != user.Password)
             {
                 ModelState.AddModelError("", "Mật khẩu không đúng.");
@@ -101,21 +109,20 @@ namespace webCore.Controllers
             HttpContext.Session.SetString("UserToken", user.Token);
             HttpContext.Session.SetString("UserName", user.Name);
 
-            // Sau khi đăng nhập thành công, chuyển hướng về trang chủ
             return RedirectToAction("Index", "Home");
         }
 
-        // Action để đăng xuất, xóa session
+        // Xử lý đăng xuất và xóa thông tin session
         [HttpPost]
         public IActionResult Sign_out()
         {
-            // Xóa thông tin session khi người dùng đăng xuất
             HttpContext.Session.Remove("UserToken");
             HttpContext.Session.Remove("UserName");
 
             return RedirectToAction("Index", "Home");
         }
 
+        // API lấy breadcrumb theo CategoryId
         [HttpGet("api/breadcrumbs/{categoryId}")]
         public async Task<IActionResult> GetBreadcrumbs(string categoryId)
         {
@@ -143,7 +150,5 @@ namespace webCore.Controllers
 
             return Ok(breadcrumbs);
         }
-
-
     }
 }

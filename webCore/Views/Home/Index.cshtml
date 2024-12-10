@@ -1,41 +1,72 @@
 ﻿@{ Layout = "_Layout";
-                var categories = ViewBag.Categories as List<webCore.Models.Category>;
-                var parentCategories = categories?.Where(c => c.ParentId == null).ToList();
-                var groupedProducts = ViewBag.GroupedProducts as Dictionary<string, List<webCore.Models.Product_admin>>;
-                var featuredProducts = ViewBag.FeaturedProducts as List<webCore.Models.Product_admin>;
+    var categories = ViewBag.Categories as List<webCore.Models.Category>;
+    var parentCategories = categories?.Where(c => c.ParentId == null).ToList();
+    var groupedProducts = ViewBag.GroupedProducts as Dictionary<string, List<webCore.Models.Product_admin>>;
+    var featuredProducts = ViewBag.FeaturedProducts as List<webCore.Models.Product_admin>;
+    var bestsellerProducts = ViewBag.BestsellerProducts as List<webCore.Models.Product_admin>; // Dữ liệu sách bán chạy
+    var sortedProducts = ViewBag.SortedProducts as List<webCore.Models.Product_admin>;
+    var orderedGroupedProducts = groupedProducts
+        .OrderBy(group =>
+            group.Key == "Gợi ý" ? 1 :
+            group.Key == "Mới" ? 2 :
+            group.Key == "Nổi bật" ? 3 : 4)
+        .ToList(); }
 
-                // Sắp xếp các nhóm sản phẩm theo thứ tự: Gợi ý, Mới, Nổi bật, Không nổi bật
-                var orderedGroupedProducts = groupedProducts
-                    .OrderBy(group =>
-                        group.Key == "Gợi ý" ? 1 :
-                        group.Key == "Mới" ? 2 :
-                        group.Key == "Nổi bật" ? 3 : 4)
-                    .ToList(); }
-
-                <div class="container">
-                    <div class="row">
-                        <!-- Sidebar - Danh mục sản phẩm -->
-                        <aside class="list col-md-4">
-                            <ul class="list-group">
-                                <li class="inner-title list-group-item">
-                                    <h3>Danh mục sản phẩm</h3>
-                                </li>
-                                @if (parentCategories != null)
-                                {
-                                    foreach (var parent in parentCategories)
-                                    {
-                    <li class="list-group-item" onclick="toggleArrow(this)">
-                        <a>@parent.Title<span class="arrow"></span></a>
-                        <ul class="list-group subcategories" style="display: none;">
-                            @foreach (var sub in categories.Where(c => c.ParentId == parent._id))
-                            {
-                <li class="list-group-item" onclick="loadProductsByPosition(@sub.Position)">
-                    <a>@sub.Title</a>
-                </li>}
-                        </ul>
-                    </li>}
-                                }
-                            </ul>
+<div class="container">
+    <div class="row">
+        <!-- Sidebar - Danh mục sản phẩm -->
+        <aside class="list col-md-4">
+            <ul class="list-group">
+                <li class="inner-title list-group-item">
+                    <h3>Danh mục sản phẩm</h3>
+                </li>
+                @if (parentCategories != null)
+                {
+                    foreach (var parent in parentCategories)
+                    {
+    <li class="list-group-item" onclick="toggleArrow(this)">
+        <a>@parent.Title<span class="arrow"></span></a>
+        <ul class="list-group subcategories" style="display: none;">
+            @foreach (var sub in categories.Where(c => c.ParentId == parent._id))
+            {<!-- Call loadProductsByCategoryId with the categoryId -->
+                        <li class="list-group-item" onclick="loadProductsByCategoryId('@sub._id')">
+                            <a>@sub.Title</a>
+                        </li>}
+        </ul>
+    </li>}
+                }
+            </ul>
+            <!-- Phần hiển thị Sách Bán Chạy nằm trong Sidebar -->
+            @if (bestsellerProducts != null && bestsellerProducts.Any())
+            {
+<div class="featured-section mt-4">
+    <h4 class="featured-title">Sách Bán Chạy</h4>
+    <ul class="list-group">
+        @foreach (var product in bestsellerProducts.Take(5)) // Hiển thị sách bán chạy
+        {
+<li class="list-group-item">
+    <div class="row">
+        <div class="col-4">
+            <img src="@product.Image" class="img-fluid" alt="@product.Title" />
+        </div>
+        <div class="col-8">
+            <a href="@Url.Action("DetailProduct", "DetailProduct", new { id = product.Id })" class="product-title">
+                @product.Title
+            </a>
+            @if (product.DiscountPercentage > 0)
+            {
+<div>
+    <span class="text-muted old-price">@string.Format("{0:C}", product.Price)</span>
+    <span class="new-price">@string.Format("{0:C}", product.Price * (1 - product.DiscountPercentage / 100))</span>
+</div> }
+                    else
+                    {
+<div class="price">@string.Format("{0:C}", product.Price)</div>}
+        </div>
+    </div>
+</li>}
+    </ul>
+</div>            }
         </aside>
 
         <!-- Main Content - Sản phẩm -->
@@ -72,59 +103,63 @@
 
             <!-- Danh sách sản phẩm -->
             <div class="product-list mt-5">
-
                 @if (orderedGroupedProducts != null && orderedGroupedProducts.Any())
                 {
                     foreach (var group in orderedGroupedProducts)
                     {
-                    <h3 class="product-group-name">@group.Key</h3> <!-- Hiển thị tên nhóm sản phẩm -->
-                        <div class="row">
-                            @foreach (var product in group.Value)
-                            {
-        <div class="col-md-4 mb-3">
-            <div class="card">
-                <a href="@Url.Action("DetailProduct", "DetailProduct", new { id = product.Id })">
-                    <img src="@product.Image" class="card-img-top" alt="@product.Title" />
-                    <div class="card-body">
-                        <h5 class="card-title">@product.Title</h5>
-                        <p class="card-text">
-                            @if (product.DiscountPercentage > 0)
-                            {
-                                <span class="badge discount-badge">
-                                    Giảm @product.DiscountPercentage%
-                                </span>
-                                <br />
-                                <span class="text-muted old-price">
-                                    @string.Format("{0:C}", product.Price)
-                                </span>
-                                <br />
-                                <span class="price new-price">
-                                    @string.Format("{0:C}", product.Price * (1 - product.DiscountPercentage / 100))
-                                </span> }
-                            else
-                            {
-                                <span class="price normal-price">
-                                    @string.Format("{0:C}", product.Price)
-                                </span>}
-                        </p>
+    <h3 class="product-group-name">@group.Key</h3>
+                        <div class="position-relative">
+                            <!-- Nút điều hướng trái -->
+                            <button class="scroll-btn scroll-left" onclick="scrollProducts(this, -300)">
+                                &lt;
+                            </button>
 
-                        <!-- Hiển thị nhãn Featured -->
-                        <p class="featured-label">
-                            <strong>@GetFeaturedLabel(product.Featured.ToString())</strong>
-                        </p>
+                            <!-- Hàng sản phẩm -->
+                            <div class="product-row">
+                                @foreach (var product in group.Value)
+                                {
+            <div class="product-item">
+                <div class="card">
+                    <a href="@Url.Action("DetailProduct", "DetailProduct", new { id = product.Id })">
+                        <img src="@product.Image" class="card-img-top" alt="@product.Title" />
+                        <div class="card-body">
+                            <h5 class="card-title">@product.Title</h5>
+                            <p class="card-text">
+                                @if (product.DiscountPercentage > 0)
+                                {
+        <span class="badge discount-badge">
+            Giảm @product.DiscountPercentage%
+        </span>
+                                    <br />
+                                                                <span class="text-muted old-price">
+                                                                    @string.Format("{0:C}", product.Price)
+                                                                </span>
+                                                                                            <br />
+                                                                                                                        <span class="price new-price">
+                                                                                                                            @string.Format("{0:C}", product.Price * (1 - product.DiscountPercentage / 100))
+                                                                                                                        </span> }
+                                                                                                                                                else
+                                                                                                                                                {
+                                                                                                                        <span class="price normal-price">
+                                                                                                                            @string.Format("{0:C}", product.Price)
+                                                                                                                        </span>}
+                            </p>
+                        </div>
+                    </a>
+                </div>
+            </div>}
+                            </div>
 
-
-                    </div>
-                </a>
-            </div>
-        </div>}
+                            <!-- Nút điều hướng phải -->
+                            <button class="scroll-btn scroll-right" onclick="scrollProducts(this, 300)">
+                                &gt;
+                            </button>
                         </div> }
                                     }
                                     else
                                     {
                         <p>Không có sản phẩm nào để hiển thị.</p>}
             </div>
-
         </main>
     </div>
 </div>
@@ -143,13 +178,22 @@
         }
     }
 
-    function loadProductsByPosition(position) {
-        fetch(`/Home/GetProductsByPosition?position=${position}`)
+    function loadProductsByCategoryId(categoryId) {
+        // Fetch the products from the server based on the categoryId
+        fetch(`/Home/GetProductsByCategoryId?categoryId=${categoryId}`)
             .then(response => response.text())
             .then(html => {
+                // Replace the product list with the new content
                 document.querySelector('.product-list').innerHTML = html;
             })
             .catch(error => console.error('Error loading products:', error));
+    }
+    function scrollProducts(button, distance) {
+        const row = button.parentElement.querySelector('.product-row');
+        row.scrollBy({
+            left: distance,
+            behavior: 'smooth'
+        });
     }
 </script>
 

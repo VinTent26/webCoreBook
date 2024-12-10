@@ -102,8 +102,7 @@ header {
 
 /* Icon Cart, User, Chat */
 .inner-cart,
-.inner-user,
-.inner-chat {
+.inner-user {
     margin-right: 20px;
     background-color: #f9f1f5;
     width: 45px;
@@ -118,22 +117,19 @@ header {
 }
 
     .inner-cart a,
-    .inner-user a,
-    .inner-chat a {
+    .inner-user a {
         font-size: 1.5em;
         color: #333;
         transform: rotate(-45deg);
     }
 
     .inner-cart:hover,
-    .inner-user:hover,
-    .inner-chat:hover {
+    .inner-user:hover {
         background-color: #c5c6c6;
     }
 
     .inner-cart a:hover,
-    .inner-user a:hover,
-    .inner-chat a:hover {
+    .inner-user a:hover {
         color: #28a745;
     }
 
@@ -355,16 +351,17 @@ header {
     display: none !important;
 }
 
-#logoutForm{
-    padding:10px 20px;
+#logoutForm {
+    padding: 10px 20px;
 }
+
 #logoutButton {
     border: none;
     background: none;
 }
 
 .cart-item-1 {
-    display:none;
+    display: none;
     position: absolute;
     top: 17px;
     margin-left: 35px;
@@ -375,7 +372,7 @@ header {
     height: 30px;
     width: 30px;
     text-align: center;
-    justify-content:center;
+    justify-content: center;
 }
 /* ===== SECTION STYLES ===== */
 #section-one {
@@ -386,9 +383,11 @@ header {
 .list-group-item {
     cursor: pointer;
 }
+
 .list-group {
     padding-top: 15px;
 }
+
 .inner-title.list-group-item {
     background-color: #64A3C4;
     color: white;
@@ -443,7 +442,7 @@ header {
 }
 
 .btn3 {
-    background-color: #AC5E68;
+    background-color: #db7d89;
     margin-left: 100px;
 }
 
@@ -455,10 +454,10 @@ header {
     height: 350px; /* Đảm bảo chiều cao cố định cho card */
     overflow: hidden; /* Giúp card không thay đổi kích thước khi thay đổi nội dung */
 }
-.card a{
-    text-decoration:none;
-    
-}
+
+    .card a {
+        text-decoration: none;
+    }
 
 .card-title {
     font-size: 16px; /* Chữ lớn hơn */
@@ -469,7 +468,7 @@ header {
 
 .card-text {
     font-weight: bold;
-    color: #28a745;
+    color: #FF6347;
     margin-bottom: 5px; /* Giảm khoảng cách với title */
 }
 
@@ -621,7 +620,49 @@ footer p {
         .subcategories .list-group-item::after {
             bottom: 0;
         }
+
 .product-group-name {
     color: red; /* Thay màu theo nhu cầu */
 }
 
+.product-row {
+    display: flex; /* Xếp các phần tử con theo hàng ngang */
+    overflow-x: hidden; /* Ẩn cuộn ngang */
+    scroll-behavior: smooth; /* Cuộn mượt */
+    gap: 1rem; /* Khoảng cách giữa các sản phẩm */
+}
+
+.product-item {
+    flex: 0 0 auto; /* Đảm bảo sản phẩm không bị co lại */
+    width: 250px; /* Đặt chiều rộng cố định cho mỗi sản phẩm */
+}
+
+.position-relative {
+    position: relative;
+}
+
+.scroll-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.scroll-left {
+    left: -20px;
+}
+
+.scroll-right {
+    right: -20px;
+}
+
+.scroll-btn:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
