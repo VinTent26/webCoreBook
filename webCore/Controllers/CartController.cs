@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
@@ -27,7 +28,7 @@ namespace webCore.Controllers
 
         // Thêm sản phẩm vào giỏ hàng
         [HttpPost]
-        public async Task<IActionResult> AddToCart(string productId, string title, decimal price,decimal discountpercentage, int quantity, string image)
+        public async Task<IActionResult> AddToCart(string productId, string title, decimal price, decimal discountpercentage, int quantity, string image)
         {
             // Lấy UserId từ session
             var userId = HttpContext.Session.GetString("UserToken");

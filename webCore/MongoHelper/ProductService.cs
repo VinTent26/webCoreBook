@@ -96,5 +96,21 @@ namespace webCore.MongoHelper
             // Truy vấn sản phẩm từ MongoDB theo filter
             return await _productCollection.Find(filter).ToListAsync();
         }
+        public async Task<Product_admin> GetProductByIdAsync(string productId)
+        {
+            // Kiểm tra nếu productId null hoặc rỗng
+            if (string.IsNullOrEmpty(productId))
+            {
+                return null;
+            }
+
+            // Lọc sản phẩm theo productId
+            var filter = Builders<Product_admin>.Filter.Eq(p => p.Id, productId);
+
+            // Truy vấn MongoDB để lấy sản phẩm
+            var product = await _productCollection.Find(filter).FirstOrDefaultAsync();
+
+            return product;
+        }
     }
 }

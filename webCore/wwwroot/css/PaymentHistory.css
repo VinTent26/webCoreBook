@@ -1,4 +1,4 @@
-﻿.title {
+﻿﻿.title {
     width: 350px;
     margin-top: 30px;
     margin-left: 0px;
@@ -18,14 +18,17 @@
     margin-top: 20px;
     margin-bottom: 20px;
 }
+
 .tbheader {
     text-align: center;
     background: lightskyblue;
 }
+
 .btn_select {
     align-content: center;
     text-align: center;
 }
+
 .col-content {
     text-align: center;
     align-content: center;
