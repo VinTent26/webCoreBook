@@ -51,10 +51,33 @@ namespace webCore.MongoHelper
             await _voucherCollection.ReplaceOneAsync(filter, updatedVoucher);
         }
         // Lấy voucher theo mã
-        public Voucher GetVoucherByCode(string code)
+        public Voucher GetVoucherById(string voucherId)
         {
-            return _voucherCollection.Find(v => v.Code == code).FirstOrDefault();
+            // Chuyển voucherId từ chuỗi thành ObjectId
+            ObjectId parsedVoucherId;
+            if (!ObjectId.TryParse(voucherId, out parsedVoucherId))
+            {
+                return null; // Nếu voucherId không hợp lệ, trả về null
+            }
+
+            // Tìm voucher trong collection theo voucherId
+            return _voucherCollection.Find(v => v.Id == parsedVoucherId).FirstOrDefault();
         }
+        public async Task<Voucher> GetVoucherByIdAsync(string voucherId)
+        {
+            var filter = Builders<Voucher>.Filter.Eq(v => v.Id, ObjectId.Parse(voucherId));
+            return await _voucherCollection.Find(filter).FirstOrDefaultAsync();
+        }
+
+        public async Task UpdateVoucherUsageCountAsync(Voucher voucher)
+        {
+            var filter = Builders<Voucher>.Filter.Eq(v => v.Id, voucher.Id);
+            var update = Builders<Voucher>.Update.Set(v => v.UsageCount, voucher.UsageCount);
+
+            // Cập nhật số lần sử dụng voucher trong cơ sở dữ liệu MongoDB
+            await _voucherCollection.UpdateOneAsync(filter, update);
+        }
+
 
         // Cập nhật số lần sử dụng
         public void UpdateVoucherUsageCount(Voucher voucher)

@@ -28,11 +28,16 @@ namespace webCore.MongoHelper
             var user = await _userCollection.Find(filter).FirstOrDefaultAsync();
             return user;
         }
-
-        // Lấy thông tin người dùng theo Username
         public async Task<User> GetUserByUsernameAsync(string userName)
         {
             var user = await _userCollection.Find(u => u.Name == userName).FirstOrDefaultAsync();
+
+            // Kiểm tra nếu tài khoản bị khóa
+            if (user != null && user.Status == 0)
+            {
+                throw new InvalidOperationException("Tài khoản đã bị khóa");
+            }
+
             return user;
         }
 
@@ -41,38 +46,23 @@ namespace webCore.MongoHelper
         {
             try
             {
-                // Tạo filter để tìm người dùng cần cập nhật theo Id (để đảm bảo cập nhật đúng người dùng)
                 var filter = Builders<User>.Filter.Eq(u => u.Id, user.Id);
 
-                // Tạo update với các trường cần thay đổi
+                // Đảm bảo ngày sinh luôn ở dạng UTC trước khi lưu
                 var update = Builders<User>.Update
-                    .Set(u => u.Name, user.Name)          // Cập nhật tên người dùng
-                    .Set(u => u.Phone, user.Phone)        // Cập nhật số điện thoại
-                    .Set(u => u.Gender, user.Gender)      // Cập nhật giới tính
-                    .Set(u => u.Birthday, user.Birthday)  // Cập nhật ngày sinh
-                    .Set(u => u.Address, user.Address)    // Cập nhật địa chỉ
-                    .Set(u => u.Password, user.Password)  // Cập nhật mật khẩu
-                    .Set(u => u.ProfileImage, user.ProfileImage);  // Cập nhật ảnh đại diện
+                    .Set(u => u.Name, user.Name)
+                    .Set(u => u.Phone, user.Phone)
+                    .Set(u => u.Gender, user.Gender)
+                    .Set(u => u.Birthday, user.Birthday.HasValue
+                        ? DateTime.SpecifyKind(user.Birthday.Value, DateTimeKind.Utc) // Lưu dưới dạng UTC
+                        : (DateTime?)null)
+                    .Set(u => u.Address, user.Address)
+                    .Set(u => u.Password, user.Password)
+                    .Set(u => u.ProfileImage, user.ProfileImage);
 
-                // Thực hiện cập nhật
                 var result = await _userCollection.UpdateOneAsync(filter, update);
 
-                // Kiểm tra kết quả
-                if (result.MatchedCount == 0)
-                {
-                    Console.WriteLine("Không tìm thấy người dùng để cập nhật.");
-                    return false;
-                }
-
-                if (result.ModifiedCount > 0)
-                {
-                    return true;  // Cập nhật thành công
-                }
-                else
-                {
-                    Console.WriteLine("Không có thay đổi nào được thực hiện.");
-                    return false;  // Không có thay đổi
-                }
+                return result.ModifiedCount > 0;
             }
             catch (Exception ex)
             {
@@ -98,6 +88,16 @@ namespace webCore.MongoHelper
 
             var user = await _userCollection.Find(u => u.Id == guid).FirstOrDefaultAsync();
             return user;
+        }
+        // Save user
+        public async Task<bool> UpdatePasswordAsync(string email, string newPassword)
+        {
+            var filter = Builders<User>.Filter.Eq(u => u.Email, email);
+            var update = Builders<User>.Update.Set(u => u.Password, newPassword);
+
+            var result = await _userCollection.UpdateOneAsync(filter, update);
+
+            return result.ModifiedCount > 0;
         }
     }
 }

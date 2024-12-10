@@ -21,7 +21,7 @@ namespace webCore.Services
         private readonly IMongoDatabase _mongoDatabase;
         internal readonly IMongoCollection<Account_admin> _accountCollection;
 
-
+        public IMongoCollection<ForgotPassword> ForgotPasswords { get; internal set; }
 
         public MongoDBService(IConfiguration configuration)
         {
@@ -30,15 +30,13 @@ namespace webCore.Services
             _accountCollection = mongoDatabase.GetCollection<Account_admin>("Accounts");
             _productCollection = mongoDatabase.GetCollection<Product_admin>("Product");
             _userCollection = mongoDatabase.GetCollection<User>("Users");
+            ForgotPasswords = mongoDatabase.GetCollection<ForgotPassword>("ForgotPasswords");
             _categoryCollection = mongoDatabase.GetCollection<Category>("Category");
-            _detailProductCollection= mongoDatabase.GetCollection<Product_admin>("Product");
-            _cartCollection= mongoDatabase.GetCollection<Cart>("Cart");
+            _detailProductCollection = mongoDatabase.GetCollection<Product_admin>("Product");
+            _cartCollection = mongoDatabase.GetCollection<Cart>("Cart");
             _orders = mongoDatabase.GetCollection<Order>("Orders");
             _voucherCollection = mongoDatabase.GetCollection<Voucher>("Vouchers");
-    
-           
         }
 
     }
-     
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
@@ -16,16 +17,18 @@ namespace webCore.Controllers
     {
         private readonly CartService _cartService;
         private readonly VoucherClientService _voucherService;
+        private readonly ProductService _productService;
 
-        public CartController(CartService cartService, VoucherClientService voucherService)
+        public CartController(CartService cartService, VoucherClientService voucherService, ProductService productService)
         {
             _cartService = cartService;
             _voucherService = voucherService;
+            _productService = productService;
         }
 
         // Thêm sản phẩm vào giỏ hàng
         [HttpPost]
-        public async Task<IActionResult> AddToCart(string productId, string title, decimal price,decimal discountpercentage, int quantity, string image)
+        public async Task<IActionResult> AddToCart(string productId, string title, decimal price, decimal discountpercentage, int quantity, string image)
         {
             // Lấy UserId từ session
             var userId = HttpContext.Session.GetString("UserToken");
@@ -71,16 +74,25 @@ namespace webCore.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCartItemCount()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Lấy userId từ User hiện tại
+            // Lấy userId từ session hoặc claim
+            var userId = HttpContext.Session.GetString("UserToken");  // Giả sử bạn lưu token trong Session sau khi đăng nhập
 
+            // Nếu userId không tồn tại (người dùng chưa đăng nhập)
             if (string.IsNullOrEmpty(userId))
+            {
                 return Json(new { itemCount = 0 });
+            }
 
+            // Lấy giỏ hàng của người dùng từ database
             var cart = await _cartService.GetCartByUserIdAsync(userId);
-            int itemCount = cart?.Items.Count ?? 0; // Đếm số lượng sản phẩm trong giỏ
+
+            // Kiểm tra giỏ hàng và lấy số lượng sản phẩm
+            int itemCount = cart?.Items.Count ?? 0; // Nếu không có giỏ hàng thì trả về 0
 
             return Json(new { itemCount = itemCount });
         }
+
+
 
         [ServiceFilter(typeof(SetLoginStatusFilter))]
         // Hiển thị giỏ hàng của người dùng
@@ -239,7 +251,13 @@ namespace webCore.Controllers
         [HttpGet]
         public async Task<IActionResult> Checkout()
         {
+            HttpContext.Session.Remove("CartItem");
             // Kiểm tra trạng thái đăng nhập từ session
+            var isLoggedIn = HttpContext.Session.GetString("UserToken") != null;
+
+            // Truyền thông tin vào ViewBag hoặc Model để sử dụng trong View
+            ViewBag.IsLoggedIn = isLoggedIn;
+            // Lấy UserId từ session
             var userId = HttpContext.Session.GetString("UserToken");
             if (string.IsNullOrEmpty(userId))
             {
@@ -294,5 +312,74 @@ namespace webCore.Controllers
                 VoucherDiscount = voucherDiscount
             });
         }
+        [ServiceFilter(typeof(SetLoginStatusFilter))]
+
+        [HttpGet]
+        public async Task<IActionResult> BuyNow(string productId, int quantity)
+        {
+            HttpContext.Session.Remove("CartItem");
+
+            // Kiểm tra trạng thái đăng nhập từ session
+            var isLoggedIn = HttpContext.Session.GetString("UserToken") != null;
+
+            // Truyền thông tin vào ViewBag hoặc Model để sử dụng trong View
+            ViewBag.IsLoggedIn = isLoggedIn;
+
+            // Lấy UserId từ session
+            var userId = HttpContext.Session.GetString("UserToken");
+            if (string.IsNullOrEmpty(userId))
+            {
+                // Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập
+                return RedirectToAction("Sign_in", "User");
+            }
+            Console.WriteLine($"Product ID: {productId}");
+            // Lấy sản phẩm từ dịch vụ theo productId
+            var product = await _productService.GetProductByIdAsync(productId);
+
+            // Kiểm tra xem sản phẩm có tồn tại không
+            if (product == null)
+            {
+                // Nếu không có sản phẩm, chuyển hướng hoặc hiển thị thông báo lỗi
+                return NotFound("Sản phẩm không tồn tại.");
+            }
+
+            // Kiểm tra thông tin voucher từ session
+            var voucherDiscount = "0";
+
+            // Tính toán tổng tiền cho sản phẩm đã chọn
+            decimal totalAmount = product.Price * quantity * (1 - product.DiscountPercentage / 100);
+            decimal finalAmount = totalAmount;
+
+            // Cập nhật các giá trị cần hiển thị vào ViewData
+            ViewData["VoucherDiscount"] = voucherDiscount;  // Voucher giảm giá
+            ViewData["TotalAmount"] = totalAmount;           // Tổng tiền trước giảm giá
+            ViewData["FinalAmount"] = finalAmount;           // Tổng tiền sau giảm giá
+
+            // Chuyển sản phẩm từ Product_admin sang CartItem
+            var cartItem = new CartItem
+            {
+                ProductId = product.Id,
+                Title = product.Title,
+                Price = product.Price,
+                DiscountPercentage = product.DiscountPercentage,
+                Quantity = quantity, // Giả sử mua 1 sản phẩm
+                Image = product.Image // Nếu có
+            };
+
+            // Lưu thông tin vào session để chuyển sang trang thanh toán
+            HttpContext.Session.SetString("CartItem", JsonConvert.SerializeObject(cartItem));
+
+            // Trả về view thanh toán và truyền thông tin vào view
+            return View("Checkout", new CheckoutViewModel
+            {
+                // Dùng List<CartItem> với 1 item duy nhất
+                Items = new List<CartItem> { cartItem },  // Danh sách CartItem với một sản phẩm được chọn
+                TotalAmount = totalAmount,
+                DiscountAmount = 0,  // Giảm giá (nếu có)
+                FinalAmount = finalAmount,
+                VoucherDiscount = voucherDiscount
+            });
+        }
+
     }
 }

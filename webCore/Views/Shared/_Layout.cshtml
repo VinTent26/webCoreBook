@@ -18,7 +18,6 @@
           crossorigin="anonymous" />
     <link rel="stylesheet" href="/css/home.css" asp-append-version="true" />
 
-
 </head>
 <body>
     <!-- header -->
@@ -27,7 +26,7 @@
             <div class="row">
                 <div class="col-3">
                     <div class="inner-logo">
-                        <a href="#">
+                        <a href="@Url.Action("Index", "Home")">
                             <div class="inner-img">
                                 <img src="/image/logo2.png" alt="Logo" />
                             </div>
@@ -45,18 +44,14 @@
                         </form>
                     </div>
                 </div>
-                <div class="col-3">
+                <div class="col-2">
 
                     <div class="items-icon">
                         <!-- Icon Cart -->
-
                         <div>
-
                             <div class="inner-cart">
-
                                 <a href="@Url.Action("Cart", "Cart")">
                                     <i class="fa-solid fa-cart-shopping"></i>
-
                                 </a>
                             </div>
                             <div id="cart-item-1" class="cart-item-1">
@@ -68,24 +63,21 @@
                             $(document).ready(function () {
                                 // Hàm để cập nhật số lượng trên giỏ hàng
                                 function updateCartCount(itemCount) {
-                                    if (itemCount > 0) {
-                                        $('#cart-item-1').text(itemCount).show(); // Hiển thị số lượng
-                                    } else {
-                                        $('#cart-item-1').hide(); // Ẩn nếu không có sản phẩm
-                                    }
-                                }
 
-                                // Lấy số lượng giỏ hàng khi tải trang
-                                $.ajax({
-                                    url: '@Url.Action("GetCartItemCount", "Cart")',
-                                    type: 'GET',
-                                    success: function (response) {
-                                        updateCartCount(response.itemCount); // Cập nhật số lượng giỏ hàng
-                                    },
-                                    error: function () {
-                                        console.error('Không thể lấy số lượng giỏ hàng.');
-                                    }
-                                });
+                                        $('#cart-item-1').text(itemCount).show(); // Hiển thị số lượng
+
+                                }
+                            // Lấy số lượng giỏ hàng khi tải trang
+                            $.ajax({
+                                url: '@Url.Action("GetCartItemCount", "Cart")',
+                                type: 'GET',
+                                success: function (response) {
+                                    updateCartCount(response.itemCount); // Cập nhật số lượng giỏ hàng
+                                },
+                                error: function () {
+                                    console.error('Không thể lấy số lượng giỏ hàng.');
+                                }
+                            });
 
                                 // Lắng nghe sự kiện cập nhật từ trang chi tiết sản phẩm
                                 $(document).on('cartUpdated', function (event, itemCount) {
@@ -94,16 +86,25 @@
                             });
                         </script>
                         <!-- Icon User -->
-                        <div class="inner-user" id="userIcon">
-                            <a href="#" class="user-dropdown-toggle">
-                                <i class="fa-regular fa-user"></i>
-                            </a>
-                        </div>
-                        <!-- New Chat Icon -->
-                        <div class="inner-chat">
-                            <a href="#">
-                                <i class="fa-solid fa-comment-dots"></i>
-                            </a>
+                        <div>
+                            <div class="inner-user" id="userIcon">
+                                <a href="#" class="user-dropdown-toggle">
+                                    <i class="fa-regular fa-user"></i>
+                                </a>
+                            </div>
+                            <div class="user-name">
+                                @{
+                                    var userName = HttpContextAccessor.HttpContext.Session.GetString("UserName");
+                                    if (!string.IsNullOrEmpty(userName))
+                                    {
+                                        <span class="username">@userName</span> <!-- Hiển thị tên người dùng -->
+                                    }
+                                    else
+                                    {
+                                        <p class="login-text">Đăng nhập</p>
+                                    }
+                                }
+                            </div>
                         </div>
                     </div>
 
@@ -111,7 +112,7 @@
                     <div id="userDropdownMenu" class="user-dropdown hidden">
                         <!-- Mục thông tin cá nhân và đăng xuất (hiển thị nếu người dùng đã đăng nhập) -->
                         <a id="profileLink" href="@Url.Action("Index", "DetailUser")" class="hidden">Thông tin cá nhân</a>
-
+                        <a id="orderLink" href="@Url.Action("PaymentHistory", "Checkout")" class="hidden">Đơn mua</a>
                         <form id="logoutForm" method="post" action="@Url.Action("Sign_out", "User")">
                             <button type="submit" id="logoutButton">Đăng xuất</button>
                         </form>
@@ -126,6 +127,7 @@
                             var userIcon = document.getElementById("userIcon");
                             var userDropdownMenu = document.getElementById("userDropdownMenu");
                             var profileLink = document.getElementById("profileLink");
+                            var orderLink = document.getElementById("orderLink");
                             var logoutForm = document.getElementById("logoutForm");
                             var loginLink = document.getElementById("loginLink");
                             var registerLink = document.getElementById("registerLink");
@@ -142,11 +144,13 @@
                             // Kiểm tra trạng thái đăng nhập và hiển thị các mục phù hợp
                             if (isLoggedIn) {
                                 profileLink.classList.remove("hidden");
+                                orderLink.classList.remove("hidden");
                                 logoutForm.classList.remove("hidden");
                                 loginLink.classList.add("hidden");
                                 registerLink.classList.add("hidden");
                             } else {
                                 profileLink.classList.add("hidden");
+                                orderLink.classList.add("hidden");
                                 logoutForm.classList.add("hidden");
                                 loginLink.classList.remove("hidden");
                                 registerLink.classList.remove("hidden");
@@ -154,32 +158,23 @@
                         });
                     </script>
                     <!-- Username -->
-                    <div class="user-name">
-                        @{
-                            var userName = HttpContextAccessor.HttpContext.Session.GetString("UserName");
-                            if (!string.IsNullOrEmpty(userName))
-                            {
-                                <span>@userName</span> <!-- Hiển thị tên người dùng -->
-                            }
-                            else
-                            {
-                                <p>Đăng nhập</p>
-                            }
-                        }
-                    </div>
-                    <!-- Thêm CSS -->
+
+
+
                     <style>
-                        .user-name {
-                            margin-top: 10px; /* Khoảng cách giữa icon và phần chữ "Đăng nhập" */
+                        /* Áp dụng margin-right cho tên người dùng */
+                        .username {
+                            margin-right: 15px;
+                            display: inline-block;
                             text-align: center;
-                            margin-right: 12px;
+                            white-space: nowrap;
+                            word-wrap: break-word;
                         }
 
-                            .user-name p {
-                                margin: 0;
-                                font-size: 1rem;
-                                color: #333;
-                            }
+                        /* Đảm bảo không có margin-right khi là "Đăng nhập" */
+                        .login-text {
+                            margin-right: 0;
+                        }
                     </style>
                 </div>
             </div>
