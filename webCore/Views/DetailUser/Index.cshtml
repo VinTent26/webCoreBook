@@ -22,7 +22,7 @@
             </a>
         </div>
 
-        <h2 class="text-center mt-3">Cập nhật thông tin cá nhân</h2>
+        <h2 class="text text-center mt-3">THÔNG TIN CÁ NHÂN</h2>
 
         <!-- Hiển thị thông báo -->
         @if (TempData["Message"] != null)
@@ -73,7 +73,6 @@
                                 <input type="radio" id="male" name="Gender" value="male"
                                 @(Model?.Gender == "male" ? "checked" : "") />
                                 <label for="male">Nam</label>
-
                                 <input type="radio" id="female" name="Gender" value="female" class="ml-3"
                                 @(Model?.Gender == "female" ? "checked" : "") />
                                 <label for="female">Nữ</label>
@@ -85,7 +84,7 @@
                         <div class="form-group col-md-6">
                             <label for="birthday">Ngày sinh</label>
                             <input type="date" class="form-control" id="birthday" name="Birthday"
-                                   value="@(Model?.Birthday?.ToLocalTime().ToString("yyyy-MM-dd") ?? "")" />
+                                   value="@(Model?.Birthday?.ToString("yyyy-MM-dd") ?? "")" />
                             @Html.ValidationMessageFor(model => model.Birthday, "", new { @class = "text-danger" })
                         </div>
                     </div>
