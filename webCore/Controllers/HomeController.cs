@@ -80,20 +80,15 @@ namespace webCore.Controllers
                 case "desc":
                     products = products.OrderByDescending(p => p.Price).ToList(); // Sắp xếp theo giá giảm dần
                     break;
-                case "discountAsc":
-                    products = products.OrderBy(p => p.DiscountPercentage).ToList(); // Sắp xếp theo khuyến mãi tăng dần
-                    break;
-                case "discountDesc":
-                    products = products.OrderByDescending(p => p.DiscountPercentage).ToList(); // Sắp xếp theo khuyến mãi giảm dần
+                case "none":
+                default:
+                    // Không sắp xếp
                     break;
             }
 
-            // Truyền CategoryId cho view
-            ViewBag.CategoryId = categoryId;
-
-            // Trả về partial view với danh sách sản phẩm đã sắp xếp
-            return PartialView("_BookListPartial", products);
+            return PartialView("_BookListPartial", products); // Trả về partial view với danh sách đã sắp xếp
         }
+
 
 
         // Phương thức tìm kiếm sản phẩm
